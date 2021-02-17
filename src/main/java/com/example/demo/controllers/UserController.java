@@ -15,7 +15,7 @@ public class UserController {
 	@Autowired
 	private UsersRepository ur;
 	
-	@GetMapping("/")
+	@GetMapping("/api/")
 	public Collection<User> getUsers(){
 		return ur.findAll();
 	}
