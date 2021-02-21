@@ -1,8 +1,13 @@
+drop table if exists bids;
+drop table if exists items;
+drop table if exists users;
+
 create table users(
 	id serial primary key,
-	email varchar,
+	email varchar unique,
 	passwd varchar,
-	name varchar
+	name varchar,
+	surname varchar
 );
 
 create table items(

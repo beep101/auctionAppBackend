@@ -12,29 +12,29 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name="\"items\"")
+@Table(name="items")
 @NamedQuery(name="Item.findAll", query="SELECT i FROM Item i")
 public class Item implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="\"id\"")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id")
 	private int id;
 
-	@Column(name="\"description\"")
+	@Column(name="description")
 	private String description;
 
-	@Column(name="\"endtime\"")
+	@Column(name="endtime")
 	private Timestamp endtime;
 
-	@Column(name="\"name\"")
+	@Column(name="name")
 	private String name;
 
-	@Column(name="\"startingprice\"")
+	@Column(name="startingprice")
 	private BigDecimal startingprice;
 
-	@Column(name="\"starttime\"")
+	@Column(name="starttime")
 	private Timestamp starttime;
 
 	//bi-directional many-to-one association to Bid
