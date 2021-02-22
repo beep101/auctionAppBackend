@@ -16,17 +16,23 @@ import com.example.demo.models.ForgotPasswordModel;
 import com.example.demo.models.LoginModel;
 import com.example.demo.models.SignupModel;
 import com.example.demo.repositories.UsersRepository;
-import com.example.demo.utils.HashUtil;
-import com.example.demo.utils.JwtUtil;
+import com.example.demo.utils.IHashUtil;
+import com.example.demo.utils.IJwtUtil;
 
 @Service
 public class AccountService implements IAccountService{
 	@Autowired
 	UsersRepository usersRepo;
 	@Autowired
-	HashUtil hashUtil;
+	IHashUtil hashUtil;
 	@Autowired
-	JwtUtil jwtUtil;
+	IJwtUtil jwtUtil;
+	
+	public AccountService(IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo) {
+		this.usersRepo=userRepo;
+		this.hashUtil=hashUtil;
+		this.jwtUtil=jwtUtil;
+	}
 
 	@Override
 	public String login(LoginModel login) {

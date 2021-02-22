@@ -8,14 +8,24 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.models.ForgotPasswordModel;
 import com.example.demo.models.LoginModel;
 import com.example.demo.models.SignupModel;
+import com.example.demo.repositories.UsersRepository;
+import com.example.demo.services.AccountService;
 import com.example.demo.services.IAccountService;
+import com.example.demo.utils.IHashUtil;
+import com.example.demo.utils.IJwtUtil;
 
 
 @RestController
 public class AccountController {
 	
 	@Autowired
-	IAccountService accountService;
+	IHashUtil hashUtil;
+	@Autowired
+	IJwtUtil jwtUtil;
+	@Autowired
+	UsersRepository usersRepo;
+	
+	IAccountService accountService=new AccountService(hashUtil, jwtUtil, usersRepo);
 	
 	@PostMapping("/api/login")
 	public String login(@RequestBody LoginModel data) {

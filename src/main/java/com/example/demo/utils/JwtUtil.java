@@ -13,7 +13,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
-public class JwtUtil {
+public class JwtUtil implements IJwtUtil{
 	@Value("${jwt.secret}")
 	private String secret;
 	@Value("${jwt.validTime}")
@@ -35,7 +35,7 @@ public class JwtUtil {
 		return getClaims(token).getExpiration();
 	}
 	
-	public boolean isTokenExpired(String token) {
+	private boolean isTokenExpired(String token) {
 		Date expiration=getExpirationDateFromToken(token);
 		return expiration.after(new Date());
 	}
