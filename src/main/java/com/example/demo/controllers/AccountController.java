@@ -1,5 +1,7 @@
 package com.example.demo.controllers;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,8 +26,12 @@ public class AccountController {
 	IJwtUtil jwtUtil;
 	@Autowired
 	UsersRepository usersRepo;
+	IAccountService accountService;
 	
-	IAccountService accountService=new AccountService(hashUtil, jwtUtil, usersRepo);
+	@PostConstruct
+	public void init() {
+		accountService=new AccountService(hashUtil, jwtUtil, usersRepo);
+	}
 	
 	@PostMapping("/api/login")
 	public String login(@RequestBody LoginModel data) {

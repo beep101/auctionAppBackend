@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.BadCredentialsException;
 import com.example.demo.exceptions.ExistingUserException;
+import com.example.demo.exceptions.NonExistentUserException;
 import com.example.demo.models.ForgotPasswordModel;
 import com.example.demo.models.LoginModel;
 import com.example.demo.models.SignupModel;
@@ -21,11 +22,8 @@ import com.example.demo.utils.IJwtUtil;
 
 @Service
 public class AccountService implements IAccountService{
-	@Autowired
 	UsersRepository usersRepo;
-	@Autowired
 	IHashUtil hashUtil;
-	@Autowired
 	IJwtUtil jwtUtil;
 	
 	public AccountService(IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo) {
@@ -59,10 +57,12 @@ public class AccountService implements IAccountService{
 		newUser.setEmail(signup.email);
 		newUser.setPasswd(hashUtil.hashPassword(signup.password));
 		usersRepo.save(newUser);
-		LoginModel creds=new LoginModel();
-		creds.email=signup.email;
-		creds.password=signup.password;
-		return login(creds);
+		List<User> users=usersRepo.findByEmail(signup.email);
+		if(users.size()==1) {
+			return jwtUtil.generateToken(users.get(0), new HashMap<String, Object>());
+		}else {
+			throw new NonExistentUserException();
+		}
 	}
 
 	@Override

@@ -3,8 +3,8 @@ package com.example.demo.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class BadCredentialsException extends RuntimeException {
-	public BadCredentialsException() {
-		super("Bad email or password");
+public class NonExistentUserException extends RuntimeException{
+	public NonExistentUserException() {
+		super("User does not exists");
 	}
 }
