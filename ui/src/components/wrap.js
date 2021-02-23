@@ -1,37 +1,21 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import Login from './login';
 import Register from './register';
-import Auth, { AuthProvider } from '../context';
-import jwtDecode from 'jwt-decode';
+import AuthContext, { AuthProvider } from '../context';
 import SocialMediaLinks from "./socialMediaLink";
 import NavBar from './navbar';
 import LoginSignupAccountButtons from './loginSignupAccountButtons';
+import {Route, BrowserRouter as Router, Link} from 'react-router-dom';
+import About from '../static/aboutus';
+import TermsAndConditions from '../static/termsandconditions';
+import PrivacyPolicy from '../static/privacypolicy';
+import Home from './home';
+import Shop from './shop';
+import Account from './account';
+
 
 class Wrap extends Component{
-
-    constructor(props){
-        super(props);
-        this.state={
-            auth:{
-                jwt:'',
-                user:{}
-            }
-        }
-    }
-    loginClick=()=>{
-        ReactDOM.render(<Login loginSuccess={this.setAuth}/>,document.getElementById("content"));
-
-    }
-
-    signupClick=()=>{
-        ReactDOM.render(<Register signupSuccess={this.setAuth}/>,document.getElementById("content"));
-
-    }
-
-    accountClick=()=>{
-        ReactDOM.render(<Account/>,document.getElementById("content"))
-    }
+ 
     render(){
         const headerStyle={
             padding: '5px',
@@ -58,53 +42,58 @@ class Wrap extends Component{
             padding:'5px'
         }
         return(
-            <AuthProvider value={this.state.auth}>
-            <div id="header"  style={headerStyle}>
-                <span style={{float:'left', 'margin-left':'5px'}}>
-                    <SocialMediaLinks />
-                </span>
-                <span style={{float:'right', 'margin-right':'15px'}}>
-                    <LoginSignupAccountButtons loginClick={this.loginClick} signupClick={this.signupClick} accountClick={this.accountClick} />
-                </span>
-            </div>
-            <div style={navBarStyle}>
-                <NavBar />
-            </div>
-            <div id="content" style={{display: 'flex','justify-content': 'center'}}></div>
+            <AuthProvider>
+                <Router>
+                    <div id="header"  style={headerStyle}>
 
-            <div id="footer"  style={footerStyle}>
-                <span style={{display:"inline-block",float:'left', 'margin-left':'350px'}}>
-                    <ul style={{'list-style-type': 'none'}}>
-                        <li style={{...footerTextStyle,...{fontSize:'25px'}}}>Auction Purple</li>
-                        <li style={footerTextStyle}>About Us</li>
-                        <li style={footerTextStyle}>Terms and Conditions</li>
-                        <li style={footerTextStyle}>Privacy Policy</li>
-                    </ul>
-                </span>
-                
-                <span style={{display:"inline-block",float:'right', 'margin-right':'600px'}}>
-                    <ul style={{'list-style-type': 'none'}}>
-                        <li style={{...footerTextStyle,...{fontSize:'25px'}}}>Get in Touch</li>
-                        <li style={footerTextStyle}>Call Us at +123 45 678 789</li>
-                        <li style={footerTextStyle}>support@auctionpurple.com</li>
-                        <li><SocialMediaLinks/></li>
-                    </ul>
-                </span>
-            </div>
+                        <span style={{float:'left', 'margin-left':'5px'}}>
+                            <SocialMediaLinks />
+                        </span>
+
+                        <span style={{float:'right', 'margin-right':'15px'}}>
+                            <LoginSignupAccountButtons />
+                        </span>
+
+                    </div>
+
+                    <div style={navBarStyle}>
+                        <NavBar />
+                    </div>
+
+                    <div id="content" style={{display: 'flex','justify-content': 'center'}}>
+                        <Route path="/" exact component={Home} />
+                        <Route path="/login" exact component={ Login }/>
+                        <Route path="/register" exact component={Register} />
+                        <Route path="/about" exact component={ About } />
+                        <Route path="/termsandconditions" exact component={ TermsAndConditions } />
+                        <Route path="/privacypolicy" exact component={ PrivacyPolicy } />
+                        <Route path="/shop" exact component={Shop}/>
+                        <Route path="/account" exact component={Account} />
+                    </div>
+
+                    <div id="footer"  style={footerStyle}>
+                        <span style={{display:"inline-block",float:'left', 'margin-left':'350px'}}>
+                            <ul style={{'list-style-type': 'none'}}>
+                                <li style={{...footerTextStyle,...{fontSize:'25px'}}}>Auction Purple</li>
+                                <Link to="/about"><li style={footerTextStyle}>About Us</li></Link>
+                                <Link to="/termsandconditions"><li style={footerTextStyle}>Terms and Conditions</li></Link>
+                                <Link to="/privacypolicy"><li style={footerTextStyle}>Privacy Policy</li></Link>
+                            </ul>
+                        </span>
+                        
+                        <span style={{display:"inline-block",float:'right', 'margin-right':'600px'}}>
+                            <ul style={{'list-style-type': 'none'}}>
+                                <li style={{...footerTextStyle,...{fontSize:'25px'}}}>Get in Touch</li>
+                                <li style={footerTextStyle}>Call Us at +123 45 678 789</li>
+                                <li style={footerTextStyle}>support@auctionpurple.com</li>
+                                <li><SocialMediaLinks/></li>
+                            </ul>
+                        </span>
+                    </div>
+                </Router>
             </AuthProvider>
         );    
     }
-
-    setAuth=(jwt)=>{
-        this.setState({
-            auth:{
-                jwt:jwt,
-                user:jwtDecode(jwt)
-            }
-        });
-        ReactDOM.render(<div>{this.state.auth.user.sub}</div> ,document.getElementById("content"))
-    }
-
 
 }
 

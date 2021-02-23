@@ -1,49 +1,42 @@
 import React from 'react';
-import {AuthConsumer} from '../context';
+import { Link } from 'react-router-dom';
+import AuthContext from '../context';
+import '../styles/header.css'
 
 class LoginSignupAccountButtons extends React.Component{
     constructor(props){
         super(props);
     }
     
-    render(){
-        const buttonStyle={
-            background: 'none',
-            border: 'none',
-            'font-family': 'sans-serif',
-            color: '#ffffff',
-            cursor: 'pointer'
+    render(){       
+        if(this.context.jwt==""){
+            return (
+                <span>
+                    <Link to="/login">
+                        <span class="text link">
+                            Log In
+                        </span>
+                    </Link>
+                    <span class="text"> or </span>
+                    <Link to="/register">
+                        <span class="text link">
+                            Register
+                        </span>
+                    </Link>
+                </span>
+                );
+        }else{
+            return(
+                <span class="text link">
+                    {this.context.user.sub}
+                </span>
+            );
         }
-        return(
-            <AuthConsumer>
-                {context=>{
-                    if(context.jwt==""){
-                        return (
-                        <span>
-                            <span onClick={this.props.loginClick} style={buttonStyle}>
-                                Log In
-                            </span>
-                            <span style={{color:'#ffffff', 'font-family':'sans-serif','margin-left':'10px','margin-right':'10px'}}> or </span>
-                            <span onClick={this.props.signupClick} style={buttonStyle}>
-                                Sign Up
-                            </span>
-                        </span>
-                        );
-                    }else{
-                        return(
-                        <span onClick={this.props.accountClick} style={buttonStyle}>
-                            {context.user.sub}
-                        </span>
-                        );
-                    }
-                }}
-
-            </AuthConsumer>
-            
-        );
     }
 
 
 }
+
+LoginSignupAccountButtons.contextType=AuthContext;
 
 export default LoginSignupAccountButtons

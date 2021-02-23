@@ -1,6 +1,7 @@
 import React,{Component}  from 'react';
 import axios from 'axios';
-import PropTypes from "prop-types";
+import AuthContext from '../context';
+import '../styles/header.css'
 
 class Register extends Component{
 
@@ -16,53 +17,23 @@ class Register extends Component{
     }
 
     render(){
-        const labelStyle={
-            'font-family': 'sans-serif',
-            padding:'2px',
-            margin:'4px',
-            'font-size':'12px',
-        };
-
-        const inputStyle={
-            width:'250px',
-            'font-family': 'sans-serif',
-            'font-size':'15px',
-            padding:'2px',
-            margin:'4px',
-        }
-
-        const buttonStyle={
-            width:'250px',
-            border: 'none',
-            'font-family': 'sans-serif',
-            'background-color':'#52307c',
-            'font-size':'15px',
-            padding:'5px',
-            margin:'4px',
-            color:'#ffffff',
-            cursor: 'pointer'
-        }
-        const msgStyle={
-            'font-family': 'sans-serif',
-            margin:'6px',
-            color:'#8e1600'
-        }
+        
         return (
             <div>
-                <label for="firstName" style={labelStyle}>First Name</label><br/>
-                <input  id="fname" name="firstName" onChange={this.onChange} style={inputStyle}/><br/>
+                <label class="inputLabel">First Name</label><br/>
+                <input class="inputField" name="firstName" onChange={this.onChange} value={this.state.firstName}/><br/>
 
-                <label for="lastName" style={labelStyle}>Last Name</label><br/>
-                <input  id="lname" name="lastName" onChange={this.onChange} style={inputStyle}/><br/>
+                <label class="inputLabel">Last Name</label><br/>
+                <input class="inputField" name="lastName" onChange={this.onChange} value={this.state.lastName}/><br/>
 
-                <label for="email" style={labelStyle}>Email</label><br/>
-                <input  id="email" name="email" onChange={this.onChange} style={inputStyle}/><br/>
+                <label class="inputLabel">Email</label><br/>
+                <input class="inputField" name="email" onChange={this.onChange} value={this.state.email}/><br/>
 
-                <label for="password" style={labelStyle}>Password</label><br/>
-                <input id="passwd" type="password" name="password" onChange={this.onChange} style={inputStyle}/><br/>
+                <label class="inputLabel">Password</label><br/>
+                <input class="inputField" name="password" onChange={this.onChange} type="password" value={this.state.password}/><br/>
 
-                <button onClick={this.signupReq} style={buttonStyle}>Sign Up</button>
-                <p style={msgStyle}>{this.state.msg}</p>
+                <button class="confirmButton" onClick={this.signupReq}>Sign Up</button>
+                <p class="messageText">{this.state.msg}</p>
             </div>
         );
     }
@@ -79,14 +50,15 @@ class Register extends Component{
         axios.post("/api/signup",userData)
             .then((response)=>{
                 if(response.status==200){
-                    this.props.signupSuccess(response.data);
                     this.setState({
                         email:'',
                         password:'',
                         firstName:'',
                         lastName:'',
                         msg:''
-                    })
+                    });
+                    this.context.login(response.data)
+                    this.props.history.push("/");
                 }else{
                     this.setState({
                         email:'',
@@ -110,9 +82,6 @@ class Register extends Component{
 
 }
 
-Register.propTyoes = {
-    signupSuccess:PropTypes.func.isRequired,
-}
-
+Register.contextType=AuthContext;
 
 export default Register;

@@ -1,0 +1,76 @@
+.inputLabel{
+    padding: 2px;
+    margin: 4px;
+    font-family: sans-serif;
+    font-size: 12px;
+};
+
+.inputField{
+    width: 250px;
+    font-family: sans-serif;
+    font-size: 15px;
+    padding: 2px;
+    margin: 4px;
+}
+
+.confirmButton{
+    width: 250px;
+    border: none;
+    font-family:  sans-serif;
+    background-color: #52307c;
+    font-size: 15px;
+    padding: 5px;
+    margin: 4px;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.messageText{
+    font-family: sans-serif;
+    margin: 6px;
+    color: #8e1600;
+}
+
+.link{
+    cursor: pointer
+}
+
+.text{
+    color:#ffffff;
+    font-family: sans-serif;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.linkStyle{
+    margin: 20px;
+    font-family: sans-serif;
+    font-size: 20px;
+    color: #252525;
+    cursor: pointer;
+}
+
+.searchBoxStyle{
+    width:400px;
+    font-family: sans-serif;
+    font-size: 20px;
+}
+
+.logoStyle{
+    display: inline-block;
+    float: left;
+    margin-left: 150px;
+    color: #52307c;
+    font-size: 25px;
+}
+
+.searchBox{
+    display: inline-block;
+    margin-left: 200px;
+}
+
+.navLinks{
+    display: inline-block;
+    float: right;
+    margin-right: 50px;
+}
