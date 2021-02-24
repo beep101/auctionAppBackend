@@ -1,5 +1,5 @@
 import React,{Component}  from 'react';
-import axios from 'axios';
+import {login} from '../apiConsumer/accountConsumer'
 import AuthContext from '../context';
 import '../styles/styles.css'
 
@@ -36,29 +36,23 @@ class Login extends Component{
 
     loginReq=(e)=>{
         let credentials={email:this.state.email, password:this.state.password};
-        axios.post("/api/login",credentials)
-        .then((response)=>{
-            if(response.status==200){
+        login(credentials,(success,message)=>{
+            if(success){
                 this.setState({
                     email:'',
                     password:'',
                     msg:''
                 });
-                this.context.login(response.data);
+                this.context.login(message);
                 this.props.history.push("/");
-            }else{
+            }
+            else{
                 this.setState({
                     email:'',
                     password:'',
-                    msg:'Bad email or password'
-                })
-            }},
-            (error)=>{
-            this.setState({
-                email:'',
-                password:'',
-                msg:'Somethong went wrong, please try again'
-            })
+                    msg:message
+                });
+            }
         });
     }
 

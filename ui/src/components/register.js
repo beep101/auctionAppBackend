@@ -1,5 +1,5 @@
 import React,{Component}  from 'react';
-import axios from 'axios';
+import {signup, singup} from '../apiConsumer/accountConsumer'
 import AuthContext from '../context';
 import '../styles/styles.css'
 
@@ -44,38 +44,29 @@ class Register extends Component{
 
     signupReq=(e)=>{
         let userData={email:this.state.email,
-                        password:this.state.password,
-                        firstName:this.state.firstName,
-                        lastName:this.state.lastName};
-        axios.post("/api/signup",userData)
-            .then((response)=>{
-                if(response.status==200){
-                    this.setState({
-                        email:'',
-                        password:'',
-                        firstName:'',
-                        lastName:'',
-                        msg:''
-                    });
-                    this.context.login(response.data)
-                    this.props.history.push("/");
-                }else{
-                    this.setState({
-                        email:'',
-                        password:'',
-                        firstName:'',
-                        lastName:'',
-                        msg:'Bad email or password'
-                    })
-                }},
-                (error)=>{
+                    password:this.state.password,
+                    firstName:this.state.firstName,
+                    lastName:this.state.lastName};
+        signup(userData,(success,message)=>{
+            if(success){
                 this.setState({
                     email:'',
                     password:'',
                     firstName:'',
                     lastName:'',
-                    msg:'Somethong went wrong, please try again'
-                })
+                    msg:''
+                });
+                this.context.login(message)
+                this.props.history.push("/");
+            }else{
+                this.setState({
+                    email:'',
+                    password:'',
+                    firstName:'',
+                    lastName:'',
+                    msg:message
+                });
+            }
         });
     }
 
