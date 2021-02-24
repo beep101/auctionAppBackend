@@ -5,9 +5,7 @@ import Wrap from '../../../ui/src/components/wrap';
 export class App extends Component {
     render(){
         return (
-            <div>
-                <Wrap/>
-            </div>
+            <Wrap/>
         );
     }
 }

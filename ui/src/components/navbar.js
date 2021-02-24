@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../styles/styles.css'
 
 class NavBar extends React.Component{
     render(){
@@ -10,7 +11,7 @@ class NavBar extends React.Component{
                     Auction Purple
                 </div>
                 <div class="searchBox">
-                    <input class="searchBox" name="searchBox">
+                    <input class="searchBoxInput" name="searchBox">
                     </input>
                 </div>
                 <div class="navLinks">

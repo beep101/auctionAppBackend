@@ -3,7 +3,7 @@
     margin: 4px;
     font-family: sans-serif;
     font-size: 12px;
-};
+}
 
 .inputField{
     width: 250px;
@@ -50,8 +50,16 @@
     cursor: pointer;
 }
 
-.searchBoxStyle{
-    width:400px;
+.searchBox{
+    display: inline-block;
+    margin-left: 200px;
+}
+
+.searchBoxInput{
+    width: 500px;
+    padding: 7px;
+    padding-left: 20px;
+    padding-right: 20px;
     font-family: sans-serif;
     font-size: 20px;
 }
@@ -64,13 +72,70 @@
     font-size: 25px;
 }
 
-.searchBox{
-    display: inline-block;
-    margin-left: 200px;
-}
-
 .navLinks{
     display: inline-block;
-    float: right;
     margin-right: 50px;
+    float: right;
+}
+
+.headerBar{
+    padding-top: 7px;
+    padding-bottom: 7px;
+    background-color: #252525;
+    width: 100%;
+    overflow: hidden;
+}
+.navBar{
+    width:100%;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.footerBar{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #252525;
+}
+.footerText{
+    color:#ffffff;
+    font-family: sans-serif;
+    padding: 5px;
+}
+
+.font25{
+    font-size: 25px;
+}
+
+.floatLeft{
+    float: left;
+}
+
+.floatRight{
+    float: right;
+}
+
+.marginLeft15{
+    margin-left: 15px;
+}
+
+.marginRight30{
+    margin-right: 30px;
+}
+
+#content{
+    display: flex;
+    justify-content: center;
+}
+
+.inlineBlock{
+    display:inline-block;
+}
+
+.marginLeft450{
+    margin-left: 450px;
+}
+
+.marginRight450{
+    margin-right: 450px;
 }

@@ -1,7 +1,7 @@
 import React,{Component}  from 'react';
 import axios from 'axios';
 import AuthContext from '../context';
-import '../styles/header.css'
+import '../styles/styles.css'
 
 class Login extends Component{
 
