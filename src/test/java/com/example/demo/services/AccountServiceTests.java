@@ -18,6 +18,7 @@ import com.example.demo.entities.User;
 import com.example.demo.exceptions.BadCredentialsException;
 import com.example.demo.exceptions.ExistingUserException;
 import com.example.demo.exceptions.NonExistentUserException;
+import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.utils.IHashUtil;
@@ -134,6 +135,9 @@ public class AccountServiceTests extends EasyMockSupport {
 	public void signupExistingUserShouldThrowException() throws Exception{
 		UserModel signupModel=new UserModel();
 		signupModel.setEmail("rajko@mail.com");
+		signupModel.setPassword("rajko123");
+		signupModel.setFirstName("Rajko");
+		signupModel.setLastName("Pavlovic");
 		List<User> users=new ArrayList<>();
 		User user=new User();
 		users.add(user);
@@ -150,6 +154,8 @@ public class AccountServiceTests extends EasyMockSupport {
 		UserModel signupModel=new UserModel();
 		signupModel.setEmail("rajko@mail.com");
 		signupModel.setPassword("rajko123");
+		signupModel.setFirstName("Rajko");
+		signupModel.setLastName("Pavlovic");
 		List<User> users=new ArrayList<>();
 		
 		expect(usersRepoMock.findByEmail(anyString())).andReturn(users).anyTimes();
@@ -159,5 +165,18 @@ public class AccountServiceTests extends EasyMockSupport {
 		
 		accountControler.signUp(signupModel);	
 		verifyAll();
+	}
+	
+	@Test(expected = InvalidDataException.class)
+	public void signupEmptyFieldsShouldThrowException() throws Exception{
+		UserModel signupModel=new UserModel();
+		signupModel.setEmail("");
+		signupModel.setPassword("");
+		signupModel.setFirstName("");
+		signupModel.setLastName("");
+		replayAll();
+		
+		accountControler.signUp(signupModel);	
+		verifyAll();		
 	}
 }

@@ -18,13 +18,13 @@ class LoginSignupAccountButtons extends React.Component{
             return (
                 <span>
                     <Link to="/login">
-                        <span class="text link">
+                        <span class="textHeaderBar link">
                             Log In
                         </span>
                     </Link>
-                    <span class="text"> or </span>
+                    <span class="textHeaderBar"> or </span>
                     <Link to="/register">
-                        <span class="text link">
+                        <span class="textHeaderBar link">
                             Register
                         </span>
                     </Link>
@@ -32,7 +32,7 @@ class LoginSignupAccountButtons extends React.Component{
                 );
         }else{
             return(
-                <span class="text link" onClick={this.logoutUser}>
+                <span class="textHeaderBar link" onClick={this.logoutUser}>
                     Logout
                 </span>
             );

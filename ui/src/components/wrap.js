@@ -19,7 +19,6 @@ import Contacts from '../static/contact';
 class Wrap extends Component{
 
     render(){
-        
         return(
                 <Router>
                     <div id="header"  class="headerBar">
@@ -34,9 +33,7 @@ class Wrap extends Component{
 
                     </div>
 
-                    <div class="navBar">
-                        <NavBar />
-                    </div>
+                    <NavBar />
 
                     <div id="content">
                         <Route path="/" exact component={Home} />
@@ -50,10 +47,10 @@ class Wrap extends Component{
                     </div>
 
                     <div id="footer"  class="footerBar">
-                        <span class="inlineBlock floatLeft marginLeft450">
+                        <span class="inlineBlock">
                             <StaticLinks />
                         </span>
-                        <span class="inlineBlock floatRight marginRight450">
+                        <span class="inlineBlock">
                             <Contacts />
                         </span>
                     </div>

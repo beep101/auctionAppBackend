@@ -6,7 +6,7 @@ class NavBar extends React.Component{
     render(){
 
         return(
-            <div>
+            <div class="navBar">
                 <div class="logoStyle">
                     Auction Purple
                 </div>

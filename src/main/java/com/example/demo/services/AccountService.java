@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.BadCredentialsException;
 import com.example.demo.exceptions.ExistingUserException;
+import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NonExistentUserException;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.UsersRepository;
@@ -50,6 +51,9 @@ public class AccountService implements IAccountService{
 
 	@Override
 	public UserModel signUp(UserModel signup) {
+		if(signup.getEmail().isBlank()||signup.getPassword().isBlank()||signup.getFirstName().isBlank()||signup.getLastName().isBlank()) {
+			throw new InvalidDataException();
+		}
 		if(usersRepo.findByEmail(signup.getEmail()).size()!=0) {
 			throw new ExistingUserException();
 		}

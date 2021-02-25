@@ -1,58 +1,99 @@
+.formContainer{
+    text-align: center;
+    margin: 30px;
+    padding: 25px;
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 10px;
+    box-shadow: 0 0 5px #d8d8d8;
+}
+
 .inputLabel{
     padding: 2px;
-    margin: 4px;
-    font-family: sans-serif;
+    margin: 6px;
+    font-family: 'Lato', sans-serif;
     font-size: 12px;
+    color: #5a5a5a;
+    float: left;
 }
 
-.inputField{
-    width: 250px;
-    font-family: sans-serif;
-    font-size: 15px;
-    padding: 2px;
-    margin: 4px;
+.inputFieldWide{
+    width: 300px;
+    font-family: 'Lato', sans-serif;
+    font-size: 20px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-color: #d8d8d8;
+    color: #5a5a5a;
+    border-width: 1px;
+    border-style: solid;
+    margin: 8px;
+    margin-bottom: 15px;
 }
 
-.confirmButton{
-    width: 250px;
+.buttonWide{
+    width: 300px;
     border: none;
-    font-family:  sans-serif;
+    font-family:  'Lato', sans-serif;
     background-color: #52307c;
-    font-size: 15px;
-    padding: 5px;
-    margin: 4px;
     color: #ffffff;
+    font-size: 20px;
+    padding: 6px;
+    margin: 6px;
+    margin-top: 15px;
     cursor: pointer;
 }
 
-.messageText{
-    font-family: sans-serif;
-    margin: 6px;
-    color: #8e1600;
+.message{
+    font-family: 'Lato', sans-serif;
+    margin: 10px;
+    color: #5a5a5a;
 }
 
-.link{
-    cursor: pointer
+.warningMessage{
+    font-family: 'Lato', sans-serif;
+    margin: 10px;
+    color: #9c2510;
 }
 
-.text{
-    color:#ffffff;
-    font-family: sans-serif;
-    margin-left: 8px;
-    margin-right: 8px;
+.highlightMessage{
+    font-family: 'Lato', sans-serif;
+    margin: 10px;
+    color: #52307c;
+}
+
+.highlight{
+    color: #52307c;
+}
+
+.link,a,Link{
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.textHeaderBar{
+    color:#d8d8d8;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    margin-left: 14px;
+    margin-right: 14px;
 }
 
 .linkStyle{
     margin: 20px;
-    font-family: sans-serif;
+    font-family: 'Lato', sans-serif;
     font-size: 20px;
-    color: #252525;
+    color: #5a5a5a;
     cursor: pointer;
 }
 
 .searchBox{
-    display: inline-block;
-    margin-left: 200px;
+    text-align: center;
+    width: 50%;
+    display: inline;
 }
 
 .searchBoxInput{
@@ -60,26 +101,33 @@
     padding: 7px;
     padding-left: 20px;
     padding-right: 20px;
-    font-family: sans-serif;
+    font-family: 'Lato', sans-serif;
     font-size: 20px;
+    border-color: #d8d8d8;
+    color: #5a5a5a;
+    border-width: 1px;
+    border-style: solid;
+    box-shadow: 0 0 5px #d8d8d8;
 }
 
 .logoStyle{
-    display: inline-block;
-    float: left;
-    margin-left: 150px;
+    text-align: center;
+    width: 25%;
+    display: inline;
     color: #52307c;
     font-size: 25px;
 }
 
 .navLinks{
-    display: inline-block;
-    margin-right: 50px;
-    float: right;
+    text-align: center;
+    width: 25%;
+    display: inline;
 }
 
 .headerBar{
-    padding-top: 7px;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10px;
     padding-bottom: 7px;
     background-color: #252525;
     width: 100%;
@@ -88,23 +136,37 @@
 .navBar{
     width:100%;
     margin-top: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: baseline;
 }
 .footerBar{
-    position: absolute;
+    display: flex;
+    justify-content: space-around;
+    overflow: hidden;
     bottom: 0;
     left: 0;
     width: 100%;
     background-color: #252525;
+    padding-bottom: 50px;
+    padding-top: 15px;
 }
 .footerText{
-    color:#ffffff;
-    font-family: sans-serif;
+    color:#d8d8d8;
+    font-family: 'Lato', sans-serif;
     padding: 5px;
 }
 
-.font25{
-    font-size: 25px;
+.paddingTop10{
+    padding-top: 10px;
+}
+
+.font12{
+    font-size: 12px;
+}
+
+.font20{
+    font-size: 20px;
 }
 
 .floatLeft{
@@ -138,4 +200,15 @@
 
 .marginRight450{
     margin-right: 450px;
+}
+
+.socialImg{
+    width: 20px;
+    height: 20px;
+    margin-left: 6px;
+    margin-right: 6px;
+}
+
+.footerLinkSet{
+    list-style-type: none;
 }
