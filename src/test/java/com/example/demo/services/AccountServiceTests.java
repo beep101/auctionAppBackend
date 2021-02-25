@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.easymock.EasyMockRunner;
+import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.Test;
@@ -17,14 +18,13 @@ import com.example.demo.entities.User;
 import com.example.demo.exceptions.BadCredentialsException;
 import com.example.demo.exceptions.ExistingUserException;
 import com.example.demo.exceptions.NonExistentUserException;
-import com.example.demo.models.LoginModel;
-import com.example.demo.models.SignupModel;
+import com.example.demo.models.UserModel;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
 
 @RunWith(EasyMockRunner.class)
-public class AccountServiceTests {
+public class AccountServiceTests extends EasyMockSupport {
 	
 	@Mock
 	IJwtUtil jwtUtilMock;
@@ -39,117 +39,125 @@ public class AccountServiceTests {
 	//login tests
 	@Test
 	public void loginValidCredentialsShouldReturnMockedToken() throws Exception{
-		LoginModel loginModel=new LoginModel();
-		loginModel.email="rajko@mail.com";
-		loginModel.password="rajko123";
+		UserModel loginModel=new UserModel();
+		loginModel.setEmail("rajko@mail.com");
+		loginModel.setPassword("rajko123");
 		
 		User userEntity=new User();
-		userEntity.setEmail(loginModel.email);
-		userEntity.setPasswd(loginModel.password);
+		userEntity.setEmail(loginModel.getEmail());
+		userEntity.setPasswd(loginModel.getPassword());
 		
 		List<User> users=new ArrayList<>();
 		users.add(userEntity);
 		
-		expect(hashUtilMock.checkPassword(loginModel.password,userEntity.getPasswd())).andReturn(true);
-		expect(usersRepoMock.findByEmail(loginModel.email)).andReturn(users);
+		expect(hashUtilMock.checkPassword(loginModel.getPassword(),userEntity.getPasswd())).andReturn(true);
+		expect(usersRepoMock.findByEmail(loginModel.getEmail())).andReturn(users);
 		expect(jwtUtilMock.generateToken(userEntity,new HashMap<String, Object>())).andReturn("fakeJWT");
-		replay(hashUtilMock,usersRepoMock,jwtUtilMock);
+		replayAll();
 		
-		String jwtResult=accountControler.login(loginModel);
+		UserModel result=accountControler.login(loginModel);
 		
-		assertEquals("fakeJWT", jwtResult);
+		assertEquals("fakeJWT", result.getJwt());
+		
+		verifyAll();
 	}
 	
 	@Test(expected = BadCredentialsException.class)
 	public void loginBadPasswordShouldThrowException() throws Exception{
-		LoginModel loginModel=new LoginModel();
-		loginModel.email="rajko@mail.com";
-		loginModel.password="rajko123";
+		UserModel loginModel=new UserModel();
+		loginModel.setEmail("rajko@mail.com");
+		loginModel.setPassword("rajko123");
 		
 		User userEntity=new User();
-		userEntity.setEmail(loginModel.email);
-		userEntity.setPasswd(loginModel.password);
+		userEntity.setEmail(loginModel.getEmail());
+		userEntity.setPasswd(loginModel.getPassword());
 		
 		List<User> users=new ArrayList<>();
 		users.add(userEntity);
 		
-		expect(hashUtilMock.checkPassword(loginModel.password,userEntity.getPasswd())).andReturn(false);
-		expect(usersRepoMock.findByEmail(loginModel.email)).andReturn(users);
+		expect(hashUtilMock.checkPassword(loginModel.getPassword(),userEntity.getPasswd())).andReturn(false);
+		expect(usersRepoMock.findByEmail(loginModel.getEmail())).andReturn(users);
 		expect(jwtUtilMock.generateToken(userEntity,new HashMap<String, Object>())).andReturn("fakeJWT");
-		replay(hashUtilMock,usersRepoMock,jwtUtilMock);
+		replayAll();
 		
 		accountControler.login(loginModel);	
+		verifyAll();
 	}
 	
 	@Test(expected = BadCredentialsException.class)
 	public void loginNonExistingUserShouldThrowException() throws Exception{
-		LoginModel loginModel=new LoginModel();
-		loginModel.email="rajko@mail.com";
-		loginModel.password="rajko123";
+		UserModel loginModel=new UserModel();
+		loginModel.setEmail("rajko@mail.com");
+		loginModel.setPassword("rajko123");
 		
 		User userEntity=new User();
-		userEntity.setEmail(loginModel.email);
-		userEntity.setPasswd(loginModel.password);
+		userEntity.setEmail(loginModel.getEmail());
+		userEntity.setPasswd(loginModel.getPassword());
 		
 		List<User> users=new ArrayList<>();
 		
-		expect(hashUtilMock.checkPassword(loginModel.password,userEntity.getPasswd())).andReturn(true);
-		expect(usersRepoMock.findByEmail(loginModel.email)).andReturn(users);
+		expect(hashUtilMock.checkPassword(loginModel.getPassword(),userEntity.getPasswd())).andReturn(true);
+		expect(usersRepoMock.findByEmail(loginModel.getEmail())).andReturn(users);
 		expect(jwtUtilMock.generateToken(userEntity,new HashMap<String, Object>())).andReturn("fakeJWT");
-		replay(hashUtilMock,usersRepoMock,jwtUtilMock);
+		replayAll();
 		
 		accountControler.login(loginModel);	
+		verifyAll();
 	}
 	
 	@Test
 	public void signupValidShouldReturnMockedToken() throws Exception{
-		SignupModel signupModel=new SignupModel();
-		signupModel.email="rajko@mail.com";
-		signupModel.password="rajko123";
-		signupModel.firstName="Rajko";
-		signupModel.lastName="Pavlovic";
+		UserModel signupModel=new UserModel();
+		signupModel.setEmail("rajko@mail.com");
+		signupModel.setPassword("rajko123");
+		signupModel.setFirstName("Rajko");
+		signupModel.setLastName("Pavlovic");
 		
 		List<User> users=new ArrayList<>();
 		User user=new User();
 		users.add(user);
 		
-		expect(usersRepoMock.findByEmail(signupModel.email)).andReturn(new ArrayList<User>()).once();
-		expect(usersRepoMock.findByEmail(signupModel.email)).andReturn(users).once();
+		expect(usersRepoMock.findByEmail(signupModel.getEmail())).andReturn(new ArrayList<User>()).once();
+		expect(usersRepoMock.findByEmail(signupModel.getEmail())).andReturn(users).once();
 		expect(usersRepoMock.save(anyObject())).andReturn(null);
-		expect(hashUtilMock.hashPassword(signupModel.password)).andReturn("qwerty");
+		expect(hashUtilMock.hashPassword(signupModel.getPassword())).andReturn("qwerty");
 		expect(jwtUtilMock.generateToken(user,new HashMap<String, Object>())).andReturn("fakeJWT");
-		replay(hashUtilMock,usersRepoMock,jwtUtilMock);
+		replayAll();
 		
-		String jwtResult=accountControler.signUp(signupModel);	
+		UserModel result=accountControler.signUp(signupModel);	
 		
-		assertEquals("fakeJWT", jwtResult);
+		assertEquals("fakeJWT", result.getJwt());
+		verifyAll();
 	}
 	
 	@Test(expected = ExistingUserException.class)
 	public void signupExistingUserShouldThrowException() throws Exception{
-		SignupModel signupModel=new SignupModel();
-		signupModel.email="rajko@mail.com";
+		UserModel signupModel=new UserModel();
+		signupModel.setEmail("rajko@mail.com");
 		List<User> users=new ArrayList<>();
 		User user=new User();
 		users.add(user);
 		
-		expect(usersRepoMock.findByEmail(signupModel.email)).andReturn(users);
-		replay(usersRepoMock);
+		expect(usersRepoMock.findByEmail(signupModel.getEmail())).andReturn(users);
+		replayAll();
 		
 		accountControler.signUp(signupModel);	
+		verifyAll();
 	}
 	
 	@Test(expected = NonExistentUserException.class)
 	public void signupCantWriteToDbShouldThrowException() throws Exception{
-		SignupModel signupModel=new SignupModel();
-		signupModel.email="rajko@mail.com";
+		UserModel signupModel=new UserModel();
+		signupModel.setEmail("rajko@mail.com");
+		signupModel.setPassword("rajko123");
 		List<User> users=new ArrayList<>();
 		
 		expect(usersRepoMock.findByEmail(anyString())).andReturn(users).anyTimes();
 		expect(usersRepoMock.save(anyObject())).andReturn(null);
-		expect(hashUtilMock.hashPassword(signupModel.password)).andReturn("qwerty");
-		replay(hashUtilMock,usersRepoMock);
+		expect(hashUtilMock.hashPassword(signupModel.getPassword())).andReturn("qwerty");
+		replayAll();
 		
 		accountControler.signUp(signupModel);	
+		verifyAll();
 	}
 }

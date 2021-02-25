@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useContext} from 'react';
 import Login from './login';
 import Register from './register';
 import AuthContext, { AuthProvider } from '../context';
@@ -17,10 +17,10 @@ import StaticLinks from '../static/staticLinks';
 import Contacts from '../static/contact';
 
 class Wrap extends Component{
- 
+
     render(){
+        
         return(
-            <AuthProvider>
                 <Router>
                     <div id="header"  class="headerBar">
 
@@ -58,10 +58,11 @@ class Wrap extends Component{
                         </span>
                     </div>
                 </Router>
-            </AuthProvider>
         );    
     }
 
 }
+
+Wrap.contextType=AuthContext;
 
 export default Wrap;

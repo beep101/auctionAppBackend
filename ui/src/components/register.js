@@ -56,7 +56,8 @@ class Register extends Component{
                     lastName:'',
                     msg:''
                 });
-                this.context.login(message)
+                this.context.login(message);
+                localStorage.setItem('token',message)
                 this.props.history.push("/");
             }else{
                 this.setState({

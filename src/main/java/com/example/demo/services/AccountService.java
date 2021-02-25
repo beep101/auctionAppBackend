@@ -13,9 +13,7 @@ import com.example.demo.entities.User;
 import com.example.demo.exceptions.BadCredentialsException;
 import com.example.demo.exceptions.ExistingUserException;
 import com.example.demo.exceptions.NonExistentUserException;
-import com.example.demo.models.ForgotPasswordModel;
-import com.example.demo.models.LoginModel;
-import com.example.demo.models.SignupModel;
+import com.example.demo.models.UserModel;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
@@ -33,11 +31,15 @@ public class AccountService implements IAccountService{
 	}
 
 	@Override
-	public String login(LoginModel login) {
-		List<User> users=usersRepo.findByEmail(login.email);
+	public UserModel login(UserModel login) {
+		List<User> users=usersRepo.findByEmail(login.getEmail());
 		if(users.size()==1) {
-			if(hashUtil.checkPassword(login.password, users.get(0).getPasswd())) {
-				return jwtUtil.generateToken(users.get(0), new HashMap<String, Object>());
+			if(hashUtil.checkPassword(login.getPassword(), users.get(0).getPasswd())) {
+				String jwt=jwtUtil.generateToken(users.get(0), new HashMap<String, Object>());
+				login.setFirstName(users.get(0).getName());
+				login.setLastName(users.get(0).getSurname());
+				login.setJwt(jwt);
+				return login;
 			}else {
 				throw new BadCredentialsException();
 			}
@@ -47,28 +49,29 @@ public class AccountService implements IAccountService{
 	}
 
 	@Override
-	public String signUp(SignupModel signup) {
-		if(usersRepo.findByEmail(signup.email).size()!=0) {
+	public UserModel signUp(UserModel signup) {
+		if(usersRepo.findByEmail(signup.getEmail()).size()!=0) {
 			throw new ExistingUserException();
 		}
 		User newUser=new User();
-		newUser.setName(signup.firstName);
-		newUser.setSurname(signup.lastName);
-		newUser.setEmail(signup.email);
-		newUser.setPasswd(hashUtil.hashPassword(signup.password));
+		newUser.setName(signup.getFirstName());
+		newUser.setSurname(signup.getLastName());
+		newUser.setEmail(signup.getEmail());
+		newUser.setPasswd(hashUtil.hashPassword(signup.getPassword()));
 		usersRepo.save(newUser);
-		List<User> users=usersRepo.findByEmail(signup.email);
+		List<User> users=usersRepo.findByEmail(signup.getEmail());
 		if(users.size()==1) {
-			return jwtUtil.generateToken(users.get(0), new HashMap<String, Object>());
+			String jwt=jwtUtil.generateToken(users.get(0), new HashMap<String, Object>());
+			signup.setJwt(jwt);
+			return signup;
 		}else {
 			throw new NonExistentUserException();
 		}
 	}
 
 	@Override
-	public void forgotPassword(ForgotPasswordModel forgotPassword) {
-		// TODO Auto-generated method stub
-		//throw unimplemented exception
+	public UserModel forgotPassword(UserModel forgotPassword) {
+		return null;
 	}
 
 }

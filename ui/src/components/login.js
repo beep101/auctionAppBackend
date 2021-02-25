@@ -44,6 +44,7 @@ class Login extends Component{
                     msg:''
                 });
                 this.context.login(message);
+                localStorage.setItem('token',message)
                 this.props.history.push("/");
             }
             else{

@@ -1,11 +1,9 @@
 package com.example.demo.services;
 
-import com.example.demo.models.ForgotPasswordModel;
-import com.example.demo.models.LoginModel;
-import com.example.demo.models.SignupModel;
+import com.example.demo.models.UserModel;
 
 public interface IAccountService {
-	String login(LoginModel login);
-	String signUp(SignupModel signup);
-	void forgotPassword(ForgotPasswordModel forgotPassword);
+	UserModel login(UserModel login);
+	UserModel signUp(UserModel signup);
+	UserModel forgotPassword(UserModel forgotPassword);
 }
