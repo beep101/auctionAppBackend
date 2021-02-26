@@ -11,33 +11,33 @@ import java.sql.Timestamp;
  * 
  */
 @Entity
-@Table(name="\"bids\"")
+@Table(name="bids")
 @NamedQuery(name="Bid.findAll", query="SELECT b FROM Bid b")
 public class Bid implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="\"id\"")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id")
 	private int id;
 
-	@Column(name="\"amount\"")
+	@Column(name="amount")
 	private BigDecimal amount;
 
-	@Column(name="\"attempt\"")
+	@Column(name="attempt")
 	private int attempt;
 
-	@Column(name="\"time\"")
+	@Column(name="time")
 	private Timestamp time;
 
 	//bi-directional many-to-one association to Item
 	@ManyToOne
-	@JoinColumn(name="\"item\"")
+	@JoinColumn(name="item")
 	private Item item;
 
 	//bi-directional many-to-one association to User
 	@ManyToOne
-	@JoinColumn(name="\"bidder\"")
+	@JoinColumn(name="bidder")
 	private User bidder;
 
 	public Bid() {

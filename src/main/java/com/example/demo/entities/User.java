@@ -10,23 +10,26 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name="\"users\"")
+@Table(name="users")
 @NamedQuery(name="User.findAll", query="SELECT u FROM User u")
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="\"id\"")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id")
 	private int id;
 
-	@Column(name="\"email\"")
+	@Column(name="email")
 	private String email;
 
-	@Column(name="\"name\"")
+	@Column(name="name")
 	private String name;
 
-	@Column(name="\"passwd\"")
+	@Column(name="surname")
+	private String surname;
+	
+	@Column(name="passwd")
 	private String passwd;
 
 	//bi-directional many-to-one association to Bid
@@ -64,6 +67,14 @@ public class User implements Serializable {
 		this.name = name;
 	}
 
+	public String getSurname() {
+		return this.surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+	
 	public String getPasswd() {
 		return this.passwd;
 	}

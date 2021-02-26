@@ -12,6 +12,7 @@ import com.example.demo.repositories.UsersRepository;
 
 @RestController
 public class UserController {
+	
 	@Autowired
 	private UsersRepository ur;
 	
