@@ -141,10 +141,12 @@
     align-items: baseline;
 }
 .footerBar{
+    position: absolute;
+    bottom: 0;
     display: flex;
     justify-content: space-around;
     overflow: hidden;
-    bottom: 0;
+    height: 180px;
     left: 0;
     width: 100%;
     background-color: #252525;
@@ -188,6 +190,9 @@
 #content{
     display: flex;
     justify-content: center;
+    position: relative;
+    padding-bottom: 250px;
+    overflow: visible;
 }
 
 .inlineBlock{
