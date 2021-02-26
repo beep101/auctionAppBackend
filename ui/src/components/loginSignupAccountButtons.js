@@ -7,19 +7,24 @@ class LoginSignupAccountButtons extends React.Component{
     constructor(props){
         super(props);
     }
+
+    logoutUser=()=>{
+        this.context.logout();
+        localStorage.removeItem('token');
+    }
     
     render(){       
         if(this.context.jwt==""){
             return (
                 <span>
                     <Link to="/login">
-                        <span class="text link">
+                        <span class="textHeaderBar link">
                             Log In
                         </span>
                     </Link>
-                    <span class="text"> or </span>
+                    <span class="textHeaderBar"> or </span>
                     <Link to="/register">
-                        <span class="text link">
+                        <span class="textHeaderBar link">
                             Register
                         </span>
                     </Link>
@@ -27,14 +32,12 @@ class LoginSignupAccountButtons extends React.Component{
                 );
         }else{
             return(
-                <span class="text link">
-                    {this.context.user.sub}
+                <span class="textHeaderBar link" onClick={this.logoutUser}>
+                    Logout
                 </span>
             );
         }
     }
-
-
 }
 
 LoginSignupAccountButtons.contextType=AuthContext;

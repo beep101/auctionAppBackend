@@ -3,7 +3,7 @@ import { post } from './apiConsumer'
 export function login(credentials,handler){
     post("login",credentials).then(
         (response)=>{
-            handler(true,response.data);
+            handler(true,response.data.jwt);
         },
         (error)=>{
             var msg="";
@@ -29,7 +29,7 @@ export function login(credentials,handler){
 export function signup(userData,handler){
     post("signup",userData).then(
         (response)=>{
-            handler(true,response.data);
+            handler(true,response.data.jwt);
         },
         (error)=>{
             var msg="";

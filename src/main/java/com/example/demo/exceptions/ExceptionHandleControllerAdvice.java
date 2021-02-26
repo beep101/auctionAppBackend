@@ -42,4 +42,14 @@ public class ExceptionHandleControllerAdvice {
 
         return new ResponseEntity<>(body, HttpStatus.NO_CONTENT);
     }
+    
+    @ExceptionHandler(InvalidDataException.class)
+    public ResponseEntity<Object> handleInvalidDataException(InvalidDataException ex, WebRequest request){
+    	
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getMessage());
+
+    	return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
 }

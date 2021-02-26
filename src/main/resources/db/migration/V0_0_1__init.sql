@@ -1,29 +1,29 @@
 create table users(
 	id serial primary key,
-	email varchar unique,
-	passwd varchar,
-	name varchar,
-	surname varchar
+	email varchar unique not null,
+	passwd varchar not null,
+	name varchar not null,
+	surname varchar not null
 );
 
 create table items(
 	id serial primary key,
-	name varchar,
-	description text,
-	startingPrice numeric(12,2),
-	startTime timestamp,
-	endTime timestamp,
-	seller integer,
+	name varchar not null,
+	description text not null,
+	startingPrice numeric(12,2) not null,
+	startTime timestamp not null,
+	endTime timestamp not null,
+	seller integer not null,
 	foreign key (seller) references users(id)
 );
 
 create table bids(
 	id serial primary key,
-	bidder integer,
-	item integer,
-	attempt integer,
-	amount numeric(12,2),
-	time timestamp,
+	bidder integer not null,
+	item integer not null,
+	attempt integer not null,
+	amount numeric(12,2) not null,
+	time timestamp not null,
 	foreign key (bidder) references users(id),
 	foreign key (item) references items(id)
 )

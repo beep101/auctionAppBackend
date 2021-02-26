@@ -17,15 +17,19 @@ class Login extends Component{
     render(){
 
         return (
-            <div >
-                <label class="inputLabel">Email</label><br/>
-                <input class="inputField" id="email" name="email" onChange={this.onChange} value={this.state.email}/><br/>
+            <div class="formContainer">
+                <div>
+                    <label class="inputLabel">Email</label><br/>
+                    <input class="inputFieldWide" id="email" name="email" onChange={this.onChange} value={this.state.email}/>
+                </div>
                 
-                <label class="inputLabel">Password</label><br/>
-                <input class="inputField" id="passwd" name="password" type="password"  onChange={this.onChange} value={this.state.password}/><br/>
+                <div>
+                    <label class="inputLabel">Password</label><br/>
+                    <input class="inputFieldWide" id="passwd" name="password" type="password"  onChange={this.onChange} value={this.state.password}/><br/>
+                </div>
                 
-                <button class="confirmButton" onClick={this.loginReq}>Log In</button>
-                <p class="messageText">{this.state.msg}</p>
+                <button class="buttonWide" onClick={this.loginReq}>Log In</button>
+                {this.state.msg==""?null:<p class="warningMessage">{this.state.msg}</p>}
             </div>
         );
     }
@@ -44,6 +48,7 @@ class Login extends Component{
                     msg:''
                 });
                 this.context.login(message);
+                localStorage.setItem('token',message)
                 this.props.history.push("/");
             }
             else{
