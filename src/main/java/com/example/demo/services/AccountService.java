@@ -16,6 +16,7 @@ import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NonExistentUserException;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.UsersRepository;
+import com.example.demo.services.interfaces.IAccountService;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
 

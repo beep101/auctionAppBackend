@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.AccountService;
-import com.example.demo.services.IAccountService;
+import com.example.demo.services.interfaces.IAccountService;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
 

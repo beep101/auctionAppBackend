@@ -36,6 +36,9 @@ public class Item implements Serializable {
 
 	@Column(name="starttime")
 	private Timestamp starttime;
+	
+	@Column(name="sold")
+	private Boolean sold;
 
 	//bi-directional many-to-one association to Bid
 	@OneToMany(mappedBy="item")
@@ -43,8 +46,12 @@ public class Item implements Serializable {
 
 	//bi-directional many-to-one association to User
 	@ManyToOne
-	@JoinColumn(name="\"seller\"")
+	@JoinColumn(name="seller")
 	private User seller;
+	
+	@ManyToOne
+	@JoinColumn(name="category")
+	private Category category;
 
 	public Item() {
 	}
@@ -83,6 +90,14 @@ public class Item implements Serializable {
 
 	public User getSeller() {
 		return this.seller;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 	public void setSeller(User seller) {
@@ -126,5 +141,14 @@ public class Item implements Serializable {
 
 		return bid;
 	}
+
+	public Boolean getSold() {
+		return sold;
+	}
+
+	public void setSold(Boolean sold) {
+		this.sold = sold;
+	}
+	
 
 }
