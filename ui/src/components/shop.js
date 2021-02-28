@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {getAllCategories} from '../apiConsumer/categoryConsumer'
 import {getItems,getItemsByCategory} from '../apiConsumer/itemFetchConsumer'
 import ItemElement from './itemELement'
@@ -7,9 +8,6 @@ class Shop extends React.Component{
 
     constructor(props){
         super(props);
-
-        //set props from route
-        //categoryId specifficaly
 
         this.state={
             items:[],
@@ -93,7 +91,7 @@ class Shop extends React.Component{
             </div>
             <div class="shopItemWrapper">
                 <div class="gridItemContainer">
-                    {this.state.items.map(item=><ItemElement item={item} type="grid"/>)}
+                    {this.state.items.map(item=><Link to={"/item?id="+item.id}><ItemElement item={item} type="grid"/></Link>)}
                 </div>
                 <div class="width10">
                     <div class={this.state.loadMore?"loadEnabled":"loadDisabled"} onClick={this.loadMore}>Load More</div>

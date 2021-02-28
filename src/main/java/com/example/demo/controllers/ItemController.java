@@ -29,6 +29,11 @@ public class ItemController {
 		itemService=new ItemService(itemsRepo);
 	}
 	
+	@GetMapping("/api/items/byId/{itemId}")
+	public ItemModel getItemById(@PathVariable(name="itemId")int itemId) {
+		return itemService.getItem(itemId);
+	}
+	
 	@GetMapping("/api/items/{page}/{count}")
 	public Collection<ItemModel> getItems(@PathVariable(name="page")int page,@PathVariable(name="count")int count) {
 		return itemService.getActiveItems(page,count);

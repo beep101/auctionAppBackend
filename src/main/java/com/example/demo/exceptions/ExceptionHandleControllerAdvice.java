@@ -52,4 +52,14 @@ public class ExceptionHandleControllerAdvice {
 
     	return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
+    
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(InvalidDataException ex, WebRequest request){
+    	
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getMessage());
+
+    	return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
 }

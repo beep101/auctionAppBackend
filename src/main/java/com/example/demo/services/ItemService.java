@@ -5,11 +5,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.example.demo.entities.Category;
 import com.example.demo.entities.Item;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.ItemModel;
 import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.services.interfaces.IItemService;
@@ -24,8 +27,11 @@ public class ItemService implements IItemService {
 
 	@Override
 	public ItemModel getItem(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return ItemModel.fromItemEntity(itemsRepo.getOne(id));
+		}catch(EntityNotFoundException ex) {
+			throw new NotFoundException();
+		}
 	}
 
 	@Override
