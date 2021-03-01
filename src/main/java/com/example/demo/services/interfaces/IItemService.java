@@ -16,4 +16,5 @@ public interface IItemService {
 	Collection<ItemModel> getActiveItemsByCategory(int categoryId, int page, int count);
 	Collection<ItemModel> getNewArrivalItems(int page, int count);
 	Collection<ItemModel> getLastChanceItems(int page, int count);
+	Collection<ItemModel> findItemsValid(String term, int page, int count);
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.models.ItemModel;
@@ -52,5 +53,10 @@ public class ItemController {
 	@GetMapping("/api/items/category/{categoryId}/{page}/{count}")
 	public Collection<ItemModel> getByCategory(@PathVariable(name="categoryId")int categoryId,@PathVariable(name="page")int page,@PathVariable(name="count")int count) {
 		return itemService.getActiveItemsByCategory(categoryId,page,count);
+	}
+	
+	@GetMapping("/api/items/search/{page}/{count}")
+	public Collection<ItemModel> findItem(@RequestParam(name="term") String term, @PathVariable(name="page")int page,@PathVariable(name="count")int count){
+		return itemService.findItemsValid(term, page, count);
 	}
 }

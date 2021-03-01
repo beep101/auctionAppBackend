@@ -104,4 +104,14 @@ public class ItemService implements IItemService {
 		return items;
 	}
 
+	@Override
+	public Collection<ItemModel> findItemsValid(String term, int page, int count) {
+		Pageable pgbl=PageRequest.of(page, count);
+		Timestamp crr=new Timestamp(System.currentTimeMillis());
+		Collection<ItemModel> items=itemsRepo.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(crr,term,pgbl).stream().map(x->ItemModel.fromItemEntity(x)).collect(Collectors.toList());
+		return items;
+	}
+	
+	
+
 }
