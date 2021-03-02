@@ -18,7 +18,7 @@ public class CategoryService implements ICategoryService{
 	
 	@Override
 	public Collection<CategoryModel> getAllCategories() {
-		List<CategoryModel> data=categoriesRepo.findAll().stream().map(x->CategoryModel.fromCAtegoryEntity(x)).collect(Collectors.toList());
+		List<CategoryModel> data=categoriesRepo.findAll().stream().map(x->x.toModel()).collect(Collectors.toList());
 		return data;
 	}
 

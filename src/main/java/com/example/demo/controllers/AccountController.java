@@ -19,12 +19,12 @@ import com.example.demo.utils.IJwtUtil;
 public class AccountController {
 	
 	@Autowired
-	IHashUtil hashUtil;
+	private IHashUtil hashUtil;
 	@Autowired
-	IJwtUtil jwtUtil;
+	private IJwtUtil jwtUtil;
 	@Autowired
-	UsersRepository usersRepo;
-	IAccountService accountService;
+	private UsersRepository usersRepo;
+	private IAccountService accountService;
 	
 	@PostConstruct
 	public void init() {

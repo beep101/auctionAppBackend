@@ -285,7 +285,7 @@ hr.solid{
     align-content: space-evenly;
     justify-content: space-evenly;
     width: 66vw;
-    height: 44vw;
+    min-height: 44vw;
     margin-bottom: 60px;
 }
 
@@ -409,4 +409,11 @@ hr.gridBreak{
 
 .width10{
     width: 20%;
+}
+
+.gridItemImgContainer{
+    height: 82%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

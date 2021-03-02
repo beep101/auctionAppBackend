@@ -2,6 +2,9 @@ package com.example.demo.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.example.demo.models.UserModel;
+
 import java.util.List;
 
 
@@ -125,6 +128,15 @@ public class User implements Serializable {
 		item.setSeller(null);
 
 		return item;
+	}
+	
+	public UserModel toModel() {
+		UserModel model=new UserModel();
+		model.setId(this.getId());
+		model.setFirstName(this.getName());;
+		model.setLastName(this.getSurname());
+		model.setEmail(this.getEmail());
+		return model;
 	}
 
 }

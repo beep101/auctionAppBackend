@@ -10,7 +10,7 @@ class Home extends React.Component{
 
         this.state={
             items:[],
-            click:""
+            activeTab:""
         }
     }
 
@@ -21,7 +21,7 @@ class Home extends React.Component{
     lastChanceClick=()=>{
         getLastChance(0,8,(bool,data)=>{
             if(bool){
-                this.setState({items:data,click:'lastChance'});
+                this.setState({items:data,activeTab:'lastChance'});
             }else{
                 console.log("Cannot fetch data");
             }
@@ -31,7 +31,7 @@ class Home extends React.Component{
     newArrivalsClick=()=>{
         getNewArrivals(0,8,(bool,data)=>{
             if(bool){
-                this.setState({items:data,click:'newArrivals'});
+                this.setState({items:data,activeTab:'newArrivals'});
             }else{
                 console.log("Cannot fetch data");
             }
@@ -42,8 +42,8 @@ class Home extends React.Component{
         return(
             <div class="homeContainer">
                 <div  class="homePageNavigator">
-                    <span class={this.state.click=="lastChance"?"highlightLinkStyle":"linkStyle"} onClick={this.lastChanceClick}>Last Chance</span>
-                    <span class={this.state.click=="newArrivals"?"highlightLinkStyle":"linkStyle"} onClick={this.newArrivalsClick}>New Arrivals</span>
+                    <span class={this.state.activeTab=="lastChance"?"highlightLinkStyle":"linkStyle"} onClick={this.lastChanceClick}>Last Chance</span>
+                    <span class={this.state.activeTab=="newArrivals"?"highlightLinkStyle":"linkStyle"} onClick={this.newArrivalsClick}>New Arrivals</span>
                 </div>
                 <hr class="solid"></hr>
                 <div class="gridItemContainer">

@@ -20,6 +20,10 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.example.demo.exceptions.ImageDeleteException;
+import com.example.demo.exceptions.ImageFetchException;
+import com.example.demo.exceptions.ImageHashException;
+import com.example.demo.exceptions.ImageUploadException;
 import com.example.demo.services.interfaces.IImageStorageService;
 
 public class ImageStorageS3 implements IImageStorageService{
@@ -52,7 +56,7 @@ public class ImageStorageS3 implements IImageStorageService{
 		try {
 			s3.putObject(new PutObjectRequest(bucketName, key, input, metadata));
 		}catch(AmazonServiceException ex) {
-			return "";
+			throw new ImageUploadException();
 		}
 		return imageHash;
 	}
@@ -65,7 +69,7 @@ public class ImageStorageS3 implements IImageStorageService{
 		try {
 			img=object.getObjectContent().readAllBytes();
 		} catch (IOException e) {
-			return null;
+			throw new ImageFetchException();
 		}
 		return img;
 	}
@@ -76,7 +80,7 @@ public class ImageStorageS3 implements IImageStorageService{
 		try {
 			s3.deleteObject(bucketName, key);
 		}catch(AmazonServiceException ex) {
-			return "";
+			throw new ImageDeleteException();
 		}
 		return imageHash;
 	}
@@ -86,7 +90,7 @@ public class ImageStorageS3 implements IImageStorageService{
 		try {
 			md = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
+			throw new ImageHashException();
 		}
 	    md.update(data);
 	    byte[] digest = md.digest();

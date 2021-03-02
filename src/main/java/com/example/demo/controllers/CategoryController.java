@@ -18,9 +18,9 @@ import com.example.demo.services.interfaces.ICategoryService;
 public class CategoryController {
 	
 	@Autowired
-	CategoriesRepository categoriesRepo;
+	private CategoriesRepository categoriesRepo;
 	
-	ICategoryService categoryService;
+	private ICategoryService categoryService;
 	
 	@PostConstruct
 	public void init() {

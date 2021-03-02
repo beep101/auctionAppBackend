@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import com.example.demo.models.CategoryModel;
+
 @Entity
 @Table(name="categories")
 @NamedQuery(name="Category.findAll", query="SELECT c FROM Category c")
@@ -38,4 +40,12 @@ public class Category implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public CategoryModel toModel() {
+		CategoryModel model=new CategoryModel();
+		model.setId(this.getId());
+		model.setName(this.getName());
+		return model;
+	}
+
 }
