@@ -1,8 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import AuthContext from '../context';
 import '../styles/styles.css'
 
 class NavBar extends React.Component{
+
+    onChange=(e)=>{
+        this.context.setSearchText(e.target.value);
+    }
+    
     render(){
 
         return(
@@ -11,8 +17,9 @@ class NavBar extends React.Component{
                     Auction Purple
                 </div>
                 <div class="searchBox">
-                    <input class="searchBoxInput" name="searchBox">
-                    </input>
+                    <Link to="/search">
+                        <input onChange={this.onChange} class="searchBoxInput" name="searchBox" />
+                    </Link>
                 </div>
                 <div class="navLinks">
                     <Link to="/">
@@ -36,4 +43,5 @@ class NavBar extends React.Component{
     }
 }
 
+NavBar.contextType=AuthContext;
 export default NavBar

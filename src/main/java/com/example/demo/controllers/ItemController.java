@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.models.ItemModel;
 import com.example.demo.models.UserModel;
+import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.services.ItemService;
 import com.example.demo.services.interfaces.IItemService;
@@ -22,12 +23,14 @@ import com.example.demo.services.interfaces.IItemService;
 public class ItemController {
 	@Autowired
 	ItemsRepository itemsRepo;
+	@Autowired
+	CategoriesRepository categoriesRepo;
 	
 	IItemService itemService;
 	
 	@PostConstruct
 	public void init() {
-		itemService=new ItemService(itemsRepo);
+		itemService=new ItemService(itemsRepo,categoriesRepo);
 	}
 	
 	@GetMapping("/api/items/byId/{itemId}")
@@ -56,7 +59,7 @@ public class ItemController {
 	}
 	
 	@GetMapping("/api/items/search/{page}/{count}")
-	public Collection<ItemModel> findItem(@RequestParam(name="term") String term, @PathVariable(name="page")int page,@PathVariable(name="count")int count){
-		return itemService.findItemsValid(term, page, count);
+	public Collection<ItemModel> findItem(@RequestParam(name="term") String term,@RequestParam(name="categories") String categories, @PathVariable(name="page")int page,@PathVariable(name="count")int count){
+		return itemService.findItemsValidFilterCategories(term,categories, page, count);
 	}
 }

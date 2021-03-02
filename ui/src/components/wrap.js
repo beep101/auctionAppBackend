@@ -16,6 +16,7 @@ import "../styles/styles.css"
 import StaticLinks from '../static/staticLinks';
 import Contacts from '../static/contact';
 import Item from './item';
+import Search from './search';
 
 class Wrap extends Component{
 
@@ -46,6 +47,7 @@ class Wrap extends Component{
                         <Route path="/shop" exact component={Shop}/>
                         <Route path="/account" exact component={Account} />
                         <Route path="/item" exact component={Item}/>
+                        <Route path="/search" exact component={Search}/>
                     </div>
 
                     <div id="footer"  class="footerBar">

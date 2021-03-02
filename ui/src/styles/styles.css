@@ -285,7 +285,7 @@ hr.solid{
     align-content: space-evenly;
     justify-content: space-evenly;
     width: 66vw;
-    height: 44vw;
+    min-height: 44vw;
     margin-bottom: 60px;
 }
 
@@ -344,6 +344,7 @@ hr.gridBreak{
 .shopContainer{
     display: flex;
     margin: 20px;
+    align-items: flex-start;
 }
 
 .shopItemWrapper{ 

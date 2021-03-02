@@ -11,12 +11,14 @@ export class AuthProvider extends React.Component{
         if(token){
             this.state={
                 jwt:token,
-                user:jwtDecode(token)
+                user:jwtDecode(token),
+                searchText:""
             }
         }else{
             this.state={
                 jwt:"",
-                user:{}
+                user:{},
+                searchText:""
             }
         }
     }
@@ -35,12 +37,16 @@ export class AuthProvider extends React.Component{
         })
     }
 
+    setSearchText=(text)=>{
+        this.setState({['searchText']:text})
+    }
+
 
     render(){
-        const {jwt,user}=this.state;
-        const {login,logout}=this;
+        const {jwt,user,searchText}=this.state;
+        const {login,logout,setSearchText}=this;
         return(
-            <AuthContext.Provider value={{jwt,user,login,logout}}>
+            <AuthContext.Provider value={{jwt,user,searchText,login,logout,setSearchText}}>
                 {this.props.children}
             </AuthContext.Provider>
         )
