@@ -345,6 +345,7 @@ hr.gridBreak{
 .shopContainer{
     display: flex;
     margin: 20px;
+    align-items: flex-start;
 }
 
 .shopItemWrapper{ 
