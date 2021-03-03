@@ -32,9 +32,9 @@ public class ItemService implements IItemService {
 	}
 
 	@Override
-	public ItemModel getItem(int id) {
+	public ItemModel getItem(int id) throws NotFoundException{
 		try {
-			return ItemModel.fromItemEntity(itemsRepo.getOne(id));
+			return itemsRepo.getOne(id).toModel();
 		}catch(EntityNotFoundException ex) {
 			throw new NotFoundException();
 		}
@@ -61,7 +61,7 @@ public class ItemService implements IItemService {
 	@Override
 	public Collection<ItemModel> getItems(int page, int count) {
 		Pageable pgbl=PageRequest.of(page, count);
-		Collection<ItemModel> items=itemsRepo.findAll(pgbl).stream().map(x->ItemModel.fromItemEntity(x)).collect(Collectors.toList());
+		Collection<ItemModel> items=itemsRepo.findAll(pgbl).stream().map(x->x.toModel()).collect(Collectors.toList());
 		return items;
 	}
 
@@ -70,7 +70,7 @@ public class ItemService implements IItemService {
 		Pageable pgbl=PageRequest.of(page, count);
 		Timestamp crr=new Timestamp(System.currentTimeMillis());
 		List<Item> items=itemsRepo.findBySoldFalseAndEndtimeAfterOrderByStarttimeDesc(crr,pgbl);
-		List<ItemModel> itemModels=items.stream().map(x->ItemModel.fromItemEntity(x)).collect(Collectors.toList());
+		List<ItemModel> itemModels=items.stream().map(x->x.toModel()).collect(Collectors.toList());
 		return itemModels;
 	}
 
@@ -79,7 +79,7 @@ public class ItemService implements IItemService {
 		Pageable pgbl=PageRequest.of(page, count);
 		Timestamp crr=new Timestamp(System.currentTimeMillis()+3*60*1000);
 		List<Item> items=itemsRepo.findBySoldFalseAndEndtimeAfterOrderByEndtimeAsc(crr,pgbl);
-		List<ItemModel> itemModels=items.stream().map(x->ItemModel.fromItemEntity(x)).collect(Collectors.toList());
+		List<ItemModel> itemModels=items.stream().map(x->x.toModel()).collect(Collectors.toList());
 		return itemModels;
 	}
 
@@ -88,7 +88,7 @@ public class ItemService implements IItemService {
 		Pageable pgbl=PageRequest.of(page, count);
 		Category category=new Category();
 		category.setId(categoryId);
-		Collection<ItemModel> items=itemsRepo.findByCategory(category,pgbl).stream().map(x->ItemModel.fromItemEntity(x)).collect(Collectors.toList());
+		Collection<ItemModel> items=itemsRepo.findByCategory(category,pgbl).stream().map(x->x.toModel()).collect(Collectors.toList());
 		return items;
 	}
 
@@ -96,7 +96,7 @@ public class ItemService implements IItemService {
 	public Collection<ItemModel> getActiveItems(int page, int count) {
 		Pageable pgbl=PageRequest.of(page, count);
 		Timestamp crr=new Timestamp(System.currentTimeMillis());
-		Collection<ItemModel> items=itemsRepo.findBySoldFalseAndEndtimeAfter(crr,pgbl).stream().map(x->ItemModel.fromItemEntity(x)).collect(Collectors.toList());
+		Collection<ItemModel> items=itemsRepo.findBySoldFalseAndEndtimeAfter(crr,pgbl).stream().map(x->x.toModel()).collect(Collectors.toList());
 		return items;
 	}
 

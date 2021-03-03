@@ -6,7 +6,7 @@ export function login(credentials,handler){
             handler(true,response.data.jwt);
         },
         (error)=>{
-            var msg="";
+            let msg="";
             if(error.response){
                 if(error.response.status<500){
                     msg="Bad username or password";
@@ -32,7 +32,7 @@ export function signup(userData,handler){
             handler(true,response.data.jwt);
         },
         (error)=>{
-            var msg="";
+            let msg="";
             if(error.response){
                 if(error.response.status<500){
                     msg="User with same email alredy exists";

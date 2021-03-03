@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.ItemModel;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.CategoriesRepository;
@@ -22,39 +23,40 @@ import com.example.demo.services.interfaces.IItemService;
 @RestController
 public class ItemController {
 	@Autowired
-	ItemsRepository itemsRepo;
+	private ItemsRepository itemsRepo;
 	@Autowired
-	CategoriesRepository categoriesRepo;
+	private CategoriesRepository categoriesRepo;
 	
-	IItemService itemService;
+	private IItemService itemService;
 	
 	@PostConstruct
 	public void init() {
 		itemService=new ItemService(itemsRepo,categoriesRepo);
 	}
 	
-	@GetMapping("/api/items/byId/{itemId}")
-	public ItemModel getItemById(@PathVariable(name="itemId")int itemId) {
+	@GetMapping("/api/items/{itemId}")
+	public ItemModel getItemById(@PathVariable(name="itemId")int itemId) throws NotFoundException{
 		return itemService.getItem(itemId);
 	}
 	
-	@GetMapping("/api/items/{page}/{count}")
-	public Collection<ItemModel> getItems(@PathVariable(name="page")int page,@PathVariable(name="count")int count) {
+	@GetMapping("/api/items")
+	public Collection<ItemModel> getItems(@RequestParam int page,@RequestParam int count) {
+
 		return itemService.getActiveItems(page,count);
 	}
 	
-	@GetMapping("/api/items/lastChance/{page}/{count}")
-	public Collection<ItemModel> getLstChance(@PathVariable(name="page")int page,@PathVariable(name="count")int count) {
+	@GetMapping("/api/items/lastChance")
+	public Collection<ItemModel> getLstChance(@RequestParam int page,@RequestParam int count) {
 		return itemService.getLastChanceItems(page,count);
 	}
 	
-	@GetMapping("/api/items/newArrivals/{page}/{count}")
-	public Collection<ItemModel> getNewArrivals(@PathVariable(name="page")int page,@PathVariable(name="count")int count) {
+	@GetMapping("/api/items/newArrivals")
+	public Collection<ItemModel> getNewArrivals(@RequestParam int page,@RequestParam int count) {
 		return itemService.getNewArrivalItems(page,count);
 	}
 	
-	@GetMapping("/api/items/category/{categoryId}/{page}/{count}")
-	public Collection<ItemModel> getByCategory(@PathVariable(name="categoryId")int categoryId,@PathVariable(name="page")int page,@PathVariable(name="count")int count) {
+	@GetMapping("/api/items/category/{categoryId}")
+	public Collection<ItemModel> getByCategory(@PathVariable(name="categoryId")int categoryId,@RequestParam int page,@RequestParam int count) {
 		return itemService.getActiveItemsByCategory(categoryId,page,count);
 	}
 	

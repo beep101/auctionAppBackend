@@ -1,6 +1,7 @@
 package com.example.demo.models;
 
 public class UserModel {
+	private int id;
 	private String firstName;
 	private String lastName;
 	private String email;
@@ -18,6 +19,14 @@ public class UserModel {
 		this.email = email;
 		this.password = password;
 		this.jwt = jwt;
+	}
+	
+	public int getId(){
+		return this.id;
+	}
+	
+	public void setId(int id) {
+		this.id=id;
 	}
 	
 	public String getFirstName() {

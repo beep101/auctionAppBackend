@@ -550,3 +550,10 @@ hr.gridBreak{
     border-top-width: 1px;
     border-top-style: solid; 
 }
+
+.gridItemImgContainer{
+    height: 82%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

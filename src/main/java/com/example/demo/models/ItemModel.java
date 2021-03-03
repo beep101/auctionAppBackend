@@ -21,20 +21,8 @@ public class ItemModel {
 	private Timestamp starttime;
 	private Timestamp endtime;
 	private Boolean sold;
-	private List<Bid> bids;
-	
-	public static ItemModel fromItemEntity(Item entity) {
-		ItemModel model=new ItemModel();
-		model.setId(entity.getId());
-		model.setName(entity.getName());
-		model.setDescription(entity.getDescription());
-		model.setStartingprice(entity.getStartingprice());
-		model.setStarttime(entity.getStarttime());
-		model.setEndtime(entity.getEndtime());
-		model.setSold(entity.getSold());
-		model.setBids(entity.getBids());
-		return model;
-	}
+	private List<BidModel> bids;
+	private UserModel seller;
 
 	public int getId() {
 		return id;
@@ -92,11 +80,19 @@ public class ItemModel {
 		this.sold = sold;
 	}
 
-	public List<Bid> getBids() {
+	public List<BidModel> getBids() {
 		return bids;
 	}
 
-	public void setBids(List<Bid> bids) {
+	public void setBids(List<BidModel> bids) {
 		this.bids = bids;
+	}
+
+	public UserModel getSeller() {
+		return seller;
+	}
+
+	public void setSeller(UserModel seller) {
+		this.seller = seller;
 	}
 }
