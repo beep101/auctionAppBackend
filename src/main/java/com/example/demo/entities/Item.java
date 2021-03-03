@@ -2,9 +2,13 @@ package com.example.demo.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.example.demo.models.ItemModel;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -36,6 +40,9 @@ public class Item implements Serializable {
 
 	@Column(name="starttime")
 	private Timestamp starttime;
+	
+	@Column(name="sold")
+	private Boolean sold;
 
 	//bi-directional many-to-one association to Bid
 	@OneToMany(mappedBy="item")
@@ -43,8 +50,12 @@ public class Item implements Serializable {
 
 	//bi-directional many-to-one association to User
 	@ManyToOne
-	@JoinColumn(name="\"seller\"")
+	@JoinColumn(name="seller")
 	private User seller;
+	
+	@ManyToOne
+	@JoinColumn(name="category")
+	private Category category;
 
 	public Item() {
 	}
@@ -83,6 +94,14 @@ public class Item implements Serializable {
 
 	public User getSeller() {
 		return this.seller;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 	public void setSeller(User seller) {
@@ -126,5 +145,28 @@ public class Item implements Serializable {
 
 		return bid;
 	}
+
+	public Boolean getSold() {
+		return sold;
+	}
+
+	public void setSold(Boolean sold) {
+		this.sold = sold;
+	}
+	
+	public ItemModel toModel() {
+		ItemModel model=new ItemModel();
+		model.setId(this.getId());
+		model.setName(this.getName());
+		model.setDescription(this.getDescription());
+		model.setStartingprice(this.getStartingprice());
+		model.setStarttime(this.getStarttime());
+		model.setEndtime(this.getEndtime());
+		model.setSold(this.getSold());
+		model.setBids(this.getBids().stream().map(x->x.toModel()).collect(Collectors.toList()));
+		model.setSeller(this.seller.toModel());
+		return model;
+	}
+	
 
 }

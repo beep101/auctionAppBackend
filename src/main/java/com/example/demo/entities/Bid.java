@@ -2,6 +2,9 @@ package com.example.demo.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.example.demo.models.BidModel;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -89,6 +92,18 @@ public class Bid implements Serializable {
 
 	public void setTime(Timestamp time) {
 		this.time = time;
+	}
+	
+	public BidModel toModel() {
+		BidModel model=new BidModel();
+		
+		model.setId(this.getId());
+		model.setAmount(this.getAmount());
+		model.setAttempt(this.getAttempt());
+		model.setBidder(this.getBidder().toModel());
+		model.setTime(this.getTime());
+		
+		return model;
 	}
 
 }

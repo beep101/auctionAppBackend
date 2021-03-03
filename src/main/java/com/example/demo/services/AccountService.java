@@ -16,14 +16,15 @@ import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NonExistentUserException;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.UsersRepository;
+import com.example.demo.services.interfaces.IAccountService;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
 
 @Service
 public class AccountService implements IAccountService{
-	UsersRepository usersRepo;
-	IHashUtil hashUtil;
-	IJwtUtil jwtUtil;
+	private UsersRepository usersRepo;
+	private IHashUtil hashUtil;
+	private IJwtUtil jwtUtil;
 	
 	public AccountService(IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo) {
 		this.usersRepo=userRepo;

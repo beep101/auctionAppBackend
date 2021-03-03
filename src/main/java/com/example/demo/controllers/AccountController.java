@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.AccountService;
-import com.example.demo.services.IAccountService;
+import com.example.demo.services.interfaces.IAccountService;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
 
@@ -19,12 +19,12 @@ import com.example.demo.utils.IJwtUtil;
 public class AccountController {
 	
 	@Autowired
-	IHashUtil hashUtil;
+	private IHashUtil hashUtil;
 	@Autowired
-	IJwtUtil jwtUtil;
+	private IJwtUtil jwtUtil;
 	@Autowired
-	UsersRepository usersRepo;
-	IAccountService accountService;
+	private UsersRepository usersRepo;
+	private IAccountService accountService;
 	
 	@PostConstruct
 	public void init() {
