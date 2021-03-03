@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.ItemModel;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.ItemsRepository;
@@ -30,8 +31,14 @@ public class ItemController {
 		itemService=new ItemService(itemsRepo);
 	}
 	
+	@GetMapping("/api/items/{itemId}")
+	public ItemModel getItemById(@PathVariable(name="itemId")int itemId) throws NotFoundException{
+		return itemService.getItem(itemId);
+	}
+	
 	@GetMapping("/api/items")
 	public Collection<ItemModel> getItems(@RequestParam int page,@RequestParam int count) {
+
 		return itemService.getActiveItems(page,count);
 	}
 	

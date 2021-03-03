@@ -2,6 +2,7 @@ import React from 'react';
 import { getLastChance, getNewArrivals } from '../apiConsumer/itemFetchConsumer';
 import {getLinks} from '../apiConsumer/imageLinker';
 import ItemElement from './itemELement';
+import { Link } from 'react-router-dom';
 
 
 class Home extends React.Component{
@@ -47,7 +48,7 @@ class Home extends React.Component{
                 </div>
                 <hr class="solid"></hr>
                 <div class="gridItemContainer">
-                    {this.state.items.map(item=><ItemElement item={item} type="grid"/>)}
+                    {this.state.items.map(item=><Link to={"/item?id="+item.id}><ItemElement item={item} type="grid"/></Link>)}
                 </div>
             </div>
         )

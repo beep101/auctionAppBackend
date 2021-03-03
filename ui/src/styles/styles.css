@@ -292,7 +292,6 @@ hr.solid{
 .gridItem{
     width: 20vw;
     height: 20vw;
-    border-color: #d8d8d8;
     color: #5a5a5a;
     border-color: #d8d8d8;
     border-width: 1px;
@@ -410,6 +409,146 @@ hr.gridBreak{
 
 .width10{
     width: 20%;
+}
+
+.width10vw{
+    width: 10vw;
+}
+
+.itemImageMainFrame{
+    width: 25vw;
+    height: 25vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+    box-shadow: 0 0 5px #d8d8d8;
+    margin: 20px;
+}
+
+.itemImageThumbFrame{
+    height: 6vw;
+    width: 6vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.flexEnd{
+    display: flex;
+    justify-content: space-between;
+}
+
+.itemName{
+    font-size: xx-large;
+    font-family: 'Lato', sans-serif;
+    color: #52307c;
+    margin-bottom: 7px;
+}
+
+.itemStartPrice{
+    font-size: large;
+    font-family: 'Lato', sans-serif;
+    color: #5a5a5a;
+    margin-bottom: 7px;
+}
+
+.messageS{
+    font-family: 'Lato', sans-serif;
+    margin: 4px;
+    color: #5a5a5a;
+}
+
+.bidInput{
+    color: #5a5a5a;
+    font-size: medium;
+    font-family: 'Lato', sans-serif;
+    padding: 8px;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-right: 40px;
+
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.bidButton{
+    color: #52307c;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;
+    padding: 8px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: center;
+    cursor: pointer;
+
+    border-color: #52307c;
+    border-width: 2px;
+    border-style: solid;   
+}
+
+.itemDataContainer{
+    margin-bottom: 80px;
+}
+
+.itemInformationsContainer{
+    width:30vw;
+    margin: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.itemImageMain{
+    max-height: 90%;
+    max-width: 90%;
+}
+
+.itemImageContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.itemContainer{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 60px;
+}
+
+.itemThumbsBar{
+    width: 25vw;
+    height: 6vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.itemDescriptionText{
+    color:#5a5a5a;
+    font-family: 'Lato', sans-serif;
+    padding: 8px;
+    text-align: justify;
+    text-justify: auto;
+
+    border-top: #d8d8d8;
+    border-top-width: 1px;
+    border-top-style: solid; 
 }
 
 .gridItemImgContainer{

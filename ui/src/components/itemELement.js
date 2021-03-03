@@ -6,7 +6,7 @@ class ItemElement extends React.Component{
         super(props);
     }
     render(){
-        var itemClass,imageClass,textClass,nameClass,priceClass,imgContClass;
+        let itemClass,imageClass,textClass,nameClass,priceClass,imgContClass;
         if(this.props.type=="grid"){
             itemClass="gridItem";
             imgContClass="gridItemImgContainer";

@@ -2,10 +2,11 @@ package com.example.demo.services.interfaces;
 
 import java.util.Collection;
 
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.ItemModel;
 
 public interface IItemService {
-	ItemModel getItem(int id);
+	ItemModel getItem(int id) throws NotFoundException;
 	ItemModel addItem(ItemModel item);
 	ItemModel modItem(ItemModel item);
 	ItemModel delItem(ItemModel item);

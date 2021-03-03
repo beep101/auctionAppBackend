@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.data.domain.PageImpl;
@@ -25,6 +27,8 @@ import com.example.demo.entities.Bid;
 import com.example.demo.entities.Category;
 import com.example.demo.entities.Item;
 import com.example.demo.entities.User;
+import com.example.demo.exceptions.InvalidDataException;
+import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.ItemModel;
 import com.example.demo.repositories.ItemsRepository;
 
@@ -119,7 +123,7 @@ public class ItemServiceTests extends EasyMockSupport{
 	}
 	
 	@Test
-	public void TestEntityToModelShouldCreateValidModelAllMethods() {
+	public void TestEntityToModelShouldCreateValidModelAllMethods() throws NotFoundException {
 		Item item=new Item();
 		
 		List<Bid> bids=new ArrayList<>();
@@ -147,6 +151,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		items.add(item);
 
 		expect(itemsRepoMock.findAll(isA(Pageable.class))).andReturn(new PageImpl<Item>(items)).anyTimes();
+		expect(itemsRepoMock.getOne(anyInt())).andReturn(item).anyTimes();
 		expect(itemsRepoMock.findByCategory(anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfter(anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterOrderByEndtimeAsc(anyObject(),anyObject())).andReturn(items).anyTimes();
@@ -156,6 +161,17 @@ public class ItemServiceTests extends EasyMockSupport{
 		
 		models=itemService.getItems(0,1);
 		model=(ItemModel)models.toArray()[0];
+		assertEquals(model.getId(), item.getId());
+		assertEquals(model.getName(), item.getName());
+		assertEquals(model.getDescription(), item.getDescription());
+		assertEquals(model.getStartingprice(), item.getStartingprice());
+		assertEquals(model.getSold(), item.getSold());
+		assertEquals(model.getStarttime(), item.getStarttime());
+		assertEquals(model.getEndtime(), item.getEndtime());
+		assertEquals(model.getBids().get(0).getId(), item.getBids().get(0).getId());
+		assertEquals(model.getSeller().getId(), item.getSeller().getId());
+		
+		model=itemService.getItem(item.getId());
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());
 		assertEquals(model.getDescription(), item.getDescription());
@@ -226,6 +242,16 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getBids().get(0).getId(), item.getBids().get(0).getId());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
+		
+		verifyAll();
+	}
+	
+	@Test(expected = NotFoundException.class)
+	public void getItemNonExistentShouldThrowException() throws NotFoundException {
+		expect(itemsRepoMock.getOne(anyInt())).andThrow(new EntityNotFoundException());
+		replayAll();
+		
+		itemService.getItem(1);
 		
 		verifyAll();
 	}

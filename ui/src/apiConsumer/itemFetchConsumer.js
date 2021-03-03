@@ -45,3 +45,14 @@ export function getItems(page,count,handler){
         }
     );
 }
+
+export function getItemById(id,handler){
+    get('items/'+id).then(
+        (response)=>{
+            Promise.resolve(getLinks(response.data)).then(()=>handler(true,response.data));
+        },
+        (error)=>{
+            handler(false,"")
+        }
+    )
+}
