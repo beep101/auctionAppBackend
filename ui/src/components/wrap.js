@@ -44,7 +44,7 @@ class Wrap extends Component{
                         <Route path="/about" exact component={ About } />
                         <Route path="/termsandconditions" exact component={ TermsAndConditions } />
                         <Route path="/privacypolicy" exact component={ PrivacyPolicy } />
-                        <Route path="/shop" exact component={Shop}/>
+                        <Route path="/shop" exact component={Search}/>
                         <Route path="/account" exact component={Account} />
                         <Route path="/item" exact component={Item}/>
                         <Route path="/search" exact component={Search}/>

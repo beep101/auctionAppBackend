@@ -12,13 +12,15 @@ export class AuthProvider extends React.Component{
             this.state={
                 jwt:token,
                 user:jwtDecode(token),
-                searchText:""
+                searchText:"",
+                searchCallback:()=>{console.log('No callback set')}
             }
         }else{
             this.state={
                 jwt:"",
                 user:{},
-                searchText:""
+                searchText:"",
+                searchCallback:()=>{console.log('No callback set')}
             }
         }
     }
@@ -26,27 +28,36 @@ export class AuthProvider extends React.Component{
     login=(jwt)=>{
         this.setState({
             jwt:jwt,
-            user:jwtDecode(jwt)
+            user:jwtDecode(jwt),
+            searchText:"",
+            searchCallback:()=>{console.log('No callback set')}
         })
     }
 
     logout=()=>{
         this.setState({
             jwt:"",
-            user:{}
+            user:{},
+            searchText:"",
+            searchCallback:()=>{console.log('No callback set')}
         })
     }
 
     setSearchText=(text)=>{
-        this.setState({['searchText']:text})
+        this.setState({['searchText']:text});
+        this.state.searchCallback(text);
+    }
+
+    setSearchCallback=(callback)=>{
+        this.setState({['searchCallback']:callback})
     }
 
 
     render(){
         const {jwt,user,searchText}=this.state;
-        const {login,logout,setSearchText}=this;
+        const {login,logout,setSearchText,setSearchCallback}=this;
         return(
-            <AuthContext.Provider value={{jwt,user,searchText,login,logout,setSearchText}}>
+            <AuthContext.Provider value={{jwt,user,searchText,login,logout,setSearchText,setSearchCallback}}>
                 {this.props.children}
             </AuthContext.Provider>
         )

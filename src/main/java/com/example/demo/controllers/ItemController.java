@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.ItemModel;
 import com.example.demo.models.UserModel;
@@ -60,8 +61,9 @@ public class ItemController {
 		return itemService.getActiveItemsByCategory(categoryId,page,count);
 	}
 	
-	@GetMapping("/api/items/search/{page}/{count}")
-	public Collection<ItemModel> findItem(@RequestParam(name="term") String term,@RequestParam(name="categories") String categories, @PathVariable(name="page")int page,@PathVariable(name="count")int count){
+	@GetMapping("/api/items/search")
+	public Collection<ItemModel> findItem(@RequestParam String term,@RequestParam String categories,
+										  @RequestParam int page,@RequestParam int count)throws InvalidDataException{
 		return itemService.findItemsValidFilterCategories(term,categories, page, count);
 	}
 }

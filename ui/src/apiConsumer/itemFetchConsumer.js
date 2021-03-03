@@ -46,7 +46,7 @@ export function getItems(page,count,handler){
 }
 
 export function searchItems(term,categories,page,count,handler){
-    get("items/search/"+page+"/"+count+"?term="+term+"&categories="+categories.join('+')).then(
+    get("items/search?page="+page+"&count="+count+"&term="+term+"&categories="+categories.join('+')).then(
         (response)=>{
             Promise.allSettled(response.data.map((data) => getLinks(data))).then(()=>{handler(true,response.data)});
         },

@@ -9,38 +9,44 @@ class Search extends React.Component{
 
     constructor(props){
         super(props);
+        this.loadCount=0;
+        this.searchText="";
+        this.selectedCategories=[];
         this.state={
             items:[],
-            load: 0,
             loadMore: true,
             categories:[],
-            selectedCategories:[],
-            searchText:''
+            selectedCategories:[]
         }
     }
-
-    load=()=>{
-        searchItems(this.context.searchText,this.state.selectedCategories,this.state.load,12,(success, data)=>{
-            if(success){
-                console.log(data);
-                console.log(this.state)
-                if(data.length==0){
-                    this.setState({['loadMore']:false});
-                }
-                if(this.state.load!=0){
-                    this.setState({['items']:[...this.state.items,...data]});
-                }else{
-                    this.setState({['items']:data});
-                }
-                this.setState({['load']:this.state.load+1});
-            }
-        })
-    }
-
         
     componentDidMount=()=>{
         this.loadCategories();
         this.load();
+        this.context.setSearchCallback((text)=>{this.textChanged(text);});
+    }
+
+    textChanged=(text)=>{
+        this.setState({['loadMore']:true});
+        this.loadCount=0;
+        this.searchText=text;
+        this.load()
+    }
+
+    load=()=>{
+        searchItems(this.searchText,this.selectedCategories,this.loadCount,12,(success, data)=>{
+            if(success){
+                if(data.length==0){
+                    this.setState({['loadMore']:false});
+                }
+                if(this.loadCount!=0){
+                    this.setState({['items']:[...this.state.items,...data]});
+                }else{
+                    this.setState({['items']:data});
+                }
+                this.loadCount=this.loadCount+1;
+            }
+        })
     }
 
     loadCategories=()=>{
@@ -56,25 +62,19 @@ class Search extends React.Component{
     selectCategory=(cat)=>{
         if(cat==""){
             this.setState({['selectedCategories']:[]});
+            this.selectedCategories=[];
         }else{
             if(this.state.selectedCategories.includes(cat)){
                 this.setState({['selectedCategories']:this.state.selectedCategories.filter((x)=>x!=cat)});
+                this.selectedCategories=this.selectedCategories.filter((x)=>x!=cat);
             }else{
                 this.setState({['selectedCategories']:[...this.state.selectedCategories,cat]})
+                this.selectedCategories.push(cat);
             }
         }
+        this.loadCount=0;
         this.setState({['loadMore']:true});
-        this.setState({['load']:0});
         this.load()
-    }
-
-    componentDidUpdate() {
-        if(this.context.searchText!=this.state.searchText){
-            this.setState({['loadMore']:true});
-            this.setState({['load']:0});
-            this.setState({['searchText']:this.context.searchText});
-            this.load();
-        }
     }
 
     render(){
@@ -87,7 +87,6 @@ class Search extends React.Component{
             </div>
             <div class="shopItemWrapper">
                 <div class="gridItemContainer">
-                    <div style={{visibility: 'hidden'}}>{this.context.searchText}</div>
                     {this.state.items.map(item=><Link to={"/item?id="+item.id}><ItemElement item={item} type="grid"/></Link>)}
                 </div>
                 <div class="width10">

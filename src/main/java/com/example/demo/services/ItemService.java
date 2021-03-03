@@ -106,12 +106,12 @@ public class ItemService implements IItemService {
 		Category category=new Category();
 		category.setId(categoryId);
 		Timestamp crr=new Timestamp(System.currentTimeMillis());
-		Collection<ItemModel> items=itemsRepo.findBySoldFalseAndEndtimeAfterAndCategoryEquals(crr,category,pgbl).stream().map(x->ItemModel.fromItemEntity(x)).collect(Collectors.toList());
+		Collection<ItemModel> items=itemsRepo.findBySoldFalseAndEndtimeAfterAndCategoryEquals(crr,category,pgbl).stream().map(x->x.toModel()).collect(Collectors.toList());
 		return items;
 	}
 
 	@Override
-	public Collection<ItemModel> findItemsValidFilterCategories(String term,String categories, int page, int count){
+	public Collection<ItemModel> findItemsValidFilterCategories(String term,String categories, int page, int count) throws InvalidDataException{
 		Pageable pgbl=PageRequest.of(page, count);
 		Timestamp crr=new Timestamp(System.currentTimeMillis());
 
@@ -124,13 +124,14 @@ public class ItemService implements IItemService {
 		}catch(NumberFormatException ex) {
 			throw new InvalidDataException();
 		}
+		
 		Collection<ItemModel> items;
 		if(categoriesList!=null) {
 			items=itemsRepo.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCaseAndCategoryIn(crr,term,categoriesList,pgbl)
-					.stream().map(x->ItemModel.fromItemEntity(x)).collect(Collectors.toList());
+					.stream().map(x->x.toModel()).collect(Collectors.toList());
 		}else{
 			items=itemsRepo.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(crr,term,pgbl)
-					.stream().map(x->ItemModel.fromItemEntity(x)).collect(Collectors.toList());
+					.stream().map(x->x.toModel()).collect(Collectors.toList());
 		}
 		return items;
 	}

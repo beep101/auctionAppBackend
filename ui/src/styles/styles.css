@@ -285,7 +285,6 @@ hr.solid{
     align-content: space-evenly;
     justify-content: space-evenly;
     width: 66vw;
-    min-height: 44vw;
     margin-bottom: 60px;
 }
 
@@ -298,6 +297,8 @@ hr.solid{
     border-style: solid;
     box-shadow: 0 0 5px #d8d8d8;
     cursor: pointer;
+    margin-top: 1vw;
+    margin-bottom: 1vw;
 
     display: flex;
     flex-direction: column;
