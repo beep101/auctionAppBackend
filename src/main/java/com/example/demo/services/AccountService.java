@@ -22,9 +22,9 @@ import com.example.demo.utils.IJwtUtil;
 
 @Service
 public class AccountService implements IAccountService{
-	UsersRepository usersRepo;
-	IHashUtil hashUtil;
-	IJwtUtil jwtUtil;
+	private UsersRepository usersRepo;
+	private IHashUtil hashUtil;
+	private IJwtUtil jwtUtil;
 	
 	public AccountService(IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo) {
 		this.usersRepo=userRepo;

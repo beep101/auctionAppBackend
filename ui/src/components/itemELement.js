@@ -6,9 +6,10 @@ class ItemElement extends React.Component{
         super(props);
     }
     render(){
-        var itemClass,imageClass,textClass,nameClass,priceClass;
+        var itemClass,imageClass,textClass,nameClass,priceClass,imgContClass;
         if(this.props.type=="grid"){
             itemClass="gridItem";
+            imgContClass="gridItemImgContainer";
             imageClass="gridImg";
             textClass="gridText"
             nameClass="gridName";
@@ -16,7 +17,7 @@ class ItemElement extends React.Component{
         }
         return(
             <div class={itemClass}>
-                <div style={{height: '82%', display: 'flex', 'align-items': 'center', 'justify-content': 'center'}}>
+                <div class={imgContClass}>
                     <img class={imageClass} src={this.props.item.images[0]}/>
                 </div>
                 {this.props.type=="grid"?<hr class="gridBreak"></hr>:null}

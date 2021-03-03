@@ -5,14 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 
 import org.easymock.EasyMockRunner;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
+import org.easymock.internal.LastControl;
 import org.junit.runner.RunWith;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.example.demo.entities.Category;
@@ -28,6 +29,16 @@ public class CategoryServiceTests extends EasyMockSupport{
 	
 	@TestSubject
 	CategoryService categoryService=new CategoryService(categoriesRepo);
+	
+	  @Before
+	  public void before(){
+	    LastControl.pullMatchers();
+	  }
+
+	  @After
+	  public void after(){
+	    LastControl.pullMatchers();
+	  }
 	
 	@Test
 	public void getAllCategoriesMultipleChecks() {

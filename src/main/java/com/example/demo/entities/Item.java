@@ -2,9 +2,13 @@ package com.example.demo.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.example.demo.models.ItemModel;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -148,6 +152,20 @@ public class Item implements Serializable {
 
 	public void setSold(Boolean sold) {
 		this.sold = sold;
+	}
+	
+	public ItemModel toModel() {
+		ItemModel model=new ItemModel();
+		model.setId(this.getId());
+		model.setName(this.getName());
+		model.setDescription(this.getDescription());
+		model.setStartingprice(this.getStartingprice());
+		model.setStarttime(this.getStarttime());
+		model.setEndtime(this.getEndtime());
+		model.setSold(this.getSold());
+		model.setBids(this.getBids().stream().map(x->x.toModel()).collect(Collectors.toList()));
+		model.setSeller(this.seller.toModel());
+		return model;
 	}
 	
 
