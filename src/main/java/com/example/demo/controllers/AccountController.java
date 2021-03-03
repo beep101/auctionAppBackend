@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.exceptions.BadCredentialsException;
+import com.example.demo.exceptions.ExistingUserException;
+import com.example.demo.exceptions.InvalidDataException;
+import com.example.demo.exceptions.NonExistentUserException;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.AccountService;
@@ -32,12 +36,12 @@ public class AccountController {
 	}
 	
 	@PostMapping("/api/login")
-	public UserModel login(@RequestBody UserModel data) {
+	public UserModel login(@RequestBody UserModel data) throws BadCredentialsException {
 		return accountService.login(data);
 	}
 	
 	@PostMapping("/api/signup")
-	public UserModel signup(@RequestBody UserModel data) {
+	public UserModel signup(@RequestBody UserModel data) throws InvalidDataException, ExistingUserException, NonExistentUserException {
 		return accountService.signUp(data);
 	}
 	

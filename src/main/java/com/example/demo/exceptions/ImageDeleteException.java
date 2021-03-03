@@ -1,6 +1,6 @@
 package com.example.demo.exceptions;
 
-public class ImageDeleteException extends RuntimeException{
+public class ImageDeleteException extends Exception{
 	public ImageDeleteException() {
 		super("Error on deleting image");
 	}

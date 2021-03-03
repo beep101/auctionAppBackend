@@ -36,14 +36,14 @@ class Item extends React.Component{
     }
 
     timeDiff=()=>{
-        var t = this.state.item.endtime.split(/[-T:.]/);
-        var endtime = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
-        var secs=(endtime.getTime()-Date.now())/1000;
+        let t = this.state.item.endtime.split(/[-T:.]/);
+        let endtime = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
+        let secs=(endtime.getTime()-Date.now())/1000;
 
         if(secs/60>1){
-            var mins=secs/60;
+            let mins=secs/60;
             if(mins/60>1){
-                var hrs=mins/60;
+                let hrs=mins/60;
                 if(hrs/24>1){
                     return Math.round(hrs/24)+' days';
                 }else{

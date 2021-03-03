@@ -26,7 +26,7 @@ public class ItemService implements IItemService {
 	}
 
 	@Override
-	public ItemModel getItem(int id) {
+	public ItemModel getItem(int id) throws NotFoundException{
 		try {
 			return itemsRepo.getOne(id).toModel();
 		}catch(EntityNotFoundException ex) {

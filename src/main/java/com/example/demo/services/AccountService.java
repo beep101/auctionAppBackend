@@ -33,7 +33,7 @@ public class AccountService implements IAccountService{
 	}
 
 	@Override
-	public UserModel login(UserModel login) {
+	public UserModel login(UserModel login) throws BadCredentialsException {
 		List<User> users=usersRepo.findByEmail(login.getEmail());
 		if(users.size()==1) {
 			if(hashUtil.checkPassword(login.getPassword(), users.get(0).getPasswd())) {
@@ -51,7 +51,7 @@ public class AccountService implements IAccountService{
 	}
 
 	@Override
-	public UserModel signUp(UserModel signup) {
+	public UserModel signUp(UserModel signup)throws InvalidDataException,ExistingUserException,NonExistentUserException {
 		if(signup.getEmail().isBlank()||signup.getPassword().isBlank()||signup.getFirstName().isBlank()||signup.getLastName().isBlank()) {
 			throw new InvalidDataException();
 		}

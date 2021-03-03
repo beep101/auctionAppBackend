@@ -44,7 +44,7 @@ public class ImageStorageS3 implements IImageStorageService{
 	}
 
 	@Override
-	public String addImage(String itemId,byte[] imageJpg) {
+	public String addImage(String itemId,byte[] imageJpg) throws ImageUploadException, ImageHashException{
 		String imageHash=md5(imageJpg);
 		String key=itemId+"/"+imageHash+".jpg";
 		
@@ -62,7 +62,7 @@ public class ImageStorageS3 implements IImageStorageService{
 	}
 	
 	@Override
-	public byte[] getImage(String itemId,String imageHash) {
+	public byte[] getImage(String itemId,String imageHash) throws ImageFetchException{
 		String key=itemId+"/"+imageHash+".jpg";
 		S3Object object=s3.getObject(bucketName, key);
 		byte[] img=null;
@@ -75,7 +75,7 @@ public class ImageStorageS3 implements IImageStorageService{
 	}
 
 	@Override
-	public String deleteImage(String itemId,String imageHash) {
+	public String deleteImage(String itemId,String imageHash) throws ImageDeleteException{
 		String key=itemId+"/"+imageHash+".jpg";
 		try {
 			s3.deleteObject(bucketName, key);
@@ -85,7 +85,7 @@ public class ImageStorageS3 implements IImageStorageService{
 		return imageHash;
 	}
 	
-	private String md5(byte[] data) {
+	private String md5(byte[] data) throws ImageHashException{
 		MessageDigest md;
 		try {
 			md = MessageDigest.getInstance("MD5");
