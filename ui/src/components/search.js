@@ -79,18 +79,21 @@ class Search extends React.Component{
 
     render(){
         return(
-        <div class="shopContainer">
+        <div className="shopContainer">
            
-            <div class="categoriesList">
-                <div class={this.state.selectedCategories.length==0?"categoryButtonSelected":"categoryButton"} onClick={()=>this.selectCategory("")}>all categories</div>
-                {this.state.categories.map(category=><div class={this.state.selectedCategories.includes(category.id)?"categoryButtonSelected":"categoryButton"} onClick={()=>this.selectCategory(category.id)}>{category.name}</div>)}
+            <div className="categoriesList">
+                <div className={this.state.selectedCategories.length==0?"categoryButtonSelected":"categoryButton"}
+                    onClick={()=>this.selectCategory("")}>all categories</div>
+                {this.state.categories.map(category=><div
+                    className={this.state.selectedCategories.includes(category.id)?"categoryButtonSelected":"categoryButton"}
+                    onClick={()=>this.selectCategory(category.id)}>{category.name}</div>)}
             </div>
-            <div class="shopItemWrapper">
-                <div class="gridItemContainer">
+            <div className="shopItemWrapper">
+                <div className="gridItemContainer">
                     {this.state.items.map(item=><Link to={"/item?id="+item.id}><ItemElement item={item} type="grid"/></Link>)}
                 </div>
-                <div class="width10">
-                    <div class={this.state.loadMore?"loadEnabled":"loadDisabled"} onClick={this.load}>Load More</div>
+                <div className="width10">
+                    <div className={this.state.loadMore?"loadEnabled":"loadDisabled"} onClick={this.load}>Load More</div>
                 </div>
             </div>
         </div>

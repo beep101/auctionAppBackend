@@ -20,30 +20,30 @@ class Register extends Component{
     render(){
         
         return (
-            <div class="formContainer">
+            <div className="formContainer">
                 <div>
-                    <label class="inputLabel">First Name</label><br/>
-                    <input class="inputFieldWide" name="firstName" onChange={this.onChange} value={this.state.firstName}/><br/>
+                    <label className="inputLabel">First Name</label><br/>
+                    <input className="inputFieldWide" name="firstName" onChange={this.onChange} value={this.state.firstName}/><br/>
                 </div>
                 
                 <div>
-                    <label class="inputLabel">Last Name</label><br/>
-                    <input class="inputFieldWide" name="lastName" onChange={this.onChange} value={this.state.lastName}/><br/>
+                    <label className="inputLabel">Last Name</label><br/>
+                    <input className="inputFieldWide" name="lastName" onChange={this.onChange} value={this.state.lastName}/><br/>
                 </div>
                 
                 <div>
-                    <label class="inputLabel">Email</label><br/>
-                    <input class="inputFieldWide" name="email" onChange={this.onChange} value={this.state.email}/><br/>
+                    <label className="inputLabel">Email</label><br/>
+                    <input className="inputFieldWide" name="email" onChange={this.onChange} value={this.state.email}/><br/>
                 </div>
                 
                 <div>
-                    <label class="inputLabel">Password</label><br/>
-                    <input class="inputFieldWide" name="password" onChange={this.onChange} type="password" value={this.state.password}/><br/>
+                    <label className="inputLabel">Password</label><br/>
+                    <input className="inputFieldWide" name="password" onChange={this.onChange} type="password" value={this.state.password}/><br/>
                 </div>
                 
-                <button class="buttonWide" onClick={this.signupReq}>Sign Up</button>
-                <p class="message">Alredy have an account?  <Link to="/login" class="highlightMessage">Login</Link></p>
-                {this.state.msg==""?null:<p class="warningMessage">{this.state.msg}</p>}
+                <button className="buttonWide" onClick={this.signupReq}>Sign Up</button>
+                <p className="message">Alredy have an account?  <Link to="/login" className="highlightMessage">Login</Link></p>
+                {this.state.msg==""?null:<p className="warningMessage">{this.state.msg}</p>}
             </div>
         );
     }

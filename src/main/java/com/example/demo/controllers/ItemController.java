@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -62,7 +63,7 @@ public class ItemController {
 	}
 	
 	@GetMapping("/api/items/search")
-	public Collection<ItemModel> findItem(@RequestParam String term,@RequestParam String categories,
+	public Collection<ItemModel> findItem(@RequestParam String term,@RequestParam List<Integer> categories,
 										  @RequestParam int page,@RequestParam int count)throws InvalidDataException{
 		return itemService.findItemsValidFilterCategories(term,categories, page, count);
 	}

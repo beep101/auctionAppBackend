@@ -17,19 +17,19 @@ class Login extends Component{
     render(){
 
         return (
-            <div class="formContainer">
+            <div className="formContainer">
                 <div>
-                    <label class="inputLabel">Email</label><br/>
-                    <input class="inputFieldWide" id="email" name="email" onChange={this.onChange} value={this.state.email}/>
+                    <label className="inputLabel">Email</label><br/>
+                    <input className="inputFieldWide" id="email" name="email" onChange={this.onChange} value={this.state.email}/>
                 </div>
                 
                 <div>
-                    <label class="inputLabel">Password</label><br/>
-                    <input class="inputFieldWide" id="passwd" name="password" type="password"  onChange={this.onChange} value={this.state.password}/><br/>
+                    <label className="inputLabel">Password</label><br/>
+                    <input className="inputFieldWide" id="passwd" name="password" type="password"  onChange={this.onChange} value={this.state.password}/><br/>
                 </div>
                 
-                <button class="buttonWide" onClick={this.loginReq}>Log In</button>
-                {this.state.msg==""?null:<p class="warningMessage">{this.state.msg}</p>}
+                <button className="buttonWide" onClick={this.loginReq}>Log In</button>
+                {this.state.msg==""?null:<p className="warningMessage">{this.state.msg}</p>}
             </div>
         );
     }

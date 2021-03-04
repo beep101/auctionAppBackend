@@ -111,15 +111,14 @@ public class ItemService implements IItemService {
 	}
 
 	@Override
-	public Collection<ItemModel> findItemsValidFilterCategories(String term,String categories, int page, int count) throws InvalidDataException{
+	public Collection<ItemModel> findItemsValidFilterCategories(String term,List<Integer> categories, int page, int count) throws InvalidDataException{
 		Pageable pgbl=PageRequest.of(page, count);
 		Timestamp crr=new Timestamp(System.currentTimeMillis());
 
 		List<Category> categoriesList=null;
 		try {
-			if(!categories.equals("")) {
-				List<Integer> categoriesIds=Arrays.stream(categories.split(" ")).map(x->Integer.parseInt(x)).collect(Collectors.toList());
-				categoriesList=categoriesRepo.findAllById(categoriesIds);
+			if(categories.size()!=0) {
+				categoriesList=categoriesRepo.findAllById(categories);
 			}
 		}catch(NumberFormatException ex) {
 			throw new InvalidDataException();

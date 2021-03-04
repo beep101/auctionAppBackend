@@ -4,11 +4,11 @@ import '../styles/styles.css'
 
 function StaticLinks(){
     return(
-        <ul class="footerLinkSet">
-            <li class="footerText font20">Auction Purple</li>
-            <Link to="/about"><li class="footerText font12">About Us</li></Link>
-            <Link to="/termsandconditions"><li class="footerText font12">Terms and Conditions</li></Link>
-            <Link to="/privacypolicy"><li class="footerText font12">Privacy Policy</li></Link>
+        <ul className="footerLinkSet">
+            <li className="footerText font20">Auction Purple</li>
+            <Link to="/about"><li className="footerText font12">About Us</li></Link>
+            <Link to="/termsandconditions"><li className="footerText font12">Terms and Conditions</li></Link>
+            <Link to="/privacypolicy"><li className="footerText font12">Privacy Policy</li></Link>
         </ul>
     )
 }

@@ -12,28 +12,28 @@ class NavBar extends React.Component{
     render(){
 
         return(
-            <div class="navBar">
-                <div class="logoStyle">
+            <div className="navBar">
+                <div className="logoStyle">
                     Auction Purple
                 </div>
-                <div class="searchBox">
+                <div className="searchBox">
                     <Link to="/search">
-                        <input onChange={this.onChange} class="searchBoxInput" name="searchBox" />
+                        <input onChange={this.onChange} className="searchBoxInput" name="searchBox" />
                     </Link>
                 </div>
-                <div class="navLinks">
+                <div className="navLinks">
                     <Link to="/">
-                        <span class="linkStyle">
+                        <span className="linkStyle">
                             Home
                         </span>
                     </Link>
                     <Link to="/shop">
-                        <span class="linkStyle">
+                        <span className="linkStyle">
                             Shop
                         </span>
                     </Link>
                     <Link to="/account">
-                        <span class="linkStyle">
+                        <span className="linkStyle">
                             My Account
                         </span>
                     </Link>

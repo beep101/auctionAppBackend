@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -107,7 +108,7 @@ public class ItemServiceTests extends EasyMockSupport{
 
 		pageableCapture.reset();
 		
-		itemService.findItemsValidFilterCategories("","",page,count);
+		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(),page,count);
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
@@ -115,7 +116,7 @@ public class ItemServiceTests extends EasyMockSupport{
 
 		pageableCapture.reset();
 		
-		itemService.findItemsValidFilterCategories("","1 2 3",page,count);
+		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),page,count);
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
@@ -273,7 +274,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getBids().get(0).getId(), item.getBids().get(0).getId());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
-		models=itemService.findItemsValidFilterCategories("","",0,1);
+		models=itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(),0,1);
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());
@@ -285,7 +286,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getBids().get(0).getId(), item.getBids().get(0).getId());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
-		models=itemService.findItemsValidFilterCategories("","1 2 3",0,1);
+		models=itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),0,1);
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());
@@ -308,57 +309,5 @@ public class ItemServiceTests extends EasyMockSupport{
 		itemService.getItem(1);
 		
 		verifyAll();
-	}
-	
-	@Test
-	public void findItemsValidFilterCategoriesParseCategoriesValidStringShouldCallItemsRepo() throws InvalidDataException {
-		String cats1="4";
-		List<Integer> catList1=new ArrayList<Integer>();
-		catList1.add(4);
-		
-		String cats2="4 6 8";
-		List<Integer> catList2=new ArrayList<Integer>();
-		catList2.add(4);
-		catList2.add(6);
-		catList2.add(8);
-		
-		Capture<List<Integer>> catsIdsCapture=EasyMock.newCapture(CaptureType.ALL);
-		
-		List<Category> categories=new ArrayList<>();
-		expect(categoriesRepo.findAllById(capture(catsIdsCapture))).andReturn(categories).anyTimes();
-		
-		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCaseAndCategoryIn(anyObject(),anyString(),anyObject(),anyObject())).andReturn(new ArrayList<Item>()).anyTimes();
-		replayAll();
-		
-		List<Integer> captured;
-		
-		itemService.findItemsValidFilterCategories("",cats1,0,1);
-		captured=catsIdsCapture.getValue();
-		assertEquals(captured, catList1);
-
-		catsIdsCapture.reset();
-		
-		itemService.findItemsValidFilterCategories("",cats2,0,1);
-		captured=catsIdsCapture.getValue();
-		assertEquals(captured, catList2);
-		
-		verifyAll();
-	}
-	
-	@Test
-	public void findItemsValidFilterCategoriesParseCategoriesInvalidStringShouldThrowException() {
-		String cats1="4.45 3.14 2,66";		
-		String cats2="4.538,32";		
-		String cats3="4,5,8,32";		
-		String cats4="4 a 5 re 3 2";
-			
-		replayAll();
-		
-		assertThrows(InvalidDataException.class,()->{itemService.findItemsValidFilterCategories("",cats1,0,1);});
-		assertThrows(InvalidDataException.class,()->{itemService.findItemsValidFilterCategories("",cats2,0,1);});
-		assertThrows(InvalidDataException.class,()->{itemService.findItemsValidFilterCategories("",cats3,0,1);});
-		assertThrows(InvalidDataException.class,()->{itemService.findItemsValidFilterCategories("",cats4,0,1);});
-
-		verifyAll();		
 	}
 }
