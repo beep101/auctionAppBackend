@@ -9,7 +9,11 @@ class BidLine extends React.Component{
         const month = new Intl.DateTimeFormat('en', { month: 'long' }).format(timeObj);
         const day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(timeObj);
         return(
-            <tr class="bidTable"><td class="bidTable">{this.props.bid.bidder.firstName} {this.props.bid.bidder.lastName}</td><td class="bidTable">{day} {month} {year}</td><td class="bidTable">$ {this.props.bid.amount}</td></tr>
+            <tr className="bidTable">
+                <td className="bidTable">{this.props.bid.bidder.firstName} {this.props.bid.bidder.lastName}</td>
+                <td className="bidTable">{day} {month} {year}</td>
+                <td className="bidTable">$ {this.props.bid.amount}</td>
+            </tr>
         )
     }
 }

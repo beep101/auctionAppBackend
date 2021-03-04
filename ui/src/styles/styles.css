@@ -539,6 +539,11 @@ hr.gridBreak{
     justify-content: space-evenly;
 }
 
+.itemThumbImage{
+    max-height: 95%;
+    max-width: 95%;
+}
+
 .itemDescriptionText{
     color:#5a5a5a;
     font-family: 'Lato', sans-serif;
@@ -597,12 +602,12 @@ td.bidTable{
     padding-bottom: 4px;
 }
 
-.c1{
+.bidTableColumn1{
     width: 60%;
 }
-.c2{
+.bidTableColumn2{
     width: 25%;
 }
-.c3{
+.bidTableColumn3{
     width: 15%;
 }

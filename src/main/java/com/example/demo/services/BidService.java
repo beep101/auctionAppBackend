@@ -2,10 +2,10 @@ package com.example.demo.services;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.example.demo.entities.Bid;
@@ -64,13 +64,25 @@ public class BidService implements IBidService{
 	}
 	
 	//check item creation
+	//check sorting
 	//check to model
 
 	@Override
-	public Collection<BidModel> getBids(int itemId) {
+	public Collection<BidModel> getBids(int itemId,int limit) {
 		Item item=new Item();
 		item.setId(itemId);
-		return bidsRepo.findByItemEquals(item).stream().map(x->x.toModel()).collect(Collectors.toList());
+		List<BidModel> bids= bidsRepo.findByItemEquals(item).stream().map(x->x.toModel())
+				.collect(Collectors.toList());
+		bids.sort(new Comparator<BidModel>() {
+			@Override
+			public int compare(BidModel o1, BidModel o2) {
+				return o2.getAmount().compareTo(o1.getAmount());
+			}
+		});
+		if(limit!=0&&limit<bids.size()) {
+			return bids.subList(0, limit);
+		}
+		return bids;
 	}
 	
 	

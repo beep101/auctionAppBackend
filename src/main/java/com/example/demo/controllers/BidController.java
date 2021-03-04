@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entities.User;
@@ -44,9 +45,9 @@ public class BidController {
 		return bidService.addBid(bid,principal);
 	}
 	
-	@GetMapping("/api/bids/byItem/{itemId}")
-	public Collection<BidModel> getBidsForItem(@PathVariable(name="itemId")int itemId){
-		return bidService.getBids(itemId);
+	@GetMapping("/api/items/{itemId}/bids")
+	public Collection<BidModel> getBidsForItem(@PathVariable(name="itemId")int itemId, @RequestParam(required = false, defaultValue = "0") int limit){
+		return bidService.getBids(itemId,limit);
 		
 	}
 }
