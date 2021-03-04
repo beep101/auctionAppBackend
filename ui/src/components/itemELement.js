@@ -16,14 +16,14 @@ class ItemElement extends React.Component{
             priceClass="gridPrice";
         }
         return(
-            <div class={itemClass}>
-                <div class={imgContClass}>
-                    <img class={imageClass} src={this.props.item.images[0]}/>
+            <div className={itemClass}>
+                <div className={imgContClass}>
+                    <img className={imageClass} src={this.props.item.images[0]}/>
                 </div>
-                {this.props.type=="grid"?<hr class="gridBreak"></hr>:null}
-                <div class={textClass}>
-                    <span class={nameClass}>{this.props.item.name}</span>
-                    <span class={priceClass}>from {this.props.item.startingprice}$</span>
+                {this.props.type=="grid"?<hr className="gridBreak"></hr>:null}
+                <div className={textClass}>
+                    <span className={nameClass}>{this.props.item.name}</span>
+                    <span className={priceClass}>from {this.props.item.startingprice}$</span>
                 </div>
             </div>
         );

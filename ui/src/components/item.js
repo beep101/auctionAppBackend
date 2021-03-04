@@ -60,34 +60,34 @@ class Item extends React.Component{
     render(){
         if(this.state.item.id){
             return(
-                <div class="itemContainer">
-                    <div class="itemImageContainer">
-                        <div class="itemImageMainFrame">
-                            <img class="itemImageMain" src={this.state.displayedImage}/>
+                <div className="itemContainer">
+                    <div className="itemImageContainer">
+                        <div className="itemImageMainFrame">
+                            <img className="itemImageMain" src={this.state.displayedImage}/>
                         </div>
                         <div class="itemThumbsBar">
-                            {this.state.item.images.map((image)=><span onClick={()=>this.changeDisplayedImage(image)} class="itemImageThumbFrame" ><img style={{'max-height': '95%','max-width': '95%'}} src={image}/></span>)}
+                            {this.state.item.images.map((image)=><span onClick={()=>this.changeDisplayedImage(image)} className="itemImageThumbFrame" ><img style={{'max-height': '95%','max-width': '95%'}} src={image}/></span>)}
                         </div>
                     </div>
-                    <div class="itemInformationsContainer">
-                        <div class="itemDataContainer">
-                            <div class="itemName">{this.state.item.name}</div>
-                            <div class="itemStartPrice">Starts from {this.state.item.startingprice}$</div>
+                    <div className="itemInformationsContainer">
+                        <div className="itemDataContainer">
+                            <div className="itemName">{this.state.item.name}</div>
+                            <div className="itemStartPrice">Starts from {this.state.item.startingprice}$</div>
                             <div>
-                                <input class="bidInput"/>
-                                <span class="bidButton">Place Bid</span>
+                                <input className="bidInput"/>
+                                <span className="bidButton">Place Bid</span>
                             </div>
-                            <div class="width10vw">
-                                <div class="messageS flexEnd"><span >Highes bid</span><span>***$</span></div>
-                                <div class="messageS flexEnd"><span>Bid count</span><span>N</span></div>
-                                <div class="messageS flexEnd"><span>Time left</span><span>{this.timeDiff()}</span></div>
+                            <div className="width10vw">
+                                <div className="messageS flexEnd"><span >Highes bid</span><span>***$</span></div>
+                                <div className="messageS flexEnd"><span>Bid count</span><span>N</span></div>
+                                <div className="messageS flexEnd"><span>Time left</span><span>{this.timeDiff()}</span></div>
                             </div>
                                 
                         </div>
                         <div>
-                            <div class="itemStartPrice">Description</div>
+                            <div className="itemStartPrice">Description</div>
                             
-                            <div class="itemDescriptionText">{this.state.item.description}</div>
+                            <div className="itemDescriptionText">{this.state.item.description}</div>
                         </div>
                     </div>
                 </div>
