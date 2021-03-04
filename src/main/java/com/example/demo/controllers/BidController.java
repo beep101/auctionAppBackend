@@ -46,7 +46,7 @@ public class BidController {
 	}
 	
 	@GetMapping("/api/items/{itemId}/bids")
-	public Collection<BidModel> getBidsForItem(@PathVariable(name="itemId")int itemId, @RequestParam(required = false, defaultValue = "0") int limit){
+	public Collection<BidModel> getBidsForItem(@PathVariable(name="itemId")int itemId, @RequestParam(required = false, defaultValue = "null") Integer limit){
 		return bidService.getBids(itemId,limit);
 		
 	}

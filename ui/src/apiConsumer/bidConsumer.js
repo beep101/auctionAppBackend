@@ -25,7 +25,6 @@ export function getBidsLimited(itemId,limit,handler){
 }
 
 export function addBid(bid,token,handler){
-    console.log(bid);
     post("bids",bid,{headers:{'Authorization' : 'Bearer '+token}}).then(
         (response)=>{
             handler(true,response.data);

@@ -8,6 +8,11 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import com.example.demo.entities.Bid;
 import com.example.demo.entities.Item;
 import com.example.demo.entities.User;
@@ -30,59 +35,45 @@ public class BidService implements IBidService{
 		this.itemsRepo=itemsRepo;
 	}
 	
-	//tests if user bidder mismatch throws error
-	//if bid entity valid
-	//if checks max amount
-	//if checks base price
-	
 	@Override
 	public synchronized BidModel addBid(BidModel bidModel, User user) throws InvalidDataException,BidAmountLowException,NotFoundException {
 		if(bidModel.getBidder().getId()!=user.getId()) {
 			throw new InvalidDataException();
 		}
-		Bid bidEntity=Bid.fromModel(bidModel);
 		
-		OptionalDouble maxVal=bidsRepo.findByItemEquals(bidEntity.getItem()).stream().mapToDouble(x->x.getAmount().doubleValue()).max();
-		if(maxVal.isPresent()) {
-			if(maxVal.getAsDouble()>=bidEntity.getAmount().doubleValue()) {
+		Bid bidEntity=Bid.fromModel(bidModel);
+		Item item=null;
+		
+		try {
+			item=itemsRepo.getOne(bidEntity.getItem().getId());
+		}catch(EntityNotFoundException ex) {
+			throw new NotFoundException();
+		}
+		
+		if(item.getBids().size()>0) {
+			Double max=item.getBids().stream().mapToDouble(x->x.getAmount().doubleValue()).max().getAsDouble();
+			if(max>=bidEntity.getAmount().doubleValue()) {
 				throw new BidAmountLowException();
 			}
-		}else {
-			Optional<Item> item=itemsRepo.findById(bidEntity.getItem().getId());
-			if(item.isPresent()) {
-				if(item.get().getStartingprice().doubleValue()>bidEntity.getAmount().doubleValue()) {
-					throw new BidAmountLowException();
-				}
-			}else {
-				throw new NotFoundException();
-			}
-		}
+		}else if(item.getStartingprice().doubleValue()>bidEntity.getAmount().doubleValue()) {
+			throw new BidAmountLowException();
+		}	
+
 		Timestamp crr=new Timestamp(System.currentTimeMillis());
 		bidEntity.setTime(crr);
-		bidModel.setTime(crr);
+		
 		return bidsRepo.save(bidEntity).toModel();
 	}
 	
-	//check item creation
-	//check sorting
-	//check to model
-
 	@Override
-	public Collection<BidModel> getBids(int itemId,int limit) {
+	public Collection<BidModel> getBids(int itemId,Integer limit) {
 		Item item=new Item();
 		item.setId(itemId);
-		List<BidModel> bids= bidsRepo.findByItemEquals(item).stream().map(x->x.toModel())
-				.collect(Collectors.toList());
-		bids.sort(new Comparator<BidModel>() {
-			@Override
-			public int compare(BidModel o1, BidModel o2) {
-				return o2.getAmount().compareTo(o1.getAmount());
-			}
-		});
-		if(limit!=0&&limit<bids.size()) {
-			return bids.subList(0, limit);
+		if(limit!=null) {
+			return bidsRepo.findByItemEqualsOrderByIdDesc(item,PageRequest.of(0,limit.intValue())).stream().map(x->x.toModel()).collect(Collectors.toList());
+		}else {
+			return bidsRepo.findByItemEqualsOrderByIdDesc(item,Pageable.unpaged()).stream().map(x->x.toModel()).collect(Collectors.toList());
 		}
-		return bids;
 	}
 	
 	

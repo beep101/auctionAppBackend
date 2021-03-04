@@ -6,6 +6,7 @@ import BidLine from './bidLine';
 import AuthContext from '../context';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { DEFAULT_TOAST_CONFIG} from "../utils/constants"
 
 class Item extends React.Component{
 
@@ -23,7 +24,8 @@ class Item extends React.Component{
             this.state={
                 id:"",
                 item:{},
-                bids:[]
+                bids:[],
+                bidAmount:0
             }
         }
     }
@@ -81,29 +83,13 @@ class Item extends React.Component{
     }
 
     placeBid=()=>{
-        if(this.state.jwt==""){
-            toast.error('Have to be logged in to place bids', {
-                position: "top-center",
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                progress: 0,
-            });
+        if(this.context.jwt==""){
+            toast.error('Have to be logged in to place bids', DEFAULT_TOAST_CONFIG);
             return;
         }
         let bidAmount=parseFloat(this.state.bidAmount)
         if(!bidAmount){
-            toast.error('Bid amount value not valid', {
-                position: "top-center",
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                progress: 0,
-            });
+            toast.error('Bid amount value not valid', DEFAULT_TOAST_CONFIG);
             return;
         }
         let bid={
@@ -113,26 +99,10 @@ class Item extends React.Component{
         }
         addBid(bid,this.context.jwt,(success,data)=>{
             if(success){
-                toast.success('Bid placed successefuly', {
-                    position: "top-center",
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: false,
-                    draggable: false,
-                    progress: 0,
-                });
+                toast.success('Bid placed successefuly', DEFAULT_TOAST_CONFIG);
                 this.loadBids();
             }else{
-                toast.error('Bid failed, bid amount is too low', {
-                    position: "top-center",
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: false,
-                    draggable: false,
-                    progress: 0,
-                });
+                toast.error('Bid failed, bid amount is too low', DEFAULT_TOAST_CONFIG);
             }
         })
     }

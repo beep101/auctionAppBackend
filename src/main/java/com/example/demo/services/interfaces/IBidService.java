@@ -10,5 +10,5 @@ import com.example.demo.models.BidModel;
 
 public interface IBidService {
 	BidModel addBid(BidModel bidModel, User user)  throws InvalidDataException,BidAmountLowException,NotFoundException;
-	Collection<BidModel> getBids(int itemId,int limit);
+	Collection<BidModel> getBids(int itemId,Integer limit);
 }
