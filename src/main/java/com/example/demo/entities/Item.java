@@ -163,7 +163,6 @@ public class Item implements Serializable {
 		model.setStarttime(this.getStarttime());
 		model.setEndtime(this.getEndtime());
 		model.setSold(this.getSold());
-		model.setBids(this.getBids().stream().map(x->x.toModel()).collect(Collectors.toList()));
 		model.setSeller(this.seller.toModel());
 		return model;
 	}

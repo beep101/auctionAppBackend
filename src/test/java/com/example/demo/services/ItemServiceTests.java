@@ -47,7 +47,8 @@ public class ItemServiceTests extends EasyMockSupport{
 	ItemService itemService=new ItemService(itemsRepoMock, categoriesRepo);
 	
 	@Test
-	public void TestPagebleCreationShouldCreateValidPageableAllMethods() throws InvalidDataException {
+	public void testPagebleCreationShouldCreateValidPageableAllMethods() {
+
 		int page=7;
 		int count=17;
 		Pageable captured;
@@ -126,7 +127,8 @@ public class ItemServiceTests extends EasyMockSupport{
 	}
 	
 	@Test
-	public void TestCategoryCreationShouldCreateValidCategoryAllMethods() {
+	public void testCategoryCreationShouldCreateValidCategoryAllMethods() {
+
 		int categoryId=27;
 		Category captured;
 		
@@ -149,7 +151,8 @@ public class ItemServiceTests extends EasyMockSupport{
 	}
 	
 	@Test
-	public void TestEntityToModelShouldCreateValidModelAllMethods() throws NotFoundException, InvalidDataException {
+	public void testEntityToModelShouldCreateValidModelAllMethods() throws NotFoundException {
+
 		Item item=new Item();
 		
 		List<Bid> bids=new ArrayList<>();
@@ -199,7 +202,6 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getSold(), item.getSold());
 		assertEquals(model.getStarttime(), item.getStarttime());
 		assertEquals(model.getEndtime(), item.getEndtime());
-		assertEquals(model.getBids().get(0).getId(), item.getBids().get(0).getId());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
 		model=itemService.getItem(item.getId());
@@ -210,7 +212,6 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getSold(), item.getSold());
 		assertEquals(model.getStarttime(), item.getStarttime());
 		assertEquals(model.getEndtime(), item.getEndtime());
-		assertEquals(model.getBids().get(0).getId(), item.getBids().get(0).getId());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 
 		
@@ -223,7 +224,6 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getSold(), item.getSold());
 		assertEquals(model.getStarttime(), item.getStarttime());
 		assertEquals(model.getEndtime(), item.getEndtime());
-		assertEquals(model.getBids().get(0).getId(), item.getBids().get(0).getId());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
 		models=itemService.getLastChanceItems(0,1);
@@ -235,7 +235,6 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getSold(), item.getSold());
 		assertEquals(model.getStarttime(), item.getStarttime());
 		assertEquals(model.getEndtime(), item.getEndtime());
-		assertEquals(model.getBids().get(0).getId(), item.getBids().get(0).getId());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
 		models=itemService.getItemsByCategory(0,0,1);
@@ -247,7 +246,6 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getSold(), item.getSold());
 		assertEquals(model.getStarttime(), item.getStarttime());
 		assertEquals(model.getEndtime(), item.getEndtime());
-		assertEquals(model.getBids().get(0).getId(), item.getBids().get(0).getId());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
 		models=itemService.getActiveItems(0,1);
@@ -259,7 +257,6 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getSold(), item.getSold());
 		assertEquals(model.getStarttime(), item.getStarttime());
 		assertEquals(model.getEndtime(), item.getEndtime());
-		assertEquals(model.getBids().get(0).getId(), item.getBids().get(0).getId());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
 		models=itemService.getActiveItemsByCategory(0,0,1);
@@ -271,7 +268,6 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getSold(), item.getSold());
 		assertEquals(model.getStarttime(), item.getStarttime());
 		assertEquals(model.getEndtime(), item.getEndtime());
-		assertEquals(model.getBids().get(0).getId(), item.getBids().get(0).getId());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
 		models=itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(),0,1);

@@ -544,6 +544,11 @@ hr.gridBreak{
     justify-content: space-evenly;
 }
 
+.itemThumbImage{
+    max-height: 95%;
+    max-width: 95%;
+}
+
 .itemDescriptionText{
     color:#5a5a5a;
     font-family: 'Lato', sans-serif;
@@ -561,4 +566,53 @@ hr.gridBreak{
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.itemPage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+table.bidTable{
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+    box-shadow: 0 0 5px #d8d8d8;
+    width: 100%;
+    padding: 15px;
+    padding-right: 40px;
+    padding-left: 40px;
+    margin-bottom: 70px;
+}
+
+tr.bidTable{
+    color:#5a5a5a;
+    font-family: 'Lato', sans-serif;
+    text-align: left;
+    font-size: large;
+}
+
+th.bidTable{
+    font-weight: bold;
+    border-bottom-color: #d8d8d8;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    padding-bottom: 3px;
+    color: #52307c;
+}
+
+td.bidTable{
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.bidTableColumn1{
+    width: 60%;
+}
+.bidTableColumn2{
+    width: 25%;
+}
+.bidTableColumn3{
+    width: 15%;
 }

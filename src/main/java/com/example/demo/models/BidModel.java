@@ -16,6 +16,8 @@ public class BidModel {
 	private int attempt;
 	private Timestamp time;
 	private UserModel bidder;
+	private ItemModel item;
+	
 	public int getId() {
 		return id;
 	}
@@ -46,5 +48,11 @@ public class BidModel {
 	}
 	public void setBidder(UserModel bidder) {
 		this.bidder = bidder;
+	}
+	public ItemModel getItem() {
+		return item;
+	}
+	public void setItem(ItemModel item) {
+		this.item = item;
 	}
 }

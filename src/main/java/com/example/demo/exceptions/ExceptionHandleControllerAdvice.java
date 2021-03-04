@@ -54,12 +54,22 @@ public class ExceptionHandleControllerAdvice {
     }
     
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Object> handleNotFoundException(InvalidDataException ex, WebRequest request){
+    public ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request){
     	
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", ex.getMessage());
 
     	return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+    
+    @ExceptionHandler(BidAmountLowException.class)
+    public ResponseEntity<Object> handleBidAmountLowException(BidAmountLowException ex, WebRequest request){
+    	
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getMessage());
+
+    	return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 }
