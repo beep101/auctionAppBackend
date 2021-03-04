@@ -47,7 +47,7 @@ public class ItemServiceTests extends EasyMockSupport{
 	ItemService itemService=new ItemService(itemsRepoMock, categoriesRepo);
 	
 	@Test
-	public void testPagebleCreationShouldCreateValidPageableAllMethods() {
+	public void testPagebleCreationShouldCreateValidPageableAllMethods() throws InvalidDataException {
 
 		int page=7;
 		int count=17;
@@ -151,7 +151,7 @@ public class ItemServiceTests extends EasyMockSupport{
 	}
 	
 	@Test
-	public void testEntityToModelShouldCreateValidModelAllMethods() throws NotFoundException {
+	public void testEntityToModelShouldCreateValidModelAllMethods() throws NotFoundException, InvalidDataException {
 
 		Item item=new Item();
 		
@@ -279,7 +279,6 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getSold(), item.getSold());
 		assertEquals(model.getStarttime(), item.getStarttime());
 		assertEquals(model.getEndtime(), item.getEndtime());
-		assertEquals(model.getBids().get(0).getId(), item.getBids().get(0).getId());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
 		models=itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),0,1);
@@ -291,7 +290,6 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getSold(), item.getSold());
 		assertEquals(model.getStarttime(), item.getStarttime());
 		assertEquals(model.getEndtime(), item.getEndtime());
-		assertEquals(model.getBids().get(0).getId(), item.getBids().get(0).getId());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
 		verifyAll();
