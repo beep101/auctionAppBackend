@@ -41,13 +41,13 @@ class Home extends React.Component{
 
     render(){
         return(
-            <div class="homeContainer">
-                <div  class="homePageNavigator">
-                    <span class={this.state.activeTab=="lastChance"?"highlightLinkStyle":"linkStyle"} onClick={this.lastChanceClick}>Last Chance</span>
-                    <span class={this.state.activeTab=="newArrivals"?"highlightLinkStyle":"linkStyle"} onClick={this.newArrivalsClick}>New Arrivals</span>
+            <div className="homeContainer">
+                <div  className="homePageNavigator">
+                    <span className={this.state.activeTab=="lastChance"?"highlightLinkStyle":"linkStyle"} onClick={this.lastChanceClick}>Last Chance</span>
+                    <span className={this.state.activeTab=="newArrivals"?"highlightLinkStyle":"linkStyle"} onClick={this.newArrivalsClick}>New Arrivals</span>
                 </div>
-                <hr class="solid"></hr>
-                <div class="gridItemContainer">
+                <hr className="solid"></hr>
+                <div className="gridItemContainer">
                     {this.state.items.map(item=><Link to={"/item?id="+item.id}><ItemElement item={item} type="grid"/></Link>)}
                 </div>
             </div>

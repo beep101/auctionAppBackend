@@ -9,10 +9,12 @@ import org.easymock.Mock;
 import org.easymock.TestSubject;
 import static org.easymock.EasyMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,6 +32,7 @@ import com.example.demo.entities.User;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.ItemModel;
+import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.repositories.ItemsRepository;
 
 @RunWith(EasyMockRunner.class)
@@ -37,23 +40,31 @@ public class ItemServiceTests extends EasyMockSupport{
 	
 	@Mock
 	ItemsRepository itemsRepoMock;
+	@Mock
+	CategoriesRepository categoriesRepo;
 	
 	@TestSubject
-	ItemService itemService=new ItemService(itemsRepoMock);
+	ItemService itemService=new ItemService(itemsRepoMock, categoriesRepo);
 	
 	@Test
 	public void testPagebleCreationShouldCreateValidPageableAllMethods() {
+
 		int page=7;
 		int count=17;
 		Pageable captured;
+		
+		List<Category> categories=new ArrayList<>();
+		expect(categoriesRepo.findAllById(anyObject())).andReturn(categories).anyTimes();
 		
 		Capture<Pageable> pageableCapture=EasyMock.newCapture(CaptureType.ALL);
 		expect(itemsRepoMock.findAll(capture(pageableCapture))).andReturn(new PageImpl<Item>(new ArrayList<Item>())).anyTimes();
 		expect(itemsRepoMock.findByCategory(anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfter(anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterOrderByEndtimeAsc(anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
-		expect(itemsRepoMock.findBySoldFalseAndCategoryEqualsAndEndtimeAfter(anyObject(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndCategoryEquals(anyObject(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterOrderByStarttimeDesc(anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCaseAndCategoryIn(anyObject(),anyString(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(anyObject(),anyString(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		replayAll();
 		
 		itemService.getItems(page,count);
@@ -95,18 +106,35 @@ public class ItemServiceTests extends EasyMockSupport{
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
+
+		pageableCapture.reset();
+		
+		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(),page,count);
+		captured=pageableCapture.getValue();
+		assertEquals(captured.getPageNumber(), page);
+		assertEquals(captured.getPageSize(), count);
+
+
+		pageableCapture.reset();
+		
+		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),page,count);
+		captured=pageableCapture.getValue();
+		assertEquals(captured.getPageNumber(), page);
+		assertEquals(captured.getPageSize(), count);
+
 		
 		verifyAll();
 	}
 	
 	@Test
 	public void testCategoryCreationShouldCreateValidCategoryAllMethods() {
+
 		int categoryId=27;
 		Category captured;
 		
 		Capture<Category> categoryCapture=EasyMock.newCapture(CaptureType.ALL);
 		expect(itemsRepoMock.findByCategory(capture(categoryCapture),anyObject())).andReturn(new ArrayList<Item>()).anyTimes();
-		expect(itemsRepoMock.findBySoldFalseAndCategoryEqualsAndEndtimeAfter(capture(categoryCapture), anyObject(),anyObject())).andReturn(new ArrayList<Item>()).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndCategoryEquals(anyObject(),capture(categoryCapture),anyObject())).andReturn(new ArrayList<Item>()).anyTimes();
 		replayAll();
 		
 		itemService.getItemsByCategory(categoryId,0,1);
@@ -124,6 +152,7 @@ public class ItemServiceTests extends EasyMockSupport{
 	
 	@Test
 	public void testEntityToModelShouldCreateValidModelAllMethods() throws NotFoundException {
+
 		Item item=new Item();
 		
 		List<Bid> bids=new ArrayList<>();
@@ -149,14 +178,19 @@ public class ItemServiceTests extends EasyMockSupport{
 		Collection<ItemModel> models;
 		ItemModel model;
 		items.add(item);
-
+		
+		List<Category> categories=new ArrayList<>();
+		expect(categoriesRepo.findAllById(anyObject())).andReturn(categories).anyTimes();
+		
 		expect(itemsRepoMock.findAll(isA(Pageable.class))).andReturn(new PageImpl<Item>(items)).anyTimes();
 		expect(itemsRepoMock.getOne(anyInt())).andReturn(item).anyTimes();
 		expect(itemsRepoMock.findByCategory(anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfter(anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterOrderByEndtimeAsc(anyObject(),anyObject())).andReturn(items).anyTimes();
-		expect(itemsRepoMock.findBySoldFalseAndCategoryEqualsAndEndtimeAfter(anyObject(),anyObject(),anyObject())).andReturn(items).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndCategoryEquals(anyObject(),anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterOrderByStarttimeDesc(anyObject(),anyObject())).andReturn(items).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCaseAndCategoryIn(anyObject(),anyString(),anyObject(),anyObject())).andReturn(items).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(anyObject(),anyString(),anyObject())).andReturn(items).anyTimes();
 		replayAll();
 		
 		models=itemService.getItems(0,1);
@@ -236,6 +270,30 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
+		models=itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(),0,1);
+		model=(ItemModel)models.toArray()[0];
+		assertEquals(model.getId(), item.getId());
+		assertEquals(model.getName(), item.getName());
+		assertEquals(model.getDescription(), item.getDescription());
+		assertEquals(model.getStartingprice(), item.getStartingprice());
+		assertEquals(model.getSold(), item.getSold());
+		assertEquals(model.getStarttime(), item.getStarttime());
+		assertEquals(model.getEndtime(), item.getEndtime());
+		assertEquals(model.getBids().get(0).getId(), item.getBids().get(0).getId());
+		assertEquals(model.getSeller().getId(), item.getSeller().getId());
+		
+		models=itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),0,1);
+		model=(ItemModel)models.toArray()[0];
+		assertEquals(model.getId(), item.getId());
+		assertEquals(model.getName(), item.getName());
+		assertEquals(model.getDescription(), item.getDescription());
+		assertEquals(model.getStartingprice(), item.getStartingprice());
+		assertEquals(model.getSold(), item.getSold());
+		assertEquals(model.getStarttime(), item.getStarttime());
+		assertEquals(model.getEndtime(), item.getEndtime());
+		assertEquals(model.getBids().get(0).getId(), item.getBids().get(0).getId());
+		assertEquals(model.getSeller().getId(), item.getSeller().getId());
+		
 		verifyAll();
 	}
 	
@@ -248,5 +306,4 @@ public class ItemServiceTests extends EasyMockSupport{
 		
 		verifyAll();
 	}
-
 }

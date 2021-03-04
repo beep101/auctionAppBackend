@@ -16,19 +16,20 @@ import "../styles/styles.css"
 import StaticLinks from '../static/staticLinks';
 import Contacts from '../static/contact';
 import Item from './item';
+import Search from './search';
 
 class Wrap extends Component{
 
     render(){
         return(
                 <Router>
-                    <div id="header"  class="headerBar">
+                    <div id="header"  className="headerBar">
 
-                        <span class="floatLeft marginLeft15">
+                        <span className="floatLeft marginLeft15">
                             <SocialMediaLinks />
                         </span>
 
-                        <span class="floatRight marginRight30">
+                        <span className="floatRight marginRight30">
                             <LoginSignupAccountButtons />
                         </span>
 
@@ -43,16 +44,17 @@ class Wrap extends Component{
                         <Route path="/about" exact component={ About } />
                         <Route path="/termsandconditions" exact component={ TermsAndConditions } />
                         <Route path="/privacypolicy" exact component={ PrivacyPolicy } />
-                        <Route path="/shop" exact component={Shop}/>
+                        <Route path="/shop" exact component={Search}/>
                         <Route path="/account" exact component={Account} />
                         <Route path="/item" exact component={Item}/>
+                        <Route path="/search" exact component={Search}/>
                     </div>
 
-                    <div id="footer"  class="footerBar">
-                        <span class="inlineBlock">
+                    <div id="footer"  className="footerBar">
+                        <span className="inlineBlock">
                             <StaticLinks />
                         </span>
-                        <span class="inlineBlock">
+                        <span className="inlineBlock">
                             <Contacts />
                         </span>
                     </div>

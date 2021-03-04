@@ -134,11 +134,12 @@ class Item extends React.Component{
                                 </span>)}
                         </div>
                     </div>
-                    <div class="itemInformationsContainer">
-                        <div class="itemDataContainer">
-                            <div class="itemName">{this.state.item.name}</div>
-                            <div class="itemStartPrice">Starts from {this.state.item.startingprice}$</div>
+                    <div className="itemInformationsContainer">
+                        <div className="itemDataContainer">
+                            <div className="itemName">{this.state.item.name}</div>
+                            <div className="itemStartPrice">Starts from {this.state.item.startingprice}$</div>
                             <div>
+
                                 <input name="bidAmount" onChange={this.onChange} class="bidInput"/>
                                 <span onClick={this.placeBid} class="bidButton">Place Bid</span>
                             </div>
@@ -156,13 +157,14 @@ class Item extends React.Component{
                                     <span>Time left</span>
                                     <span>{this.timeDiff()}</span>
                                 </div>
+
                             </div>
                                 
                         </div>
                         <div>
-                            <div class="itemStartPrice">Description</div>
+                            <div className="itemStartPrice">Description</div>
                             
-                            <div class="itemDescriptionText">{this.state.item.description}</div>
+                            <div className="itemDescriptionText">{this.state.item.description}</div>
                         </div>
                     </div>
                     
