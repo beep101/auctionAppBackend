@@ -25,7 +25,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors().and().csrf().disable()
-        .authorizeRequests().antMatchers("/**","/api/login","/api/signup","api/items/**","api/categories").permitAll()
+        .authorizeRequests().antMatchers("/**","/api/login","/api/signup","/api/items/**","/api/categories","/api/bids/byItem/*").permitAll()
         .antMatchers("/api/**").authenticated().and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEnteryPoint);
         
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

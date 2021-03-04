@@ -99,11 +99,26 @@ public class Bid implements Serializable {
 		
 		model.setId(this.getId());
 		model.setAmount(this.getAmount());
-		model.setAttempt(this.getAttempt());
 		model.setBidder(this.getBidder().toModel());
 		model.setTime(this.getTime());
 		
 		return model;
+	}
+	
+	public static Bid fromModel(BidModel model) {
+		Bid entity=new Bid();
+		
+		entity.setId(model.getId());
+		entity.setAmount(model.getAmount());
+		User bidder=new User();
+		bidder.setId(model.getBidder().getId());
+		entity.setBidder(bidder);
+		entity.setTime(model.getTime());
+		Item item=new Item();
+		item.setId(model.getItem().getId());
+		entity.setItem(item);
+		
+		return entity;
 	}
 
 }

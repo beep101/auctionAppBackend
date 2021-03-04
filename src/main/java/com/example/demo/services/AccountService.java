@@ -38,6 +38,7 @@ public class AccountService implements IAccountService{
 		if(users.size()==1) {
 			if(hashUtil.checkPassword(login.getPassword(), users.get(0).getPasswd())) {
 				String jwt=jwtUtil.generateToken(users.get(0), new HashMap<String, Object>());
+				login.setId(users.get(0).getId());
 				login.setFirstName(users.get(0).getName());
 				login.setLastName(users.get(0).getSurname());
 				login.setJwt(jwt);

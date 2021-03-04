@@ -1,6 +1,7 @@
 import React from 'react';
 import queryString from 'query-string';
 import {getItemById} from '../apiConsumer/itemFetchConsumer'
+import BidLine from './BidLine';
 
 class Item extends React.Component{
 
@@ -60,6 +61,7 @@ class Item extends React.Component{
     render(){
         if(this.state.item.id){
             return(
+            <div class="itemPage">
                 <div class="itemContainer">
                     <div class="itemImageContainer">
                         <div class="itemImageMainFrame">
@@ -90,7 +92,17 @@ class Item extends React.Component{
                             <div class="itemDescriptionText">{this.state.item.description}</div>
                         </div>
                     </div>
+                    
                 </div>
+                <table class="bidTable">
+                    <col class="c1"/>
+	                <col class="c2"/>
+	                <col class="c3"/>
+	                <thead/>
+                    <tr class="bidTable"><th class="bidTable">Name</th><th class="bidTable">Date</th><th class="bidTable">Amount</th></tr>
+                    {this.state.item.bids.sort((a,b)=>b.id-a.id).map((bid)=><BidLine bid={bid}/>)}
+                </table>
+            </div>
             )
         }else{
             return(
