@@ -1,6 +1,8 @@
 package com.example.demo.entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+
 import javax.persistence.*;
 
 import com.example.demo.models.UserModel;
@@ -34,7 +36,13 @@ public class User implements Serializable {
 	
 	@Column(name="passwd")
 	private String passwd;
-
+	
+	@Column(name="fptoken")
+	private String fpToken;
+	
+	@Column(name="fptokenendtime")
+	private Timestamp fpTokenEndtime;
+	
 	//bi-directional many-to-one association to Bid
 	@OneToMany(mappedBy="bidder")
 	private List<Bid> bids;
@@ -86,12 +94,28 @@ public class User implements Serializable {
 		this.passwd = passwd;
 	}
 
+	public String getFpToken() {
+		return fpToken;
+	}
+
+	public void setFpToken(String fpToken) {
+		this.fpToken = fpToken;
+	}
+
 	public List<Bid> getBids() {
 		return this.bids;
 	}
 
 	public void setBids(List<Bid> bids) {
 		this.bids = bids;
+	}
+
+	public Timestamp getFpTokenEndtime() {
+		return fpTokenEndtime;
+	}
+
+	public void setFpTokenEndtime(Timestamp fpTokenEndtime) {
+		this.fpTokenEndtime = fpTokenEndtime;
 	}
 
 	public Bid addBid(Bid bid) {

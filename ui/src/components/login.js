@@ -1,4 +1,5 @@
 import React,{Component}  from 'react';
+import { Link } from 'react-router-dom';
 import {login} from '../apiConsumer/accountConsumer'
 import AuthContext from '../context';
 import '../styles/styles.css'
@@ -29,6 +30,7 @@ class Login extends Component{
                 </div>
                 
                 <button className="buttonWide" onClick={this.loginReq}>Log In</button>
+                <p className="message">Forgot your password?  <Link to="/forgotPassword" className="highlightMessage">Click here</Link></p>
                 {this.state.msg==""?null:<p className="warningMessage">{this.state.msg}</p>}
             </div>
         );

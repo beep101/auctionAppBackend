@@ -1,11 +1,16 @@
 package com.example.demo.services;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -13,6 +18,7 @@ import com.example.demo.entities.User;
 import com.example.demo.exceptions.BadCredentialsException;
 import com.example.demo.exceptions.ExistingUserException;
 import com.example.demo.exceptions.InvalidDataException;
+import com.example.demo.exceptions.InvalidTokenException;
 import com.example.demo.exceptions.NonExistentUserException;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.UsersRepository;
@@ -25,11 +31,17 @@ public class AccountService implements IAccountService{
 	private UsersRepository usersRepo;
 	private IHashUtil hashUtil;
 	private IJwtUtil jwtUtil;
+	private JavaMailSender mailSender;
 	
-	public AccountService(IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo) {
+	private String subject="Reset your Auction Purple password";
+	private String content="Follow link below to set new password for your Auction purple account";
+	private String link="http://localhost:8080/newPassword?token=";
+	
+	public AccountService(IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo, JavaMailSender mailSender) {
 		this.usersRepo=userRepo;
 		this.hashUtil=hashUtil;
 		this.jwtUtil=jwtUtil;
+		this.mailSender=mailSender;
 	}
 
 	@Override
@@ -75,9 +87,56 @@ public class AccountService implements IAccountService{
 		}
 	}
 
+	
 	@Override
-	public UserModel forgotPassword(UserModel forgotPassword) {
-		return null;
+	public UserModel forgotPassword(UserModel forgotPassword) throws NonExistentUserException {
+		if( forgotPassword.getEmail()==null||forgotPassword.getEmail().equals("")) {
+			throw new NonExistentUserException();
+		}
+		List<User> users=usersRepo.findByEmail(forgotPassword.getEmail());
+		if(users.size()==0) {
+			throw new NonExistentUserException();
+		}
+		
+		User user=users.get(0);
+		String token=UUID.randomUUID().toString().replace("-","");
+		user.setFpToken(token);
+		user.setFpTokenEndtime(new Timestamp(System.currentTimeMillis()+24*60*60*1000));
+		user=usersRepo.save(user);
+		
+		sendMail(user.getEmail(),user.getFpToken());
+		
+		return user.toModel();
+	}
+	
+	@Override
+	public UserModel newPassword(UserModel newPassword) throws InvalidTokenException,InvalidDataException {
+		if(newPassword.getFpToken()==null || newPassword.getFpToken().equals("")) {
+			throw new InvalidTokenException();
+		}
+		if(newPassword.getPassword()==null || newPassword.getPassword().equals("")) {
+			throw new InvalidDataException();
+		}
+		
+		List<User> users=usersRepo.findByFpTokenAndFpTokenEndtimeAfter(newPassword.getFpToken(),new Timestamp(System.currentTimeMillis()));
+		if(users.size()==0) {
+			throw new InvalidTokenException();
+		}
+		
+		User user=users.get(0);
+		user.setPasswd(hashUtil.hashPassword(newPassword.getPassword()));
+		user.setFpTokenEndtime(new Timestamp(System.currentTimeMillis()));
+		return usersRepo.save(user).toModel();
+	}
+	
+	private void sendMail(String to,String token) {
+		SimpleMailMessage message=new SimpleMailMessage();
+		
+		message.setTo(to);
+		message.setSubject(subject);
+		message.setText(content+"\n"+link+token);
+		
+		mailSender.send(message);
 	}
 
 }

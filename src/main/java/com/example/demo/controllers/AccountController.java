@@ -3,6 +3,7 @@ package com.example.demo.controllers;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.exceptions.BadCredentialsException;
 import com.example.demo.exceptions.ExistingUserException;
 import com.example.demo.exceptions.InvalidDataException;
+import com.example.demo.exceptions.InvalidTokenException;
 import com.example.demo.exceptions.NonExistentUserException;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.UsersRepository;
@@ -28,11 +30,14 @@ public class AccountController {
 	private IJwtUtil jwtUtil;
 	@Autowired
 	private UsersRepository usersRepo;
+	@Autowired
+	private JavaMailSender mailSender;
+	
 	private IAccountService accountService;
 	
 	@PostConstruct
 	public void init() {
-		accountService=new AccountService(hashUtil, jwtUtil, usersRepo);
+		accountService=new AccountService(hashUtil, jwtUtil, usersRepo,mailSender);
 	}
 	
 	@PostMapping("/api/login")
@@ -46,7 +51,12 @@ public class AccountController {
 	}
 	
 	@PostMapping("/api/forgotPassword")
-	public void forgotPassword(@RequestBody UserModel data) {
-		accountService.forgotPassword(data);
+	public UserModel forgotPassword(@RequestBody UserModel data) throws NonExistentUserException {
+		return accountService.forgotPassword(data);
+	}
+	
+	@PostMapping("api/newPassword")
+	public UserModel newPassword(@RequestBody UserModel data) throws InvalidTokenException, InvalidDataException {
+		return accountService.newPassword(data);
 	}
 }

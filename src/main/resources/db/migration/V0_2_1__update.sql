@@ -1,0 +1,1 @@
+alter table users add fpToken varchar unique default null;

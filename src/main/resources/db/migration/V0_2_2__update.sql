@@ -1,0 +1,1 @@
+alter table users add fpTokenEndTime timestamp default null;

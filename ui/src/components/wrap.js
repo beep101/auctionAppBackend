@@ -17,6 +17,8 @@ import StaticLinks from '../static/staticLinks';
 import Contacts from '../static/contact';
 import Item from './item';
 import Search from './search';
+import ForgotPassword from './forgotPassword';
+import NewPassword from './newPassword';
 
 class Wrap extends Component{
 
@@ -48,6 +50,8 @@ class Wrap extends Component{
                         <Route path="/account" exact component={Account} />
                         <Route path="/item" exact component={Item}/>
                         <Route path="/search" exact component={Search}/>
+                        <Route path="/forgotPassword" exact component={ForgotPassword} />
+                        <Route path="/newPassword" exact component={NewPassword} />
                     </div>
 
                     <div id="footer"  className="footerBar">
