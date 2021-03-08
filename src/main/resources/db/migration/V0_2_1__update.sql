@@ -1,1 +1,1 @@
-alter table users add fpToken varchar unique default null;
+alter table users add forgot_password_token varchar unique default null;

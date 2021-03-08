@@ -22,7 +22,8 @@ class ForgotPassword extends React.Component{
                 <div className="formContainer">
                     <div>
                         <label className="inputLabel">Email</label><br/>
-                        <input className="inputFieldWide" id="email" name="email" onChange={this.onChange} value={this.state.email}/>
+                        <input className="inputFieldWide" id="email" name="email"
+                        onChange={this.onChange} value={this.state.email}/>
                     </div>
                     
                     <button className="buttonWide" onClick={this.forgotReq}>Forgot password</button>

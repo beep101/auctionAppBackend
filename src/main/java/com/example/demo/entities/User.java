@@ -37,11 +37,11 @@ public class User implements Serializable {
 	@Column(name="passwd")
 	private String passwd;
 	
-	@Column(name="fptoken")
-	private String fpToken;
+	@Column(name="forgot_password_token")
+	private String forgotPasswordToken;
 	
-	@Column(name="fptokenendtime")
-	private Timestamp fpTokenEndtime;
+	@Column(name="forgot_password_token_end_time")
+	private Timestamp forgotPasswordTokenEndTime;
 	
 	//bi-directional many-to-one association to Bid
 	@OneToMany(mappedBy="bidder")
@@ -94,12 +94,12 @@ public class User implements Serializable {
 		this.passwd = passwd;
 	}
 
-	public String getFpToken() {
-		return fpToken;
+	public String getForgotPasswordToken() {
+		return forgotPasswordToken;
 	}
 
-	public void setFpToken(String fpToken) {
-		this.fpToken = fpToken;
+	public void setForgotPasswordToken(String fpToken) {
+		this.forgotPasswordToken = fpToken;
 	}
 
 	public List<Bid> getBids() {
@@ -110,12 +110,12 @@ public class User implements Serializable {
 		this.bids = bids;
 	}
 
-	public Timestamp getFpTokenEndtime() {
-		return fpTokenEndtime;
+	public Timestamp getForgotPasswordTokenEndTime() {
+		return forgotPasswordTokenEndTime;
 	}
 
-	public void setFpTokenEndtime(Timestamp fpTokenEndtime) {
-		this.fpTokenEndtime = fpTokenEndtime;
+	public void setForgotPasswordTokenEndTime(Timestamp fpTokenEndtime) {
+		this.forgotPasswordTokenEndTime = fpTokenEndtime;
 	}
 
 	public Bid addBid(Bid bid) {

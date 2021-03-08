@@ -1,1 +1,1 @@
-alter table users add fpTokenEndTime timestamp default null;
+alter table users add forgot_password_token_end_time timestamp default null;

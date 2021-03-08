@@ -3,6 +3,7 @@ package com.example.demo.controllers;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,11 +34,18 @@ public class AccountController {
 	@Autowired
 	private JavaMailSender mailSender;
 	
+	@Value("${mail.subject}")
+	private String subject;
+	@Value("${mail.content}")
+	private String content;
+	@Value("${mail.link}")
+	private String link;
+
 	private IAccountService accountService;
 	
 	@PostConstruct
 	public void init() {
-		accountService=new AccountService(hashUtil, jwtUtil, usersRepo,mailSender);
+		accountService=new AccountService(hashUtil, jwtUtil, usersRepo,mailSender,subject,content,link);
 	}
 	
 	@PostMapping("/api/login")
