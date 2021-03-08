@@ -18,7 +18,7 @@ class ItemElement extends React.Component{
         return(
             <div className={itemClass}>
                 <div className={imgContClass}>
-                    <img className={imageClass} src={this.props.item.images[0]}/>
+                    <img crossorigin="anonymous" className={imageClass} src={this.props.item.images[0]}/>
                 </div>
                 {this.props.type=="grid"?<hr className="gridBreak"></hr>:null}
                 <div className={textClass}>
