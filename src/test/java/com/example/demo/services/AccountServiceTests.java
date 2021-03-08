@@ -1,14 +1,13 @@
 package com.example.demo.services;
 
 import static org.easymock.EasyMock.*;
-import static org.hamcrest.CoreMatchers.any;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import org.easymock.Capture;
 import org.easymock.CaptureType;
@@ -19,7 +18,6 @@ import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.Test;
 import org.junit.runner.*;
-import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -34,8 +32,6 @@ import com.example.demo.repositories.UsersRepository;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
 
-import ch.qos.logback.classic.pattern.ClassOfCallerConverter;
-
 @RunWith(EasyMockRunner.class)
 public class AccountServiceTests extends EasyMockSupport {
 	
@@ -48,8 +44,13 @@ public class AccountServiceTests extends EasyMockSupport {
 	@Mock
 	JavaMailSender mailSenderMock;
 	
+	String subject="Subject";
+	String content="Contetn";
+	String link="Link";
+	
+	
 	@TestSubject
-	AccountService accountControler=new AccountService(hashUtilMock,jwtUtilMock,usersRepoMock,mailSenderMock);
+	AccountService accountControler=new AccountService(hashUtilMock,jwtUtilMock,usersRepoMock,mailSenderMock,subject,content,link);
 	
 	//login tests
 	@Test
@@ -62,8 +63,7 @@ public class AccountServiceTests extends EasyMockSupport {
 		userEntity.setEmail(loginModel.getEmail());
 		userEntity.setPasswd(loginModel.getPassword());
 		
-		List<User> users=new ArrayList<>();
-		users.add(userEntity);
+		Optional<User> users=Optional.of(userEntity);
 		
 		expect(hashUtilMock.checkPassword(loginModel.getPassword(),userEntity.getPasswd())).andReturn(true);
 		expect(usersRepoMock.findByEmail(loginModel.getEmail())).andReturn(users);
@@ -87,8 +87,7 @@ public class AccountServiceTests extends EasyMockSupport {
 		userEntity.setEmail(loginModel.getEmail());
 		userEntity.setPasswd(loginModel.getPassword());
 		
-		List<User> users=new ArrayList<>();
-		users.add(userEntity);
+		Optional<User> users=Optional.of(userEntity);
 		
 		expect(hashUtilMock.checkPassword(loginModel.getPassword(),userEntity.getPasswd())).andReturn(false);
 		expect(usersRepoMock.findByEmail(loginModel.getEmail())).andReturn(users);
@@ -109,7 +108,7 @@ public class AccountServiceTests extends EasyMockSupport {
 		userEntity.setEmail(loginModel.getEmail());
 		userEntity.setPasswd(loginModel.getPassword());
 		
-		List<User> users=new ArrayList<>();
+		Optional<User> users=Optional.empty();
 		
 		expect(hashUtilMock.checkPassword(loginModel.getPassword(),userEntity.getPasswd())).andReturn(true);
 		expect(usersRepoMock.findByEmail(loginModel.getEmail())).andReturn(users);
@@ -128,11 +127,10 @@ public class AccountServiceTests extends EasyMockSupport {
 		signupModel.setFirstName("Rajko");
 		signupModel.setLastName("Pavlovic");
 		
-		List<User> users=new ArrayList<>();
 		User user=new User();
-		users.add(user);
+		Optional<User> users=Optional.of(user);
 		
-		expect(usersRepoMock.findByEmail(signupModel.getEmail())).andReturn(new ArrayList<User>()).once();
+		expect(usersRepoMock.findByEmail(signupModel.getEmail())).andReturn(Optional.empty()).once();
 		expect(usersRepoMock.findByEmail(signupModel.getEmail())).andReturn(users).once();
 		expect(usersRepoMock.save(anyObject())).andReturn(null);
 		expect(hashUtilMock.hashPassword(signupModel.getPassword())).andReturn("qwerty");
@@ -152,9 +150,8 @@ public class AccountServiceTests extends EasyMockSupport {
 		signupModel.setPassword("rajko123");
 		signupModel.setFirstName("Rajko");
 		signupModel.setLastName("Pavlovic");
-		List<User> users=new ArrayList<>();
-		User user=new User();
-		users.add(user);
+
+		Optional<User> users=Optional.of(new User());
 		
 		expect(usersRepoMock.findByEmail(signupModel.getEmail())).andReturn(users);
 		replayAll();
@@ -170,9 +167,8 @@ public class AccountServiceTests extends EasyMockSupport {
 		signupModel.setPassword("rajko123");
 		signupModel.setFirstName("Rajko");
 		signupModel.setLastName("Pavlovic");
-		List<User> users=new ArrayList<>();
 		
-		expect(usersRepoMock.findByEmail(anyString())).andReturn(users).anyTimes();
+		expect(usersRepoMock.findByEmail(anyString())).andReturn(Optional.empty()).anyTimes();
 		expect(usersRepoMock.save(anyObject())).andReturn(null);
 		expect(hashUtilMock.hashPassword(signupModel.getPassword())).andReturn("qwerty");
 		replayAll();
@@ -215,7 +211,7 @@ public class AccountServiceTests extends EasyMockSupport {
 		UserModel model=new UserModel();
 		model.setEmail("user@mail.com");
 		
-		expect(usersRepoMock.findByEmail(anyString())).andReturn(new ArrayList<User>()).anyTimes();
+		expect(usersRepoMock.findByEmail(anyString())).andReturn(Optional.empty()).anyTimes();
 		replayAll();
 		
 		accountControler.forgotPassword(model);
@@ -229,10 +225,9 @@ public class AccountServiceTests extends EasyMockSupport {
 		model.setEmail("user@mail.com");
 		
 		User user=new User();
-		user.setFpToken(null);
-		user.setFpTokenEndtime(null);
-		List<User> users=new ArrayList<User>();
-		users.add(user);
+		user.setForgotPasswordToken(null);
+		user.setForgotPasswordTokenEndTime(null);
+		Optional<User> users=Optional.of(user);
 		
 		Capture<User> userCapture=EasyMock.newCapture(CaptureType.ALL);
 		
@@ -244,8 +239,8 @@ public class AccountServiceTests extends EasyMockSupport {
 		
 		accountControler.forgotPassword(model);
 		
-		assertNotNull(userCapture.getValue().getFpToken());
-		assertNotNull(userCapture.getValue().getFpTokenEndtime());
+		assertNotNull(userCapture.getValue().getForgotPasswordToken());
+		assertNotNull(userCapture.getValue().getForgotPasswordTokenEndTime());
 		
 		verifyAll();
 	}
@@ -253,7 +248,7 @@ public class AccountServiceTests extends EasyMockSupport {
 	@Test(expected = InvalidTokenException.class)
 	public void newPasswordTokenIsNullShouldThrowException() throws InvalidTokenException, InvalidDataException {
 		UserModel model=new UserModel();
-		model.setFpToken(null);
+		model.setForgotPasswordToken(null);
 		replayAll();
 		
 		accountControler.newPassword(model);
@@ -264,7 +259,7 @@ public class AccountServiceTests extends EasyMockSupport {
 	@Test(expected = InvalidTokenException.class)
 	public void newPasswordTokenIsEmptyStringShouldThrowException() throws InvalidTokenException, InvalidDataException {
 		UserModel model=new UserModel();
-		model.setFpToken("");
+		model.setForgotPasswordToken("");
 		replayAll();
 		
 		accountControler.newPassword(model);
@@ -275,7 +270,7 @@ public class AccountServiceTests extends EasyMockSupport {
 	@Test(expected = InvalidDataException.class)
 	public void newPasswordPasswordIsNullShouldThrowException() throws InvalidTokenException, InvalidDataException {
 		UserModel model=new UserModel();
-		model.setFpToken("a100d2");
+		model.setForgotPasswordToken("a100d2");
 		model.setPassword(null);
 		replayAll();
 		
@@ -287,7 +282,7 @@ public class AccountServiceTests extends EasyMockSupport {
 	@Test(expected = InvalidDataException.class)
 	public void newPasswordPasswordIsEmptyStringShouldThrowException() throws InvalidTokenException, InvalidDataException {
 		UserModel model=new UserModel();
-		model.setFpToken("a100d2");
+		model.setForgotPasswordToken("a100d2");
 		model.setPassword("");
 		replayAll();
 		
@@ -299,10 +294,10 @@ public class AccountServiceTests extends EasyMockSupport {
 	@Test(expected = InvalidTokenException.class)
 	public void newPasswordNoValidRecordInDbShouldThrowException() throws InvalidTokenException, InvalidDataException {
 		UserModel model=new UserModel();
-		model.setFpToken("a100d2");
+		model.setForgotPasswordToken("a100d2");
 		model.setPassword("qwerty");
 		
-		expect(usersRepoMock.findByFpTokenAndFpTokenEndtimeAfter(anyString(),anyObject())).andReturn(new ArrayList<User>()).anyTimes();
+		expect(usersRepoMock.findByForgotPasswordTokenAndForgotPasswordTokenEndTimeAfter(anyString(),anyObject())).andReturn(Optional.empty()).anyTimes();
 		replayAll();
 		
 		accountControler.newPassword(model);
@@ -314,18 +309,17 @@ public class AccountServiceTests extends EasyMockSupport {
 	public void newPasswordShouldSetPasswordAndFpTokenEndtime() throws InvalidTokenException, InvalidDataException {
 		UserModel model=new UserModel();
 		String hash="abcdefg";
-		model.setFpToken("a100d2");
+		model.setForgotPasswordToken("a100d2");
 		model.setPassword("qwerty");
 		
 		User user=new User();
 		user.setPasswd(null);
-		user.setFpTokenEndtime(null);
-		List<User> users=new ArrayList<User>();
-		users.add(user);
+		user.setForgotPasswordTokenEndTime(null);
+		Optional<User> users=Optional.of(user);
 		
 		Capture<User> userCapture=EasyMock.newCapture(CaptureType.ALL);
 		
-		expect(usersRepoMock.findByFpTokenAndFpTokenEndtimeAfter(anyString(),anyObject())).andReturn(users).anyTimes();
+		expect(usersRepoMock.findByForgotPasswordTokenAndForgotPasswordTokenEndTimeAfter(anyString(),anyObject())).andReturn(users).anyTimes();
 		expect(usersRepoMock.save(capture(userCapture))).andReturn(user).anyTimes();
 		expect(hashUtilMock.hashPassword(model.getPassword())).andReturn(hash);
 		replayAll();
@@ -333,7 +327,7 @@ public class AccountServiceTests extends EasyMockSupport {
 		accountControler.newPassword(model);
 		
 		assertEquals(userCapture.getValue().getPasswd(),hash);
-		assertNotNull(userCapture.getValue().getFpTokenEndtime());
+		assertNotNull(userCapture.getValue().getForgotPasswordTokenEndTime());
 		
 		verifyAll();
 	}

@@ -7,7 +7,7 @@ public class UserModel {
 	private String email;
 	private String password;
 	private String jwt;
-	private String fpToken;
+	private String forgotPasswordToken;
 	
 	public UserModel() {
 		super();
@@ -61,12 +61,12 @@ public class UserModel {
 		this.jwt = jwt;
 	}
 
-	public String getFpToken() {
-		return fpToken;
+	public String getForgotPasswordToken() {
+		return forgotPasswordToken;
 	}
 
-	public void setFpToken(String fpToken) {
-		this.fpToken = fpToken;
+	public void setForgotPasswordToken(String fpToken) {
+		this.forgotPasswordToken = fpToken;
 	}
 	
 }

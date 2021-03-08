@@ -22,17 +22,18 @@ class NewPassword extends React.Component{
 
                 <div>
                     <label className="inputLabel">Password</label><br/>
-                    <input className="inputFieldWide" id="passwd" name="password" type="password"  onChange={this.onChange} value={this.state.password}/><br/>
+                    <input className="inputFieldWide" id="passwd" name="password"
+                    type="password" onChange={this.onChange} value={this.state.password}/>
                 </div>
                 
                 <button className="buttonWide" onClick={this.newPassReq}>Change password</button>
-                {this.state.msg==""?null:<p className="warningMessage">{this.state.msg}</p>}
+                {this.state.msg && <p className="warningMessage">{this.state.msg}</p>}
             </div>
         )
     }
 
     newPassReq=(e)=>{
-        let token=queryString.parse(this.props.location.search)['token'];
+        const token=queryString.parse(this.props.location.search)['token'];
         let passwd=this.state.password;
         newPassword(token,passwd,(success,message)=>{
             if(success){

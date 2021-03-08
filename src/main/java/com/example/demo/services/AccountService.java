@@ -2,17 +2,12 @@ package com.example.demo.services;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.BadCredentialsException;
@@ -26,33 +21,39 @@ import com.example.demo.services.interfaces.IAccountService;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
 
-@Service
 public class AccountService implements IAccountService{
 	private UsersRepository usersRepo;
 	private IHashUtil hashUtil;
 	private IJwtUtil jwtUtil;
 	private JavaMailSender mailSender;
 	
-	private String subject="Reset your Auction Purple password";
-	private String content="Follow link below to set new password for your Auction purple account";
-	private String link="http://localhost:8080/newPassword?token=";
+	public static final int ONE_DAY_DELAY_MILIS = 24*60*60*1000;
 	
-	public AccountService(IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo, JavaMailSender mailSender) {
+	private String mailSubject;
+	private String mailContent;
+	private String mailLink;
+	
+	public AccountService(IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo, JavaMailSender mailSender,
+						  String subject,String content,String link) {
 		this.usersRepo=userRepo;
 		this.hashUtil=hashUtil;
 		this.jwtUtil=jwtUtil;
 		this.mailSender=mailSender;
+		
+		this.mailSubject=subject;
+		this.mailContent=content;
+		this.mailLink=link;
 	}
 
 	@Override
 	public UserModel login(UserModel login) throws BadCredentialsException {
-		List<User> users=usersRepo.findByEmail(login.getEmail());
-		if(users.size()==1) {
-			if(hashUtil.checkPassword(login.getPassword(), users.get(0).getPasswd())) {
-				String jwt=jwtUtil.generateToken(users.get(0), new HashMap<String, Object>());
-				login.setId(users.get(0).getId());
-				login.setFirstName(users.get(0).getName());
-				login.setLastName(users.get(0).getSurname());
+		Optional<User> users=usersRepo.findByEmail(login.getEmail());
+		if(users.isPresent()) {
+			if(hashUtil.checkPassword(login.getPassword(), users.get().getPasswd())) {
+				String jwt=jwtUtil.generateToken(users.get(), new HashMap<String, Object>());
+				login.setId(users.get().getId());
+				login.setFirstName(users.get().getName());
+				login.setLastName(users.get().getSurname());
 				login.setJwt(jwt);
 				return login;
 			}else {
@@ -68,7 +69,7 @@ public class AccountService implements IAccountService{
 		if(signup.getEmail().isBlank()||signup.getPassword().isBlank()||signup.getFirstName().isBlank()||signup.getLastName().isBlank()) {
 			throw new InvalidDataException();
 		}
-		if(usersRepo.findByEmail(signup.getEmail()).size()!=0) {
+		if(usersRepo.findByEmail(signup.getEmail()).isPresent()) {
 			throw new ExistingUserException();
 		}
 		User newUser=new User();
@@ -77,9 +78,9 @@ public class AccountService implements IAccountService{
 		newUser.setEmail(signup.getEmail());
 		newUser.setPasswd(hashUtil.hashPassword(signup.getPassword()));
 		usersRepo.save(newUser);
-		List<User> users=usersRepo.findByEmail(signup.getEmail());
-		if(users.size()==1) {
-			String jwt=jwtUtil.generateToken(users.get(0), new HashMap<String, Object>());
+		Optional<User> users=usersRepo.findByEmail(signup.getEmail());
+		if(users.isPresent()) {
+			String jwt=jwtUtil.generateToken(users.get(), new HashMap<String, Object>());
 			signup.setJwt(jwt);
 			return signup;
 		}else {
@@ -93,39 +94,39 @@ public class AccountService implements IAccountService{
 		if( forgotPassword.getEmail()==null||forgotPassword.getEmail().equals("")) {
 			throw new NonExistentUserException();
 		}
-		List<User> users=usersRepo.findByEmail(forgotPassword.getEmail());
-		if(users.size()==0) {
+		Optional<User> users=usersRepo.findByEmail(forgotPassword.getEmail());
+		if(users.isEmpty()) {
 			throw new NonExistentUserException();
 		}
 		
-		User user=users.get(0);
+		User user=users.get();
 		String token=UUID.randomUUID().toString().replace("-","");
-		user.setFpToken(token);
-		user.setFpTokenEndtime(new Timestamp(System.currentTimeMillis()+24*60*60*1000));
+		user.setForgotPasswordToken(token);
+		user.setForgotPasswordTokenEndTime(new Timestamp(System.currentTimeMillis()+ONE_DAY_DELAY_MILIS));
 		user=usersRepo.save(user);
 		
-		sendMail(user.getEmail(),user.getFpToken());
+		sendMail(user.getEmail(),user.getForgotPasswordToken());
 		
 		return user.toModel();
 	}
 	
 	@Override
 	public UserModel newPassword(UserModel newPassword) throws InvalidTokenException,InvalidDataException {
-		if(newPassword.getFpToken()==null || newPassword.getFpToken().equals("")) {
+		if(newPassword.getForgotPasswordToken()==null || newPassword.getForgotPasswordToken().equals("")) {
 			throw new InvalidTokenException();
 		}
 		if(newPassword.getPassword()==null || newPassword.getPassword().equals("")) {
 			throw new InvalidDataException();
 		}
 		
-		List<User> users=usersRepo.findByFpTokenAndFpTokenEndtimeAfter(newPassword.getFpToken(),new Timestamp(System.currentTimeMillis()));
-		if(users.size()==0) {
+		Optional<User> users=usersRepo.findByForgotPasswordTokenAndForgotPasswordTokenEndTimeAfter(newPassword.getForgotPasswordToken(),new Timestamp(System.currentTimeMillis()));
+		if(users.isEmpty()) {
 			throw new InvalidTokenException();
 		}
 		
-		User user=users.get(0);
+		User user=users.get();
 		user.setPasswd(hashUtil.hashPassword(newPassword.getPassword()));
-		user.setFpTokenEndtime(new Timestamp(System.currentTimeMillis()));
+		user.setForgotPasswordTokenEndTime(new Timestamp(System.currentTimeMillis()));
 		return usersRepo.save(user).toModel();
 	}
 	
@@ -133,8 +134,8 @@ public class AccountService implements IAccountService{
 		SimpleMailMessage message=new SimpleMailMessage();
 		
 		message.setTo(to);
-		message.setSubject(subject);
-		message.setText(content+"\n"+link+token);
+		message.setSubject(mailSubject);
+		message.setText(mailContent+"\n"+mailLink+token);
 		
 		mailSender.send(message);
 	}
