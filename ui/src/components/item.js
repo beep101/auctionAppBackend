@@ -125,12 +125,12 @@ class Item extends React.Component{
                 <div class="itemContainer">
                     <div class="itemImageContainer">
                         <div class="itemImageMainFrame">
-                            <img class="itemImageMain" src={this.state.displayedImage}/>
+                            <img crossorigin="anonymous" class="itemImageMain" src={this.state.displayedImage}/>
                         </div>
                         <div class="itemThumbsBar">
                             {this.state.item.images.map((image)=>
                                 <span onClick={()=>this.changeDisplayedImage(image)} class="itemImageThumbFrame" >
-                                    <img class="itemThumbImage" src={image} />
+                                    <img crossorigin="anonymous" class="itemThumbImage" src={image} />
                                 </span>)}
                         </div>
                     </div>

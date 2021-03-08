@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -13,9 +14,104 @@
 	<version>0.0.1</version>
 	<name>AuctionPurple</name>
 	<description>Auction site backend</description>
+	
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+                <activatedProperties>dev</activatedProperties>
+            </properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+					    <groupId>org.jacoco</groupId>
+					    <artifactId>jacoco-maven-plugin</artifactId>
+					    <version>0.8.6</version>
+					    <executions>
+					        <execution>
+					            <goals>
+					                <goal>prepare-agent</goal>
+					            </goals>
+					        </execution>
+					        <execution>
+					            <id>report</id>
+					            <phase>prepare-package</phase>
+					            <goals>
+					                <goal>report</goal>
+					            </goals>
+					        </execution>
+					        <execution>
+		                        <id>jacoco-site</id>
+		                        <phase>verify</phase>
+		                        <goals>
+		                            <goal>report</goal>
+		                        </goals>
+		                    </execution>
+					    </executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+                <activatedProperties>prod</activatedProperties>
+            </properties>
+            <activation>
+            	<property>
+                	<name>env.DYNO</name>
+            	</property>
+        	</activation>
+			<build>
+				<plugins>
+				
+					<plugin>
+		                <groupId>com.github.eirslett</groupId>
+		                <artifactId>frontend-maven-plugin</artifactId>
+		                <version>1.11.2</version>
+		    
+		                <executions>
+		                    <execution>
+		                        <id>install-node-and-npm</id>
+		                        <goals><goal>install-node-and-npm</goal></goals>
+		                        <phase>generate-resources</phase>
+		                    </execution>
+		    
+		                    <execution>
+		                        <id>npm-install</id>
+		                        <goals><goal>npm</goal></goals>
+		                        <configuration>
+		                            <arguments>install</arguments>
+		                        </configuration>
+		                    </execution>
+		    
+		                    <execution>
+		                        <id>webpack-build</id>
+		                        <goals><goal>npm</goal></goals>
+		                        <configuration>
+		                            <arguments>run build-prod</arguments>
+		                        </configuration>
+		                    </execution>
+		                </executions>
+		                
+		                <configuration>
+		                    <nodeVersion>v14.15.5</nodeVersion>
+		                    <npmVersion>7.5.4</npmVersion>
+		                </configuration>
+		            </plugin>
+		            
+				</plugins>
+			</build>			
+		</profile>
+	</profiles>
+	
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -114,79 +210,20 @@
 
 	<build>
 		<plugins>
+		
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-			    <groupId>org.jacoco</groupId>
-			    <artifactId>jacoco-maven-plugin</artifactId>
-			    <version>0.8.6</version>
-			    <executions>
-			        <execution>
-			            <goals>
-			                <goal>prepare-agent</goal>
-			            </goals>
-			        </execution>
-			        <execution>
-			            <id>report</id>
-			            <phase>prepare-package</phase>
-			            <goals>
-			                <goal>report</goal>
-			            </goals>
-			        </execution>
-			        <execution>
-                        <id>jacoco-site</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-			    </executions>
-			</plugin>
+			
 			<plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
             </plugin>
+            
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>7.5.4</version>
-            </plugin>
-            
-            <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.11.2</version>
-    
-                <executions>
-                    <execution>
-                        <id>install-node-and-npm</id>
-                        <goals><goal>install-node-and-npm</goal></goals>
-                        <phase>generate-resources</phase>
-                    </execution>
-    
-                    <execution>
-                        <id>npm-install</id>
-                        <goals><goal>npm</goal></goals>
-                        <configuration>
-                            <arguments>install</arguments>
-                        </configuration>
-                    </execution>
-    
-                    <execution>
-                        <id>webpack-build</id>
-                        <goals><goal>npm</goal></goals>
-                        <configuration>
-                            <arguments>run build-prod</arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-                
-                <configuration>
-                    <nodeVersion>v14.15.5</nodeVersion>
-                    <npmVersion>7.5.4</npmVersion>
-                </configuration>
             </plugin>
             
 		</plugins>
