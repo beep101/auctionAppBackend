@@ -23,6 +23,7 @@ public class ItemModel {
 	private Boolean sold;
 	private List<BidModel> bids;
 	private UserModel seller;
+	private List<String> images;
 
 	public int getId() {
 		return id;
@@ -94,5 +95,13 @@ public class ItemModel {
 
 	public void setSeller(UserModel seller) {
 		this.seller = seller;
+	}
+
+	public List<String> getImages() {
+		return images;
+	}
+
+	public void setImages(List<String> images) {
+		this.images = images;
 	}
 }

@@ -89,6 +89,7 @@ public class ItemService implements IItemService {
 		Category category=new Category();
 		category.setId(categoryId);
 		Collection<ItemModel> items=itemsRepo.findByCategory(category,pgbl).stream().map(x->x.toModel()).collect(Collectors.toList());
+		
 		return items;
 	}
 

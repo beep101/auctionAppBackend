@@ -5,18 +5,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.beans.factory.annotation.Value;
 
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
@@ -24,23 +29,22 @@ import com.example.demo.exceptions.ImageDeleteException;
 import com.example.demo.exceptions.ImageFetchException;
 import com.example.demo.exceptions.ImageHashException;
 import com.example.demo.exceptions.ImageUploadException;
+import com.example.demo.models.ItemModel;
 import com.example.demo.services.interfaces.IImageStorageService;
 
 public class ImageStorageS3 implements IImageStorageService{
 	private AmazonS3 s3;
 	private String bucketName="auction.purple.item.pics";
 	
-	@Value("${s3.id}")
-	private String id;
-	@Value("${s3.key}")
-	private String key;
+	private String baseUrl;
 	
 	//aws keys for s3bucket
-	public ImageStorageS3() {
+	public ImageStorageS3(String id, String key,String baseUrl) {
 		s3=AmazonS3ClientBuilder.standard()
 				.withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(id,key)))
 				.withRegion(Regions.EU_CENTRAL_1)
 				.build();
+		this.baseUrl=baseUrl;
 	}
 
 	@Override
@@ -83,6 +87,29 @@ public class ImageStorageS3 implements IImageStorageService{
 			throw new ImageDeleteException();
 		}
 		return imageHash;
+	}
+
+	@Override
+	public ItemModel loadImagesForItem(ItemModel itemModel) {
+		itemModel.setImages(getImageUrls(itemModel.getId()));
+		return itemModel;
+	}
+
+	@Override
+	public Collection<ItemModel> loadImagesForItems(Collection<ItemModel> itemModels){
+		itemModels.stream().parallel().forEach(x->x.setImages(getImageUrls(x.getId())));
+		return itemModels;
+	}
+	
+	private List<String> getImageUrls(int id){
+		ObjectListing objects=null;
+		try {
+			objects=s3.listObjects(bucketName, Integer.toString(id)+"/");
+		}catch(SdkClientException ex) {
+			return new ArrayList<String>();
+		}
+		List<String> imageUrls=objects.getObjectSummaries().stream().map(x->baseUrl+x.getKey()).collect(Collectors.toList());
+		return imageUrls;
 	}
 	
 	private String md5(byte[] data) throws ImageHashException{
