@@ -8,6 +8,7 @@ import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
 import static org.easymock.EasyMock.*;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -113,7 +116,8 @@ public class ItemServiceTests extends EasyMockSupport{
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
-
+		assertEquals(captured.getSort().get().collect(Collectors.toList()).get(0).getProperty(), "name");
+		assertTrue(captured.getSort().get().collect(Collectors.toList()).get(0).isAscending());
 
 		pageableCapture.reset();
 		
@@ -121,7 +125,29 @@ public class ItemServiceTests extends EasyMockSupport{
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
+		assertEquals(captured.getSort().get().collect(Collectors.toList()).get(0).getProperty(), "name");
+		assertTrue(captured.getSort().get().collect(Collectors.toList()).get(0).isAscending());
 
+		pageableCapture.reset();
+		
+		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),page,count,"newness");
+		captured=pageableCapture.getValue();
+		assertEquals(captured.getSort().get().collect(Collectors.toList()).get(0).getProperty(), "starttime");
+		assertTrue(captured.getSort().get().collect(Collectors.toList()).get(0).isDescending());
+		
+		pageableCapture.reset();
+		
+		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),page,count,"priceDesc");
+		captured=pageableCapture.getValue();
+		assertEquals(captured.getSort().get().collect(Collectors.toList()).get(0).getProperty(), "startingprice");
+		assertTrue(captured.getSort().get().collect(Collectors.toList()).get(0).isDescending());
+		
+		pageableCapture.reset();
+		
+		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),page,count,"priceAsc");
+		captured=pageableCapture.getValue();
+		assertEquals(captured.getSort().get().collect(Collectors.toList()).get(0).getProperty(), "startingprice");
+		assertTrue(captured.getSort().get().collect(Collectors.toList()).get(0).isAscending());
 		
 		verifyAll();
 	}
