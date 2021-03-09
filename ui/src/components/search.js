@@ -12,11 +12,21 @@ class Search extends React.Component{
         this.loadCount=0;
         this.searchText="";
         this.selectedCategories=[];
+        this.sort="default";
+
+        this.sorts=[
+            {value:"default",name:"Default Sort"},
+            {value:"newness",name:"Sort By Newness"},
+            {value:"priceAsc",name:"Sort By Price Ascending"},
+            {value:"priceDesc",name:"Sort By Price Descending"}
+        ]
+
         this.state={
             items:[],
             loadMore: true,
             categories:[],
-            selectedCategories:[]
+            selectedCategories:[],
+            display:"grid"
         }
     }
         
@@ -33,8 +43,22 @@ class Search extends React.Component{
         this.load()
     }
 
+    sortChanged=(event)=>{
+        if(this.sort!=event.target.value){
+            this.setState({['loadMore']:true});
+            this.loadCount=0;
+            this.sort=event.target.value;
+            this.load()
+        }
+    }
+
+    displayChanged=(event)=>{
+        console.log(event);
+        this.setState({['display']:event.target.id})
+    }
+
     load=()=>{
-        searchItems(this.searchText,this.selectedCategories,this.loadCount,12,(success, data)=>{
+        searchItems(this.searchText,this.selectedCategories,this.loadCount,12,this.sort,(success, data)=>{
             if(success){
                 if(data.length==0){
                     this.setState({['loadMore']:false});
@@ -89,8 +113,20 @@ class Search extends React.Component{
                     onClick={()=>this.selectCategory(category.id)}>{category.name}</div>)}
             </div>
             <div className="shopItemWrapper">
-                <div className="gridItemContainer">
-                    {this.state.items.map(item=><Link to={"/item?id="+item.id}><ItemElement item={item} type="grid"/></Link>)}
+                <div className="sortDisplayBar">
+                    <span>
+                        <select className="selectSorting" name="sort" id="sort" onChange={this.sortChanged}>
+                            {this.sorts.map(sort=><option value={sort.value}>{sort.name}</option>)}
+                        </select>
+                    </span>
+                    <span>
+                        <span onClick={((e) => this.displayChanged(e))} id="grid" className={this.state.display=="grid"?"highlightLinkStyle":"linkStyle"}>Grid</span>
+                        <hr className="solidVerticalLine"></hr>
+                        <span onClick={((e) => this.displayChanged(e))} id="list" className={this.state.display=="list"?"highlightLinkStyle":"linkStyle"}>List</span>
+                    </span>    
+                </div>
+                <div className={this.state.display=="grid"?"gridItemContainer":"listItemContainer"}>
+                    {this.state.items.map(item=><Link to={"/item?id="+item.id}><ItemElement item={item} type={this.state.display}/></Link>)}
                 </div>
                 <div className="width10">
                     <div className={this.state.loadMore?"loadEnabled":"loadDisabled"} onClick={this.load}>Load More</div>

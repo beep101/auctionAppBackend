@@ -14,6 +14,13 @@ class ItemElement extends React.Component{
             textClass="gridText"
             nameClass="gridName";
             priceClass="gridPrice";
+        }else if(this.props.type=="list"){
+            itemClass="listItem";
+            imgContClass="listItemImgContainer";
+            imageClass="listImg";
+            textClass="listText"
+            nameClass="listName";
+            priceClass="listPrice";
         }
         return(
             <div className={itemClass}>
@@ -23,6 +30,7 @@ class ItemElement extends React.Component{
                 {this.props.type=="grid"?<hr className="gridBreak"></hr>:null}
                 <div className={textClass}>
                     <span className={nameClass}>{this.props.item.name}</span>
+                    {this.props.type=="list"&&<div className="listDescription">{this.props.item.description}</div>}
                     <span className={priceClass}>from {this.props.item.startingprice}$</span>
                 </div>
             </div>

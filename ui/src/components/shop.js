@@ -8,7 +8,6 @@ class Shop extends React.Component{
 
     constructor(props){
         super(props);
-
         this.state={
             items:[],
             categories:[],

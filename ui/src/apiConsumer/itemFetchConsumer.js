@@ -45,8 +45,8 @@ export function getItems(page,count,handler){
     );
 }
 
-export function searchItems(term,categories,page,count,handler){
-    get("items/search?page="+page+"&count="+count+"&term="+term+"&categories="+categories.join(',')).then(
+export function searchItems(term,categories,page,count,sort,handler){
+    get("items/search?page="+page+"&count="+count+"&term="+term+"&categories="+categories.join(',')+"&sort="+sort).then(
         (response)=>{
             handler(true,response.data);
         },
