@@ -19,5 +19,5 @@ public interface IItemService {
 	Collection<ItemModel> getActiveItemsByCategory(int categoryId, int page, int count);
 	Collection<ItemModel> getNewArrivalItems(int page, int count);
 	Collection<ItemModel> getLastChanceItems(int page, int count);
-	Collection<ItemModel> findItemsValidFilterCategories(String term, List<Integer> categories, int page, int count)throws InvalidDataException;
+	Collection<ItemModel> findItemsValidFilterCategories(String term, List<Integer> categories, int page, int count, String sort)throws InvalidDataException;
 }

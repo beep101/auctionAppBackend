@@ -11,6 +11,8 @@ import javax.persistence.EntityNotFoundException;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 
 import com.example.demo.entities.Category;
 import com.example.demo.entities.Item;
@@ -112,8 +114,23 @@ public class ItemService implements IItemService {
 	}
 
 	@Override
-	public Collection<ItemModel> findItemsValidFilterCategories(String term,List<Integer> categories, int page, int count) throws InvalidDataException{
-		Pageable pgbl=PageRequest.of(page, count);
+	public Collection<ItemModel> findItemsValidFilterCategories(String term,List<Integer> categories, int page, int count, String sort) throws InvalidDataException{
+		Sort sortConf;
+		switch(sort) {
+		case "newness":
+			sortConf=Sort.by("starttime").descending();
+			break;
+		case "priceAsc":
+			sortConf=Sort.by("startingprice").ascending();
+			break;
+		case "priceDesc":
+			sortConf=Sort.by("startingprice").descending();
+			break;
+		default:
+			sortConf=Sort.by("name").ascending();
+		}
+		
+		Pageable pgbl=PageRequest.of(page, count,sortConf);
 		Timestamp crr=new Timestamp(System.currentTimeMillis());
 
 		List<Category> categoriesList=null;
@@ -124,6 +141,7 @@ public class ItemService implements IItemService {
 		}catch(NumberFormatException ex) {
 			throw new InvalidDataException();
 		}
+		
 		
 		Collection<ItemModel> items;
 		if(categoriesList!=null) {

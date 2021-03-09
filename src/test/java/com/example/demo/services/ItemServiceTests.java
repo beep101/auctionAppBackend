@@ -109,7 +109,7 @@ public class ItemServiceTests extends EasyMockSupport{
 
 		pageableCapture.reset();
 		
-		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(),page,count);
+		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(),page,count,"");
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
@@ -117,7 +117,7 @@ public class ItemServiceTests extends EasyMockSupport{
 
 		pageableCapture.reset();
 		
-		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),page,count);
+		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),page,count,"");
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
@@ -270,7 +270,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
-		models=itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(),0,1);
+		models=itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(),0,1,"");
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());
@@ -281,7 +281,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
-		models=itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),0,1);
+		models=itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),0,1,"");
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());

@@ -24,6 +24,7 @@ import com.example.demo.services.ImageStorageS3;
 import com.example.demo.services.ItemService;
 import com.example.demo.services.interfaces.IImageStorageService;
 import com.example.demo.services.interfaces.IItemService;
+import com.sun.el.parser.AstFalse;
 
 @RestController
 public class ItemController {
@@ -77,7 +78,7 @@ public class ItemController {
 	
 	@GetMapping("/api/items/search")
 	public Collection<ItemModel> findItem(@RequestParam String term,@RequestParam List<Integer> categories,
-										  @RequestParam int page,@RequestParam int count)throws InvalidDataException{
-		return imageService.loadImagesForItems(itemService.findItemsValidFilterCategories(term,categories, page, count));
+										  @RequestParam int page,@RequestParam int count,@RequestParam(required = false, defaultValue = "") String sort)throws InvalidDataException{
+		return imageService.loadImagesForItems(itemService.findItemsValidFilterCategories(term,categories, page, count,sort));
 	}
 }
