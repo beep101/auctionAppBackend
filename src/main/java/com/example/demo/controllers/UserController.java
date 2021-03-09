@@ -12,12 +12,5 @@ import com.example.demo.repositories.UsersRepository;
 
 @RestController
 public class UserController {
-	
-	@Autowired
-	private UsersRepository ur;
-	
-	@GetMapping("/api/")
-	public Collection<User> getUsers(){
-		return ur.findAll();
-	}
+
 }

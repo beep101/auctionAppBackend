@@ -21,7 +21,10 @@ import com.example.demo.services.interfaces.IAccountService;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
+@Api(value = "Account controller", tags = { "Account controller" }, description =  "Manges user's interaction with his account data")
 @RestController
 public class AccountController {
 	
@@ -48,21 +51,25 @@ public class AccountController {
 		accountService=new AccountService(hashUtil, jwtUtil, usersRepo,mailSender,subject,content,link);
 	}
 	
+	@ApiOperation(value = "Requires valid email and password to return JWT", notes = "Public access")
 	@PostMapping("/api/login")
 	public UserModel login(@RequestBody UserModel data) throws BadCredentialsException {
 		return accountService.login(data);
 	}
 	
+	@ApiOperation(value = "Creates new user account", notes = "Public access")
 	@PostMapping("/api/signup")
 	public UserModel signup(@RequestBody UserModel data) throws InvalidDataException, ExistingUserException, NonExistentUserException {
 		return accountService.signUp(data);
 	}
 	
+	@ApiOperation(value = "Uses user email to generate password recovery link that is sent to email", notes = "Public access")
 	@PostMapping("/api/forgotPassword")
 	public UserModel forgotPassword(@RequestBody UserModel data) throws NonExistentUserException {
 		return accountService.forgotPassword(data);
 	}
 	
+	@ApiOperation(value = "Link used to change forgotten password, requires recovery token", notes = "Public access")
 	@PostMapping("api/newPassword")
 	public UserModel newPassword(@RequestBody UserModel data) throws InvalidTokenException, InvalidDataException {
 		return accountService.newPassword(data);

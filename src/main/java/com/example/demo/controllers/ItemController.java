@@ -26,6 +26,10 @@ import com.example.demo.services.interfaces.IImageStorageService;
 import com.example.demo.services.interfaces.IItemService;
 import com.sun.el.parser.AstFalse;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api(value = "Items Controller", tags= {"Items Controller"}, description = "Enables users to fetch items, all endpoints require paging parameters, page number and items count")
 @RestController
 public class ItemController {
 	
@@ -50,32 +54,38 @@ public class ItemController {
 		imageService=new ImageStorageS3(id, key, imageBucketBaseUrl);
 	}
 	
+	@ApiOperation(value = "Returns item specified by ID", notes = "Public access")
 	@GetMapping("/api/items/{itemId}")
 	public ItemModel getItemById(@PathVariable(name="itemId")int itemId) throws NotFoundException{
 		return imageService.loadImagesForItem(itemService.getItem(itemId));
 	}
 	
+	@ApiOperation(value = "Returns all active items", notes = "Public access")
 	@GetMapping("/api/items")
 	public Collection<ItemModel> getItems(@RequestParam int page,@RequestParam int count) {
 
 		return imageService.loadImagesForItems(itemService.getActiveItems(page,count));
 	}
 	
+	@ApiOperation(value = "Returns items that will expire soon", notes = "Public access")
 	@GetMapping("/api/items/lastChance")
 	public Collection<ItemModel> getLstChance(@RequestParam int page,@RequestParam int count) {
 		return imageService.loadImagesForItems(itemService.getLastChanceItems(page,count));
 	}
 	
+	@ApiOperation(value = "Return most recently added items", notes = "Public access")
 	@GetMapping("/api/items/newArrivals")
 	public Collection<ItemModel> getNewArrivals(@RequestParam int page,@RequestParam int count) {
 		return imageService.loadImagesForItems(itemService.getNewArrivalItems(page,count));
 	}
 	
+	@ApiOperation(value = "Returns items from specified category", notes = "Pubic access")
 	@GetMapping("/api/items/category/{categoryId}")
 	public Collection<ItemModel> getByCategory(@PathVariable(name="categoryId")int categoryId,@RequestParam int page,@RequestParam int count) {
 		return imageService.loadImagesForItems(itemService.getActiveItemsByCategory(categoryId,page,count));
 	}
 	
+	@ApiOperation(value = "Enables searching items by name and filtering by different parameters", notes = "Public access")
 	@GetMapping("/api/items/search")
 	public Collection<ItemModel> findItem(@RequestParam String term,@RequestParam List<Integer> categories,
 										  @RequestParam int page,@RequestParam int count,@RequestParam(required = false, defaultValue = "") String sort)throws InvalidDataException{

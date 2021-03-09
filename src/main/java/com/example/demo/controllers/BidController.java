@@ -25,6 +25,10 @@ import com.example.demo.services.AccountService;
 import com.example.demo.services.BidService;
 import com.example.demo.services.interfaces.IBidService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api(value = "Bids Controller", tags = { "Bids Controller" }, description = "Manages bid related data")
 @RestController
 public class BidController {
 	@Autowired
@@ -39,12 +43,14 @@ public class BidController {
 		bidService=new BidService(bidsRepo, itemsRepo);
 	}
 	
+	@ApiOperation(value = "Adds bid to item", notes = "Only authenticated users")
 	@PostMapping("/api/bids")
 	public BidModel addBid( @RequestBody BidModel bid) throws InvalidDataException, BidAmountLowException, NotFoundException {
 		User principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		return bidService.addBid(bid,principal);
 	}
 	
+	@ApiOperation(value = "Returns all bids for chosen item", notes = "Public access")
 	@GetMapping("/api/items/{itemId}/bids")
 	public Collection<BidModel> getBidsForItem(@PathVariable(name="itemId")int itemId, @RequestParam(required = false, defaultValue = "null") Integer limit){
 		return bidService.getBids(itemId,limit);

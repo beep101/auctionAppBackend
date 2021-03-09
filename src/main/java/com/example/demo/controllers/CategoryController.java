@@ -14,6 +14,10 @@ import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.services.CategoryService;
 import com.example.demo.services.interfaces.ICategoryService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api(value = "Category Controller", tags= {"Category Controller"}, description = "Manages category related data")
 @RestController
 public class CategoryController {
 	
@@ -27,6 +31,7 @@ public class CategoryController {
 		this.categoryService=new CategoryService(categoriesRepo);
 	}
 	
+	@ApiOperation(value = "Lists all item categories", notes = "Public access")
 	@GetMapping("/api/categories")
 	public Collection<CategoryModel> getAllategories() {
 		return categoryService.getAllCategories();
