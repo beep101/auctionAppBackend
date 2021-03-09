@@ -1,6 +1,8 @@
 package com.example.demo.entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+
 import javax.persistence.*;
 
 import com.example.demo.models.UserModel;
@@ -34,7 +36,13 @@ public class User implements Serializable {
 	
 	@Column(name="passwd")
 	private String passwd;
-
+	
+	@Column(name="forgot_password_token")
+	private String forgotPasswordToken;
+	
+	@Column(name="forgot_password_token_end_time")
+	private Timestamp forgotPasswordTokenEndTime;
+	
 	//bi-directional many-to-one association to Bid
 	@OneToMany(mappedBy="bidder")
 	private List<Bid> bids;
@@ -86,12 +94,28 @@ public class User implements Serializable {
 		this.passwd = passwd;
 	}
 
+	public String getForgotPasswordToken() {
+		return forgotPasswordToken;
+	}
+
+	public void setForgotPasswordToken(String fpToken) {
+		this.forgotPasswordToken = fpToken;
+	}
+
 	public List<Bid> getBids() {
 		return this.bids;
 	}
 
 	public void setBids(List<Bid> bids) {
 		this.bids = bids;
+	}
+
+	public Timestamp getForgotPasswordTokenEndTime() {
+		return forgotPasswordTokenEndTime;
+	}
+
+	public void setForgotPasswordTokenEndTime(Timestamp fpTokenEndtime) {
+		this.forgotPasswordTokenEndTime = fpTokenEndtime;
 	}
 
 	public Bid addBid(Bid bid) {

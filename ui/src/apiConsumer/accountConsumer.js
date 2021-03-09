@@ -52,3 +52,26 @@ export function signup(userData,handler){
     );
 }
 
+export function forgotPassword(email,handler){
+    post("forgotPassword",{email}).then(
+        (response)=>{
+            handler(true,"");
+        },
+        (error)=>{
+            handler(false,"");
+        }
+    );
+}
+
+export function newPassword(token,password,handler){
+    post("newPassword",{forgotPasswordToken:token,password:password}).then(
+        (response)=>{
+            handler(true,"");
+        },
+        (error)=>{
+            handler(false,"");
+        }
+    );
+
+}
+

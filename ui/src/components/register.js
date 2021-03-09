@@ -42,7 +42,7 @@ class Register extends Component{
                 </div>
                 
                 <button className="buttonWide" onClick={this.signupReq}>Sign Up</button>
-                <p className="message">Alredy have an account?  <Link to="/login" className="highlightMessage">Login</Link></p>
+                <p className="message">Already have an account?  <Link to="/login" className="highlightMessage">Login</Link></p>
                 {this.state.msg==""?null:<p className="warningMessage">{this.state.msg}</p>}
             </div>
         );
