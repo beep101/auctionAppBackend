@@ -4,8 +4,8 @@
   "description": "To run spring application PostgreSQL database is required",
   "main": "index.js",
   "scripts": {
-    "watch": "webpack --watch -d --output ./target/classes/static/built/bundle.js",
-    "build-prod": "webpack --hide-modules --output ./target/classes/static/built/bundle.js"
+    "watch": "webpack --config webpack.dev.js --watch -d --output ./target/classes/static/built/bundle.js",
+    "build-prod": "webpack --config webpack.prod.js --hide-modules --output ./target/classes/static/built/bundle.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,8 @@
     "@babel/preset-react": "^7.12.13",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.0.2",
-    "sass-loader": "^11.0.1"
+    "sass-loader": "^11.0.1",
+    "webpack-merge": "^5.7.3"
   },
   "dependencies": {
     "axios": "^0.21.1",
