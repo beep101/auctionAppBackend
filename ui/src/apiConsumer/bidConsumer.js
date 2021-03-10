@@ -1,7 +1,7 @@
 import {get,post} from './apiConsumer';
 
 export function getBids(itemId,handler){
-    get("items/"+itemId+"/bids").then(
+    get(`items/${itemId}/bids`).then(
         (response)=>{
             handler(true,response.data);
         },
@@ -13,7 +13,7 @@ export function getBids(itemId,handler){
 }
 
 export function getBidsLimited(itemId,limit,handler){
-    get("items/"+itemId+"/bids?limit="+limit).then(
+    get(`items/${itemId}/bids?limit=${limit}`).then(
         (response)=>{
             handler(true,response.data);
         },

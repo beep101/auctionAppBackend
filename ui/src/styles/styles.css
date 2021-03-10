@@ -625,3 +625,109 @@ td.bidTable{
     margin-bottom: 50px;
     color: #40c046;
 }
+
+.sortDisplayBar{
+    width: 95%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selectSorting{
+	font-family: 'Lato', sans-serif;
+	color: #5a5a5a;
+    text-align: center;
+
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+    box-shadow: 0 0 5px #d8d8d8;
+
+    padding: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    -moz-appearance:none; 
+    -webkit-appearance:none; 
+    appearance:none;
+}
+
+.listItemContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 66vw;
+}
+
+.listItem{
+    display: flex;
+    justify-content: space-between;
+    width: 64vw;
+
+    color: #5a5a5a;
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+    box-shadow: 0 0 5px #d8d8d8;
+    cursor: pointer;
+    margin-top: 1vw;
+    margin-bottom: 1vw;
+}
+.listItemImgContainer{
+    width: 15vw;
+    height: 15vw;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-left: 1vw;
+}
+.listImg{
+    max-width: 90%;
+    max-height: 90%;
+}
+.listText{
+    max-width: 40vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    
+    margin-right: 3vw;
+
+    font-family: 'Lato', sans-serif;
+}
+.listName{
+    font-size: x-large;
+    font-weight: bold;
+    color: #5a5a5a;
+}
+
+.listDescription{
+    color: #5a5a5a;
+    text-align: justify;
+    text-justify: auto;
+
+    padding-top: 1vw;
+    padding-bottom: 1vw;
+    
+    border-top-color: #d8d8d8;
+    border-top-width: 1px;
+    border-top-style: solid;
+    
+    border-bottom-color: #d8d8d8;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+.listPrice{
+    font-size: x-large;
+    font-weight: bold;
+    color: #52307c;    
+}
+
+hr.solidVerticalLine{
+    border-top: 1px solid #5a5a5a;
+    height: 100%;
+    display: inline;
+}

@@ -27,7 +27,7 @@ class ForgotPassword extends React.Component{
                     </div>
                     
                     <button className="buttonWide" onClick={this.forgotReq}>Forgot password</button>
-                    {this.state.msg==""?null:<p className="warningMessage">{this.state.msg}</p>}
+                    {this.state.msg===""?null:<p className="warningMessage">{this.state.msg}</p>}
                 </div>
             )
         }else{

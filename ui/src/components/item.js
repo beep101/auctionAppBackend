@@ -83,7 +83,7 @@ class Item extends React.Component{
     }
 
     placeBid=()=>{
-        if(this.context.jwt==""){
+        if(this.context.jwt===""){
             toast.error('Have to be logged in to place bids', DEFAULT_TOAST_CONFIG);
             return;
         }
@@ -146,7 +146,7 @@ class Item extends React.Component{
                             <div class="width10vw">
                                 <div class="messageS flexEnd">
                                     <span >Highes bid</span>
-                                    <span>$ {this.state.bids.length==0?
+                                    <span>$ {this.state.bids.length===0?
                                         this.state.item.startingprice:this.state.bids[0].amount}
                                     </span>
                                 </div>

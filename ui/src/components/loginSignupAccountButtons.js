@@ -14,7 +14,7 @@ class LoginSignupAccountButtons extends React.Component{
     }
     
     render(){       
-        if(this.context.jwt==""){
+        if(this.context.jwt===""){
             return (
                 <span>
                     <Link to="/login">

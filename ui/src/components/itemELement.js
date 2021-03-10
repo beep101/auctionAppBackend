@@ -7,22 +7,30 @@ class ItemElement extends React.Component{
     }
     render(){
         let itemClass,imageClass,textClass,nameClass,priceClass,imgContClass;
-        if(this.props.type=="grid"){
+        if(this.props.type==="grid"){
             itemClass="gridItem";
             imgContClass="gridItemImgContainer";
             imageClass="gridImg";
             textClass="gridText"
             nameClass="gridName";
             priceClass="gridPrice";
+        }else if(this.props.type==="list"){
+            itemClass="listItem";
+            imgContClass="listItemImgContainer";
+            imageClass="listImg";
+            textClass="listText"
+            nameClass="listName";
+            priceClass="listPrice";
         }
         return(
             <div className={itemClass}>
                 <div className={imgContClass}>
                     <img crossorigin="anonymous" className={imageClass} src={this.props.item.images[0]}/>
                 </div>
-                {this.props.type=="grid"?<hr className="gridBreak"></hr>:null}
+                {this.props.type==="grid"?<hr className="gridBreak"></hr>:null}
                 <div className={textClass}>
                     <span className={nameClass}>{this.props.item.name}</span>
+                    {this.props.type==="list"&&<div className="listDescription">{this.props.item.description}</div>}
                     <span className={priceClass}>from {this.props.item.startingprice}$</span>
                 </div>
             </div>
