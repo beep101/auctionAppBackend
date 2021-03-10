@@ -60,7 +60,7 @@ class Search extends React.Component{
     load=()=>{
         searchItems(this.searchText,this.selectedCategories,this.loadCount,12,this.sort,(success, data)=>{
             if(success){
-                if(data.length==0){
+                if(data.length===0){
                     this.setState({['loadMore']:false});
                 }
                 if(this.loadCount!=0){
@@ -84,7 +84,7 @@ class Search extends React.Component{
     }
 
     selectCategory=(cat)=>{
-        if(cat==""){
+        if(cat===""){
             this.setState({['selectedCategories']:[]});
             this.selectedCategories=[];
         }else{
@@ -106,7 +106,7 @@ class Search extends React.Component{
         <div className="shopContainer">
            
             <div className="categoriesList">
-                <div className={this.state.selectedCategories.length==0?"categoryButtonSelected":"categoryButton"}
+                <div className={this.state.selectedCategories.length===0?"categoryButtonSelected":"categoryButton"}
                     onClick={()=>this.selectCategory("")}>all categories</div>
                 {this.state.categories.map(category=><div
                     className={this.state.selectedCategories.includes(category.id)?"categoryButtonSelected":"categoryButton"}
@@ -120,12 +120,12 @@ class Search extends React.Component{
                         </select>
                     </span>
                     <span>
-                        <span onClick={((e) => this.displayChanged(e))} id="grid" className={this.state.display=="grid"?"highlightLinkStyle":"linkStyle"}>Grid</span>
+                        <span onClick={((e) => this.displayChanged(e))} id="grid" className={this.state.display==="grid"?"highlightLinkStyle":"linkStyle"}>Grid</span>
                         <hr className="solidVerticalLine"></hr>
-                        <span onClick={((e) => this.displayChanged(e))} id="list" className={this.state.display=="list"?"highlightLinkStyle":"linkStyle"}>List</span>
+                        <span onClick={((e) => this.displayChanged(e))} id="list" className={this.state.display==="list"?"highlightLinkStyle":"linkStyle"}>List</span>
                     </span>    
                 </div>
-                <div className={this.state.display=="grid"?"gridItemContainer":"listItemContainer"}>
+                <div className={this.state.display==="grid"?"gridItemContainer":"listItemContainer"}>
                     {this.state.items.map(item=><Link to={"/item?id="+item.id}><ItemElement item={item} type={this.state.display}/></Link>)}
                 </div>
                 <div className="width10">

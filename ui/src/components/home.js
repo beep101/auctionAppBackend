@@ -43,8 +43,8 @@ class Home extends React.Component{
         return(
             <div className="homeContainer">
                 <div  className="homePageNavigator">
-                    <span className={this.state.activeTab=="lastChance"?"highlightLinkStyle":"linkStyle"} onClick={this.lastChanceClick}>Last Chance</span>
-                    <span className={this.state.activeTab=="newArrivals"?"highlightLinkStyle":"linkStyle"} onClick={this.newArrivalsClick}>New Arrivals</span>
+                    <span className={this.state.activeTab==="lastChance"?"highlightLinkStyle":"linkStyle"} onClick={this.lastChanceClick}>Last Chance</span>
+                    <span className={this.state.activeTab==="newArrivals"?"highlightLinkStyle":"linkStyle"} onClick={this.newArrivalsClick}>New Arrivals</span>
                 </div>
                 <hr className="solid"></hr>
                 <div className="gridItemContainer">

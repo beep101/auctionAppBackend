@@ -10,7 +10,6 @@ import org.easymock.TestSubject;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -37,6 +35,9 @@ import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.ItemModel;
 import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.repositories.ItemsRepository;
+import com.example.demo.utils.ItemSorting;
+import com.example.demo.utils.PaginationParams;
+import com.example.demo.utils.SortingPaginationParams;
 
 @RunWith(EasyMockRunner.class)
 public class ItemServiceTests extends EasyMockSupport{
@@ -70,49 +71,49 @@ public class ItemServiceTests extends EasyMockSupport{
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(anyObject(),anyString(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		replayAll();
 		
-		itemService.getItems(page,count);
+		itemService.getItems(new PaginationParams(page,count));
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
 		
 		pageableCapture.reset();
 		
-		itemService.getNewArrivalItems(page,count);
-		captured=pageableCapture.getValue();
-		assertEquals(captured.getPageNumber(), page);
-		assertEquals(captured.getPageSize(), count);
-
-		pageableCapture.reset();
-		
-		itemService.getLastChanceItems(page,count);
+		itemService.getNewArrivalItems(new PaginationParams(page,count));
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
 
 		pageableCapture.reset();
 		
-		itemService.getItemsByCategory(0,page,count);
+		itemService.getLastChanceItems(new PaginationParams(page,count));
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
 
 		pageableCapture.reset();
 		
-		itemService.getActiveItems(page,count);
+		itemService.getItemsByCategory(0,new PaginationParams(page,count));
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
 
 		pageableCapture.reset();
 		
-		itemService.getActiveItemsByCategory(0,page,count);
+		itemService.getActiveItems(new PaginationParams(page,count));
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
 
 		pageableCapture.reset();
 		
-		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(),page,count,"");
+		itemService.getActiveItemsByCategory(0,new PaginationParams(page,count));
+		captured=pageableCapture.getValue();
+		assertEquals(captured.getPageNumber(), page);
+		assertEquals(captured.getPageSize(), count);
+
+		pageableCapture.reset();
+		
+		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(),new SortingPaginationParams(page,count,ItemSorting.DEFAULT));
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
@@ -121,7 +122,7 @@ public class ItemServiceTests extends EasyMockSupport{
 
 		pageableCapture.reset();
 		
-		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),page,count,"");
+		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),new SortingPaginationParams(page,count,ItemSorting.DEFAULT));
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
@@ -130,21 +131,21 @@ public class ItemServiceTests extends EasyMockSupport{
 
 		pageableCapture.reset();
 		
-		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),page,count,"newness");
+		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),new SortingPaginationParams(page,count,ItemSorting.NEWNESS));
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getSort().get().collect(Collectors.toList()).get(0).getProperty(), "starttime");
 		assertTrue(captured.getSort().get().collect(Collectors.toList()).get(0).isDescending());
 		
 		pageableCapture.reset();
 		
-		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),page,count,"priceDesc");
+		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),new SortingPaginationParams(page,count,ItemSorting.PRICEDESC));
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getSort().get().collect(Collectors.toList()).get(0).getProperty(), "startingprice");
 		assertTrue(captured.getSort().get().collect(Collectors.toList()).get(0).isDescending());
 		
 		pageableCapture.reset();
 		
-		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),page,count,"priceAsc");
+		itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),new SortingPaginationParams(page,count,ItemSorting.PRICEASC));
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getSort().get().collect(Collectors.toList()).get(0).getProperty(), "startingprice");
 		assertTrue(captured.getSort().get().collect(Collectors.toList()).get(0).isAscending());
@@ -163,13 +164,13 @@ public class ItemServiceTests extends EasyMockSupport{
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndCategoryEquals(anyObject(),capture(categoryCapture),anyObject())).andReturn(new ArrayList<Item>()).anyTimes();
 		replayAll();
 		
-		itemService.getItemsByCategory(categoryId,0,1);
+		itemService.getItemsByCategory(categoryId,new PaginationParams(0,1));
 		captured=categoryCapture.getValue();
 		assertEquals(captured.getId(), categoryId);
 
 		categoryCapture.reset();
 		
-		itemService.getActiveItemsByCategory(categoryId,0,1);
+		itemService.getActiveItemsByCategory(categoryId,new PaginationParams(0,1));
 		captured=categoryCapture.getValue();
 		assertEquals(captured.getId(), categoryId);
 		
@@ -219,7 +220,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(anyObject(),anyString(),anyObject())).andReturn(items).anyTimes();
 		replayAll();
 		
-		models=itemService.getItems(0,1);
+		models=itemService.getItems(new PaginationParams(0,1));
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());
@@ -241,7 +242,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 
 		
-		models=itemService.getNewArrivalItems(0,1);
+		models=itemService.getNewArrivalItems(new PaginationParams(0,1));
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());
@@ -252,7 +253,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
-		models=itemService.getLastChanceItems(0,1);
+		models=itemService.getLastChanceItems(new PaginationParams(0,1));
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());
@@ -263,7 +264,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
-		models=itemService.getItemsByCategory(0,0,1);
+		models=itemService.getItemsByCategory(0,new PaginationParams(0,1));
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());
@@ -274,7 +275,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
-		models=itemService.getActiveItems(0,1);
+		models=itemService.getActiveItems(new PaginationParams(0,1));
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());
@@ -285,7 +286,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
-		models=itemService.getActiveItemsByCategory(0,0,1);
+		models=itemService.getActiveItemsByCategory(0,new PaginationParams(0,1));
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());
@@ -296,7 +297,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
-		models=itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(),0,1,"");
+		models=itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(),new SortingPaginationParams(0,1,ItemSorting.DEFAULT));
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());
@@ -307,7 +308,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
-		models=itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),0,1,"");
+		models=itemService.findItemsValidFilterCategories("",new ArrayList<Integer>(Arrays.asList(new Integer[]{1,2,3})),new SortingPaginationParams(0,1,ItemSorting.DEFAULT));
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());

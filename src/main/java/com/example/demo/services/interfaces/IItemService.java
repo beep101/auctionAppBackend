@@ -3,9 +3,13 @@ package com.example.demo.services.interfaces;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.ItemModel;
+import com.example.demo.utils.ItemSorting;
+import com.example.demo.utils.PaginationParams;
 
 public interface IItemService {
 	ItemModel getItem(int id) throws NotFoundException;
@@ -13,11 +17,11 @@ public interface IItemService {
 	ItemModel modItem(ItemModel item);
 	ItemModel delItem(ItemModel item);
 	
-	Collection<ItemModel> getItems(int page,int count);
-	Collection<ItemModel> getActiveItems(int page,int count);
-	Collection<ItemModel> getItemsByCategory(int categoryId, int page, int count);
-	Collection<ItemModel> getActiveItemsByCategory(int categoryId, int page, int count);
-	Collection<ItemModel> getNewArrivalItems(int page, int count);
-	Collection<ItemModel> getLastChanceItems(int page, int count);
-	Collection<ItemModel> findItemsValidFilterCategories(String term, List<Integer> categories, int page, int count, String sort)throws InvalidDataException;
+	Collection<ItemModel> getItems(PaginationParams pgbl);
+	Collection<ItemModel> getActiveItems(PaginationParams pgbl);
+	Collection<ItemModel> getItemsByCategory(int categoryId, PaginationParams pgbl);
+	Collection<ItemModel> getActiveItemsByCategory(int categoryId, PaginationParams pgbl);
+	Collection<ItemModel> getNewArrivalItems(PaginationParams pgbl);
+	Collection<ItemModel> getLastChanceItems(PaginationParams pgbl);
+	Collection<ItemModel> findItemsValidFilterCategories(String term, List<Integer> categories, PaginationParams pgbl)throws InvalidDataException;
 }

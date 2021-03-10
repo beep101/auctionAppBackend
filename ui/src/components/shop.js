@@ -46,12 +46,12 @@ class Shop extends React.Component{
     }
 
     loadItems(append){
-        if(this.state.category==""){
+        if(this.state.category===""){
             getItems(this.state.page,12,(success,data)=>{
                 if(success){
                     if(append){
                         this.setState({['items']:[...this.state.items,...data]});
-                        if(data.length==0){
+                        if(data.length===0){
                             this.setState({['loadMore']:false});
                         }
                     }else{
@@ -67,7 +67,7 @@ class Shop extends React.Component{
                 if(success){
                     if(append){
                         this.setState({['items']:[...this.state.items,...data]});
-                        if(data.length==0){
+                        if(data.length===0){
                             this.setState({['loadMore']:false});
                         }
                     }else{
@@ -85,8 +85,8 @@ class Shop extends React.Component{
         return(
         <div className="shopContainer">
             <div className="categoriesList">
-                <div className={this.state.category==""?"categoryButtonSelected":"categoryButton"} onClick={()=>this.selectCategory("")}>all categories</div>
-                {this.state.categories.map(category=><div className={this.state.category==category.id?"categoryButtonSelected":"categoryButton"} onClick={()=>this.selectCategory(category.id)}>{category.name}</div>)}
+                <div className={this.state.category===""?"categoryButtonSelected":"categoryButton"} onClick={()=>this.selectCategory("")}>all categories</div>
+                {this.state.categories.map(category=><div className={this.state.category===category.id?"categoryButtonSelected":"categoryButton"} onClick={()=>this.selectCategory(category.id)}>{category.name}</div>)}
             </div>
             <div className="shopItemWrapper">
                 <div className="gridItemContainer">
