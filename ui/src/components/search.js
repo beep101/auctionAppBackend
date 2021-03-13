@@ -31,6 +31,7 @@ class Search extends React.Component{
     }
         
     componentDidMount=()=>{
+        this.searchText=this.context.searchText;
         this.loadCategories();
         this.load();
         this.context.setSearchCallback((text)=>{this.textChanged(text);});

@@ -110,7 +110,7 @@ class Item extends React.Component{
     render(){
         if(this.state.item.id){
             return(
-            <div class="itemPage">
+            <div className="itemPage">
                 <ToastContainer
                     position="top-center"
                     autoClose={3000}
@@ -122,15 +122,15 @@ class Item extends React.Component{
                     draggable={false}
                     pauseOnHover={false}
                 />
-                <div class="itemContainer">
-                    <div class="itemImageContainer">
-                        <div class="itemImageMainFrame">
-                            <img crossorigin="anonymous" class="itemImageMain" src={this.state.displayedImage}/>
+                <div className="itemContainer">
+                    <div className="itemImageContainer">
+                        <div className="itemImageMainFrame">
+                            <img crossorigin="anonymous" className="itemImageMain" src={this.state.displayedImage}/>
                         </div>
-                        <div class="itemThumbsBar">
+                        <div className="itemThumbsBar">
                             {this.state.item.images.map((image)=>
-                                <span onClick={()=>this.changeDisplayedImage(image)} class="itemImageThumbFrame" >
-                                    <img crossorigin="anonymous" class="itemThumbImage" src={image} />
+                                <span onClick={()=>this.changeDisplayedImage(image)} className="itemImageThumbFrame" >
+                                    <img crossorigin="anonymous" className="itemThumbImage" src={image} />
                                 </span>)}
                         </div>
                     </div>
@@ -140,20 +140,21 @@ class Item extends React.Component{
                             <div className="itemStartPrice">Starts from {this.state.item.startingprice}$</div>
                             <div>
 
-                                <input name="bidAmount" onChange={this.onChange} class="bidInput"/>
-                                <span onClick={this.placeBid} class="bidButton">Place Bid</span>
+                                <input name="bidAmount" onChange={this.onChange} className="bidInput"/>
+                                <span onClick={this.context.jwt===""?()=>{}:this.placeBid}
+                                      className={this.context.jwt===""?"bidButtonDisabled":"bidButton"}>Place Bid</span>
                             </div>
-                            <div class="width10vw">
-                                <div class="messageS flexEnd">
+                            <div className="width10vw">
+                                <div className="messageS flexEnd">
                                     <span >Highes bid</span>
                                     <span>$ {this.state.bids.length===0?
                                         this.state.item.startingprice:this.state.bids[0].amount}
                                     </span>
                                 </div>
-                                <div class="messageS flexEnd">
+                                <div className="messageS flexEnd">
                                     <span>Bid count</span>
                                     <span>{this.state.bids.length}</span></div>
-                                <div class="messageS flexEnd">
+                                <div className="messageS flexEnd">
                                     <span>Time left</span>
                                     <span>{this.timeDiff()}</span>
                                 </div>
@@ -174,10 +175,10 @@ class Item extends React.Component{
 	                <col className="bidTableColumn2"/>
 	                <col className="bidTableColumn3"/>
 	                <thead/>
-                    <tr class="bidTable">
-                        <th class="bidTable">Name</th>
-                        <th class="bidTable">Date</th>
-                        <th class="bidTable">Amount</th>
+                    <tr className="bidTable">
+                        <th className="bidTable">Name</th>
+                        <th className="bidTable">Date</th>
+                        <th className="bidTable">Amount</th>
                     </tr>
                     {this.state.bids.map((bid)=><BidLine bid={bid}/>)}
                 </table>
