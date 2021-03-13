@@ -137,33 +137,35 @@ class Item extends React.Component{
                     <div className="itemInformationsContainer">
                         <div className="itemDataContainer">
                             <div className="itemName">{this.state.item.name}</div>
-                            <div className="itemStartPrice">Starts from {this.state.item.startingprice}$</div>
-                            <div>
-
-                                <input name="bidAmount" onChange={this.onChange} className="bidInput"/>
+                            <div className="itemStartPrice">Starts from - ${this.state.item.startingprice}</div>
+                            <div className="bidContainer">
+                                <input name="bidAmount" onChange={this.onChange} className="bidInput" disabled={this.context.jwt===""}/>
                                 <span onClick={this.context.jwt===""?()=>{}:this.placeBid}
                                       className={this.context.jwt===""?"bidButtonDisabled":"bidButton"}>Place Bid</span>
+                                <div className="bidMinMessage">Enter ${this.state.bids.length===0?this.state.item.startingprice:this.state.bids[0].amount} or more</div>
                             </div>
                             <div className="width10vw">
-                                <div className="messageS flexEnd">
-                                    <span >Highes bid</span>
-                                    <span>$ {this.state.bids.length===0?
-                                        this.state.item.startingprice:this.state.bids[0].amount}
-                                    </span>
+                                <div className="messageS">
+                                    <span >Highes bid: ${this.state.bids.length===0?this.state.item.startingprice:this.state.bids[0].amount}</span>
                                 </div>
-                                <div className="messageS flexEnd">
-                                    <span>Bid count</span>
-                                    <span>{this.state.bids.length}</span></div>
-                                <div className="messageS flexEnd">
-                                    <span>Time left</span>
-                                    <span>{this.timeDiff()}</span>
+                                <div className="messageS">
+                                    <span>Bid count: {this.state.bids.length}</span>
+                                </div>
+                                <div className="messageS">
+                                    <span>Time left: {this.timeDiff()}</span>
                                 </div>
 
+                                <br/>
+                                <div className="listItemButton">
+                                    Watchlist
+                                    <img className="socialImg" src="/images/watchlist.svg"/>
+                                </div>
                             </div>
                                 
                         </div>
+
                         <div>
-                            <div className="itemStartPrice">Description</div>
+                            <div className="itemStartPrice color5a5a5aMarginLeft">Details</div>
                             
                             <div className="itemDescriptionText">{this.state.item.description}</div>
                         </div>

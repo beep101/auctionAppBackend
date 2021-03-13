@@ -69,11 +69,17 @@
     color: #52307c;
 }
 .highlightLinkStyle{
-    margin: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
     font-family: 'Lato', sans-serif;
     font-size: 20px;
     color: #52307c;
     cursor: pointer;
+    padding-bottom: 8px;
+}
+
+.highlightLinkStyleBorder{
+    border-bottom: 6px solid #52307c;
 }
 
 .standardColor{
@@ -112,7 +118,8 @@ h1,h2,h3,p{
 }
 
 .linkStyle{
-    margin: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
     font-family: 'Lato', sans-serif;
     font-size: 20px;
     color: #5a5a5a;
@@ -274,7 +281,10 @@ h1,h2,h3,p{
 }
 
 .homePageNavigator{
-    margin-bottom: 5px;
+    width: 100%;
+    border-bottom: 2px solid #d8d8d8;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
 }
 
 hr.solid{
@@ -288,25 +298,21 @@ hr.solid{
     flex-wrap: wrap;
     align-content: space-evenly;
     justify-content: space-evenly;
-    width: 66vw;
+    width: 60vw;
     margin-bottom: 60px;
 }
 
 .gridItem{
-    width: 20vw;
-    height: 20vw;
+    width: 18vw;
+    height: 24vw;
     color: #5a5a5a;
-    border-color: #d8d8d8;
-    border-width: 1px;
-    border-style: solid;
-    box-shadow: 0 0 5px #d8d8d8;
-    cursor: pointer;
+
     margin-top: 1vw;
     margin-bottom: 1vw;
-
+    
     display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: space-between;
 }
 
 .gridImg{
@@ -315,9 +321,9 @@ hr.solid{
 }
 
 .gridText{
-    max-height: 15%;
+    max-height: 10%;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     width: 80%;
     margin-bottom: 3%;
 }
@@ -330,8 +336,8 @@ hr.solid{
 
 .gridPrice{
     font-family: 'Lato', sans-serif;
-    color: #5a5a5a;
-    font-size: larger;
+    color: #d8d8d8;
+    font-size: medium;
 }
 
 hr.gridBreak{
@@ -365,29 +371,39 @@ hr.gridBreak{
     border-color: #d8d8d8;
     border-width: 1px;
     border-style: solid;
-    box-shadow: 0 0 5px #d8d8d8;
+}
+
+.categoryButtonTitle{
+    color: #5a5a5a;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;
+
+    padding: 3px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 8px;
+    text-align: center;
 }
 
 .categoryButton{
     color:#d8d8d8;
-    font-size: 16px;
+    font-size: medium;
     font-family: 'Lato', sans-serif;
     cursor: pointer;
     padding: 3px;
-    text-align: center;
-    padding-left: 35px;
-    padding-right: 35px;
+    padding-right: 60px;
+    padding-left: 8px;
 }
 
 .categoryButtonSelected{
     color: #52307c;
-    font-size: 16px;
+    font-size: medium;
     font-family: 'Lato', sans-serif;
     cursor: pointer;
     padding: 3px;
-    text-align: center;
-    padding-left: 35px;
-    padding-right: 35px;
+    padding-right: 60px;
+    padding-left: 8px;
 }
 
 .loadEnabled{
@@ -458,14 +474,14 @@ hr.gridBreak{
 .itemName{
     font-size: xx-large;
     font-family: 'Lato', sans-serif;
-    color: #52307c;
+    color: #5a5a5a;
     margin-bottom: 7px;
 }
 
 .itemStartPrice{
     font-size: large;
     font-family: 'Lato', sans-serif;
-    color: #5a5a5a;
+    color: #52307c;
     margin-bottom: 7px;
 }
 
@@ -475,15 +491,19 @@ hr.gridBreak{
     color: #5a5a5a;
 }
 
+.bidContainer{
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
 .bidInput{
     color: #5a5a5a;
     font-size: medium;
     font-family: 'Lato', sans-serif;
     padding: 8px;
     text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
     margin-right: 40px;
+    margin-bottom: 3px;
 
     border-color: #d8d8d8;
     border-width: 1px;
@@ -491,7 +511,7 @@ hr.gridBreak{
 }
 
 .bidButton{
-    color: #52307c;
+    color: #5a5a5a;
     font-size: medium;
     font-weight: bold;
     font-family: 'Lato', sans-serif;
@@ -504,6 +524,11 @@ hr.gridBreak{
     border-color: #52307c;
     border-width: 2px;
     border-style: solid;   
+}
+
+.bidMinMessage{
+    font-family: 'Lato', sans-serif;
+    color: #d8d8d8;
 }
 
 .itemDataContainer{
@@ -562,10 +587,22 @@ hr.gridBreak{
 }
 
 .gridItemImgContainer{
-    height: 82%;
+    height: 85%;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+
+    cursor: pointer;
+}
+
+.color5a5a5aMarginLeft{
+    color: #5a5a5a;
+    margin-left: 1vw;
 }
 
 .itemPage{
@@ -580,26 +617,28 @@ table.bidTable{
     border-style: solid;
     box-shadow: 0 0 5px #d8d8d8;
     width: 100%;
-    padding: 15px;
-    padding-right: 40px;
-    padding-left: 40px;
-    margin-bottom: 70px;
+
+    color:#5a5a5a;
+    font-family: 'Lato', sans-serif;
+
+    padding: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+    margin-bottom: 2vw;
 }
 
 tr.bidTable{
-    color:#5a5a5a;
-    font-family: 'Lato', sans-serif;
     text-align: left;
     font-size: large;
 }
 
 th.bidTable{
-    font-weight: bold;
-    border-bottom-color: #d8d8d8;
+    font-weight: normal;
+    padding-bottom: 5px;
+    color: #52307c;
+    border-bottom: #52307c;
     border-bottom-width: 1px;
     border-bottom-style: solid;
-    padding-bottom: 3px;
-    color: #52307c;
 }
 
 td.bidTable{
@@ -641,7 +680,6 @@ td.bidTable{
     border-color: #d8d8d8;
     border-width: 1px;
     border-style: solid;
-    box-shadow: 0 0 5px #d8d8d8;
 
     padding: 3px;
     padding-left: 10px;
@@ -656,20 +694,16 @@ td.bidTable{
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 66vw;
+    width: 60vw;
 }
 
 .listItem{
     display: flex;
     justify-content: space-between;
-    width: 64vw;
+    width: 58vw;
 
     color: #5a5a5a;
-    border-color: #d8d8d8;
-    border-width: 1px;
-    border-style: solid;
-    box-shadow: 0 0 5px #d8d8d8;
-    cursor: pointer;
+
     margin-top: 1vw;
     margin-bottom: 1vw;
 }
@@ -682,6 +716,12 @@ td.bidTable{
     justify-content: center;
 
     margin-left: 1vw;
+
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+
+    cursor: pointer;
 }
 .listImg{
     max-width: 90%;
@@ -691,34 +731,23 @@ td.bidTable{
     max-width: 40vw;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
     
-    margin-right: 3vw;
+    margin-left: 2vw;
 
     font-family: 'Lato', sans-serif;
 }
 .listName{
-    font-size: x-large;
+    font-size: large;
     font-weight: bold;
     color: #5a5a5a;
 }
 
 .listDescription{
     color: #5a5a5a;
-    text-align: justify;
-    text-justify: auto;
 
     padding-top: 1vw;
     padding-bottom: 1vw;
-    
-    border-top-color: #d8d8d8;
-    border-top-width: 1px;
-    border-top-style: solid;
-    
-    border-bottom-color: #d8d8d8;
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
+
 }
 .listPrice{
     font-size: x-large;
@@ -745,4 +774,72 @@ hr.solidVerticalLine{
     border-color: #d8d8d8;
     border-width: 2px;
     border-style: solid;
+}
+
+.listItemButtonContainer{
+    display: flex;
+    margin-top: 1vw;
+}
+
+.listItemButton{
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    padding-left: 12px;
+    padding-right: 6px;
+
+    margin: 10px;
+
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+
+    cursor: pointer;
+
+    color: #d8d8d8;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;
+}
+
+.displayModeIcon{
+    width: 20px;
+    height: 20px;
+    margin-right: 6px;
+}
+
+.displayModeSelected{
+    display: flex;
+    align-items: center;
+    background-color: #52307c;
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    cursor: pointer;
+
+    color: #ffffff;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;
+}
+
+.displayMode{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    cursor: pointer;
+
+    color: #5a5a5a;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;
+}
+
+.displayModeContainer{
+    display: flex;
+    align-items: center;
 }

@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import ListItemButtons from './listitembuttons';
 
 class ItemElement extends React.Component{
 
@@ -24,14 +26,14 @@ class ItemElement extends React.Component{
         }
         return(
             <div className={itemClass}>
-                <div className={imgContClass}>
+                <Link to={this.props.link} className={imgContClass}>
                     <img crossorigin="anonymous" className={imageClass} src={this.props.item.images[0]}/>
-                </div>
-                {this.props.type==="grid"?<hr className="gridBreak"></hr>:null}
+                </Link>
                 <div className={textClass}>
                     <span className={nameClass}>{this.props.item.name}</span>
                     {this.props.type==="list"&&<div className="listDescription">{this.props.item.description}</div>}
-                    <span className={priceClass}>from {this.props.item.startingprice}$</span>
+                    <span className={priceClass}>Starts From ${this.props.item.startingprice}</span>
+                    {this.props.type==="list"&&<ListItemButtons/>}
                 </div>
             </div>
         );

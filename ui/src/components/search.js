@@ -1,7 +1,6 @@
 import React from 'react';
 import AuthContext from '../context';
 import ItemElement from './itemELement';
-import { Link } from 'react-router-dom';
 import {getAllCategories} from '../apiConsumer/categoryConsumer';
 import {searchItems} from '../apiConsumer/itemFetchConsumer' 
 
@@ -54,8 +53,7 @@ class Search extends React.Component{
     }
 
     displayChanged=(event)=>{
-        console.log(event);
-        this.setState({['display']:event.target.id})
+        this.setState({['display']:event})
     }
 
     load=()=>{
@@ -107,6 +105,7 @@ class Search extends React.Component{
         <div className="shopContainer">
            
             <div className="categoriesList">
+                <div className="categoryButtonTitle">Product Categories</div>
                 <div className={this.state.selectedCategories.length===0?"categoryButtonSelected":"categoryButton"}
                     onClick={()=>this.selectCategory("")}>all categories</div>
                 {this.state.categories.map(category=><div
@@ -120,14 +119,19 @@ class Search extends React.Component{
                             {this.sorts.map(sort=><option value={sort.value}>{sort.name}</option>)}
                         </select>
                     </span>
-                    <span>
-                        <span onClick={((e) => this.displayChanged(e))} id="grid" className={this.state.display==="grid"?"highlightLinkStyle":"linkStyle"}>Grid</span>
-                        <hr className="solidVerticalLine"></hr>
-                        <span onClick={((e) => this.displayChanged(e))} id="list" className={this.state.display==="list"?"highlightLinkStyle":"linkStyle"}>List</span>
+                    <span className="displayModeContainer">
+                        <span onClick={(() => this.displayChanged("grid"))} id="grid" className={this.state.display==="grid"?"displayModeSelected":"displayMode"}>
+                            <img className="displayModeIcon" src={this.state.display==="grid"?"/images/grid_icon_light.svg":"/images/grid_icon_dark.svg"}/>
+                            Grid
+                        </span>
+                        <span onClick={(() => this.displayChanged("list"))} id="list" className={this.state.display==="list"?"displayModeSelected":"displayMode"}>
+                            <img className="displayModeIcon" src={this.state.display==="list"?"/images/list_icon_light.svg":"/images/list_icon_dark.svg"}/>
+                            List
+                        </span>
                     </span>    
                 </div>
                 <div className={this.state.display==="grid"?"gridItemContainer":"listItemContainer"}>
-                    {this.state.items.map(item=><Link to={"/item?id="+item.id}><ItemElement item={item} type={this.state.display}/></Link>)}
+                    {this.state.items.map(item=><ItemElement link={"/item?id="+item.id} item={item} type={this.state.display}/>)}
                 </div>
                 <div className="width10">
                     <div className={this.state.loadMore?"loadEnabled":"loadDisabled"} onClick={this.load}>Load More</div>
