@@ -57,7 +57,7 @@ class Search extends React.Component{
     }
 
     load=()=>{
-        searchItems(this.searchText,this.selectedCategories,this.loadCount,12,this.sort,(success, data)=>{
+        searchItems(this.searchText,this.selectedCategories,this.loadCount,6,this.sort,(success, data)=>{
             if(success){
                 if(data.length===0){
                     this.setState({['loadMore']:false});
