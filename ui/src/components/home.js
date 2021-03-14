@@ -18,7 +18,7 @@ class Home extends React.Component{
     }
 
     lastChanceClick=()=>{
-        getLastChance(0,8,(bool,data)=>{
+        getLastChance(0,6,(bool,data)=>{
             if(bool){
                 this.setState({items:data,activeTab:'lastChance'});
             }else{
@@ -28,7 +28,7 @@ class Home extends React.Component{
     }
 
     newArrivalsClick=()=>{
-        getNewArrivals(0,8,(bool,data)=>{
+        getNewArrivals(0,6,(bool,data)=>{
             if(bool){
                 this.setState({items:data,activeTab:'newArrivals'});
             }else{
