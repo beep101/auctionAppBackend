@@ -1,8 +1,6 @@
 import React from 'react';
 import { getLastChance, getNewArrivals } from '../apiConsumer/itemFetchConsumer';
-import {getLinks} from '../apiConsumer/imageLinker';
 import ItemElement from './itemELement';
-import { Link } from 'react-router-dom';
 
 
 class Home extends React.Component{
@@ -20,7 +18,7 @@ class Home extends React.Component{
     }
 
     lastChanceClick=()=>{
-        getLastChance(0,8,(bool,data)=>{
+        getLastChance(0,6,(bool,data)=>{
             if(bool){
                 this.setState({items:data,activeTab:'lastChance'});
             }else{
@@ -30,7 +28,7 @@ class Home extends React.Component{
     }
 
     newArrivalsClick=()=>{
-        getNewArrivals(0,8,(bool,data)=>{
+        getNewArrivals(0,6,(bool,data)=>{
             if(bool){
                 this.setState({items:data,activeTab:'newArrivals'});
             }else{
@@ -43,12 +41,11 @@ class Home extends React.Component{
         return(
             <div className="homeContainer">
                 <div  className="homePageNavigator">
-                    <span className={this.state.activeTab==="lastChance"?"highlightLinkStyle":"linkStyle"} onClick={this.lastChanceClick}>Last Chance</span>
-                    <span className={this.state.activeTab==="newArrivals"?"highlightLinkStyle":"linkStyle"} onClick={this.newArrivalsClick}>New Arrivals</span>
+                    <span className={this.state.activeTab==="lastChance"?"highlightLinkStyle highlightLinkStyleBorder":"linkStyle"} onClick={this.lastChanceClick}>Last Chance</span>
+                    <span className={this.state.activeTab==="newArrivals"?"highlightLinkStyle highlightLinkStyleBorder":"linkStyle"} onClick={this.newArrivalsClick}>New Arrivals</span>
                 </div>
-                <hr className="solid"></hr>
                 <div className="gridItemContainer">
-                    {this.state.items.map(item=><Link to={"/item?id="+item.id}><ItemElement item={item} type="grid"/></Link>)}
+                    {this.state.items.map(item=><ItemElement link={"/item?id="+item.id} item={item} type="grid"/>)}
                 </div>
             </div>
         )

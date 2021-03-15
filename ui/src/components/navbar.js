@@ -14,7 +14,9 @@ class NavBar extends React.Component{
         return(
             <div className="navBar">
                 <div className="logoStyle">
+                    <Link to="/">
                     Auction Purple
+                    </Link>
                 </div>
                 <div className="searchBox">
                     <Link to="/search">
