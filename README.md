@@ -2,7 +2,7 @@ Requirements to run the app are
 
 JDK11+ and Maven 3.6.3 or Spring Tool Suite 4.9.0
 
-PostgreSQL database server with a configured role for Spring boot app
+PostgreSQL database server with a role configured for Spring boot app
 
 Node 14.15.5
 
