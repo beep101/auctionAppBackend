@@ -55,11 +55,12 @@ class Search extends React.Component{
     displayChanged=(event)=>{
         this.setState({['display']:event})
     }
+    
 
     load=()=>{
         searchItems(this.searchText,this.selectedCategories,this.loadCount,6,this.sort,(success, data)=>{
             if(success){
-                if(data.length===0){
+                if(data.length<6){
                     this.setState({['loadMore']:false});
                 }
                 if(this.loadCount!=0){
