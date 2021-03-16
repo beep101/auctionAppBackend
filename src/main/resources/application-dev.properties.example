@@ -1,0 +1,17 @@
+spring.datasource.url = jdbc:postgresql://localhost:5432/auctionPurple
+spring.datasource.username = ***//database user
+spring.datasource.password = ***//database password
+
+#security
+jwt.secret=***//secret key
+jwt.validTime=86400//time in seconds
+
+s3.id=***//s3Id
+s3.key=***//s3Key
+
+email.name=***//email for password reset
+email.passwd=***//email's password
+
+mail.subject=Reset your Auction Purple password
+mail.content=Follow link below to set new password for your Auction purple account
+mail.link=http://loaclhost:8080/newPassword?token= //replace localhost:8080 with apps address
