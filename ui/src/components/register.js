@@ -43,7 +43,7 @@ class Register extends Component{
                 
                 <button className="buttonWide" onClick={this.signupReq}>Sign Up</button>
                 <p className="message">Already have an account?  <Link to="/login" className="highlightMessage">Login</Link></p>
-                {this.state.msg===""?null:<p className="warningMessage">{this.state.msg}</p>}
+                {this.state.msg.split(",").map(msg=><p className="warningMessage">{msg}</p>)}
             </div>
         );
     }

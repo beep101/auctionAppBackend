@@ -3,7 +3,11 @@ package com.example.demo.services;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -66,8 +70,11 @@ public class AccountService implements IAccountService{
 
 	@Override
 	public UserModel signUp(UserModel signup)throws InvalidDataException,ExistingUserException,NonExistentUserException {
-		if(signup.getEmail().isBlank()||signup.getPassword().isBlank()||signup.getFirstName().isBlank()||signup.getLastName().isBlank()) {
-			throw new InvalidDataException();
+		Set<ConstraintViolation<UserModel>> violations=Validation.buildDefaultValidatorFactory().getValidator().validate(signup);
+		if(!violations.isEmpty()) {
+			String problems=violations.stream().map(x->x.getMessage()+", ").reduce("",String::concat);
+			problems=problems.substring(0, problems.length() - 2);
+			throw new InvalidDataException(problems);
 		}
 		if(usersRepo.findByEmail(signup.getEmail()).isPresent()) {
 			throw new ExistingUserException();

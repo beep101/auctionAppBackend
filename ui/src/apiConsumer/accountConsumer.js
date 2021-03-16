@@ -16,10 +16,8 @@ export function login(credentials,handler){
                 console.log(error.response);
             }else if(error.request){
                 msg="Something went wrong, please try again";
-                console.log(error.request);
             }else{
                 msg="Something went wrong";
-                console.log(error.message);
             }
             handler(false,msg);
         }
@@ -35,17 +33,14 @@ export function signup(userData,handler){
             let msg="";
             if(error.response){
                 if(error.response.status<500){
-                    msg="User with same email alredy exists";
+                    msg=error.response.data.message;
                 }else{
                     msg="Something went wrong, please try again";
                 }
-                console.log(error.response);
             }else if(error.request){
                 msg="Something went wrong, please try again";
-                console.log(error.request);
             }else{
                 msg="Something went wrong";
-                console.log(error.message);
             }
             handler(false,msg);
         }
