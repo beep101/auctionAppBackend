@@ -23,4 +23,5 @@ Npm run-script watch will run frontend in development mode and rebuild it when d
 Npm run-script build-prod will run only once and builds frontend in production mode.
 
 Live at
-auction-purple.herokuapp.com/
+
+auction-purple.herokuapp.com
