@@ -3,6 +3,7 @@ import AuthContext from '../context';
 import ItemElement from './itemELement';
 import {getAllCategories} from '../apiConsumer/categoryConsumer';
 import {searchItems} from '../apiConsumer/itemFetchConsumer' 
+import {SHOP_LOAD_COUNT} from '../utils/constants'
 
 class Search extends React.Component{
 
@@ -60,7 +61,7 @@ class Search extends React.Component{
     load=()=>{
         searchItems(this.searchText,this.selectedCategories,this.loadCount,6,this.sort,(success, data)=>{
             if(success){
-                if(data.length<6){
+                if(data.length<SHOP_LOAD_COUNT){
                     this.setState({['loadMore']:false});
                 }
                 if(this.loadCount!=0){

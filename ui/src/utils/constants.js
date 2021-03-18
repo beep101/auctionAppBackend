@@ -9,3 +9,5 @@ export const DEFAULT_TOAST_CONFIG={
     draggable: false,
     progress: 0,
 }
+
+export const SHOP_LOAD_COUNT=6;
