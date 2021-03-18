@@ -21,3 +21,6 @@ To build the frontend there are two commands, npm run-script watch and npm run-s
 Npm run-script watch will run frontend in development mode and rebuild it when detects a change in frontend files. It should start before mvn spring-boot:run. 
 
 Npm run-script build-prod will run only once and builds frontend in production mode.
+
+Live at
+auction-purple.herokuapp.com/
