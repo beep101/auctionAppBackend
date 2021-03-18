@@ -19,6 +19,8 @@ public class ExceptionHandleControllerAdvice {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", ex.getMessage());
+        if(!ex.getErrors().isEmpty())
+        	body.put("errors", ex.getErrors());
 
         return new ResponseEntity<>(body, HttpStatus.NOT_ACCEPTABLE);
     }
@@ -41,8 +43,10 @@ public class ExceptionHandleControllerAdvice {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", ex.getMessage());
+        if(!ex.getErrors().isEmpty())
+        	body.put("errors", ex.getErrors());
 
-        return new ResponseEntity<>(body, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
     
     @ExceptionHandler(InvalidDataException.class)

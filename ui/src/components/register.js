@@ -37,7 +37,7 @@ class Register extends Component{
                     <label className="inputLabel">Email</label><br/>
                     <input className="inputFieldWide" name="email" onChange={this.onChange} value={this.state.email}/><br/>
                     {this.state.msg&&this.state.msg.email&&<div className="warningMessageInputLabel">{this.state.msg.email}</div>}
-                    </div>
+                </div>
                 
                 <div className="inputFieldContainer">
                     <label className="inputLabel">Password</label><br/>
@@ -80,7 +80,6 @@ class Register extends Component{
                 localStorage.setItem('token',message)
                 this.props.history.push("/");
             }else{
-                console.log(message);
                 if(message.password){
                     this.setState({['password']:''})
                 }

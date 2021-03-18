@@ -249,6 +249,7 @@ public class AccountServiceTests extends EasyMockSupport {
 	public void newPasswordTokenIsNullShouldThrowException() throws InvalidTokenException, InvalidDataException {
 		UserModel model=new UserModel();
 		model.setForgotPasswordToken(null);
+		model.setPassword("123123");
 		replayAll();
 		
 		accountControler.newPassword(model);
@@ -260,6 +261,7 @@ public class AccountServiceTests extends EasyMockSupport {
 	public void newPasswordTokenIsEmptyStringShouldThrowException() throws InvalidTokenException, InvalidDataException {
 		UserModel model=new UserModel();
 		model.setForgotPasswordToken("");
+		model.setPassword("123123");
 		replayAll();
 		
 		accountControler.newPassword(model);
@@ -272,6 +274,30 @@ public class AccountServiceTests extends EasyMockSupport {
 		UserModel model=new UserModel();
 		model.setForgotPasswordToken("a100d2");
 		model.setPassword(null);
+		replayAll();
+		
+		accountControler.newPassword(model);
+		
+		verifyAll();
+	}
+	
+	@Test(expected = InvalidDataException.class)
+	public void newPasswordPasswordEmptyShouldThrowException() throws InvalidTokenException, InvalidDataException {
+		UserModel model=new UserModel();
+		model.setForgotPasswordToken("a100d2");
+		model.setPassword("");
+		replayAll();
+		
+		accountControler.newPassword(model);
+		
+		verifyAll();
+	}
+	
+	@Test(expected = InvalidDataException.class)
+	public void newPasswordPasswordShortShouldThrowException() throws InvalidTokenException, InvalidDataException {
+		UserModel model=new UserModel();
+		model.setForgotPasswordToken("a100d2");
+		model.setPassword("abc");
 		replayAll();
 		
 		accountControler.newPassword(model);

@@ -23,6 +23,7 @@ public class UserRequest {
 	@Email(message = "Email address must be valid")
 	@NotBlank(message = "Email can't be blank")
 	private String email;
+	@NotBlank(message = "Password can't be shorter than 6 characters")
 	@Size(min = 6, message = "Password can't be shorter than 6 characters")
 	private String password;
 	

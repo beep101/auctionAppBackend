@@ -66,10 +66,14 @@ public class AccountService implements IAccountService{
 				login.setJwt(jwt);
 				return login;
 			}else {
-				throw new BadCredentialsException();
+				Map<String,String> problems=new HashMap<>();
+				problems.put("password", "Invalid password");
+				throw new BadCredentialsException(problems);
 			}
 		}else {
-			throw new BadCredentialsException();
+			Map<String,String> problems=new HashMap<>();
+			problems.put("email", "No user with email");
+			throw new BadCredentialsException(problems);
 		}
 	}
 
@@ -103,14 +107,19 @@ public class AccountService implements IAccountService{
 	
 	@Override
 	public UserModel forgotPassword(UserModel forgotPassword) throws NonExistentUserException {
-		if( forgotPassword.getEmail()==null||forgotPassword.getEmail().equals("")) {
-			throw new NonExistentUserException();
+		Map<String,String> problems=(new UserRequest(forgotPassword)).validate();
+		if(problems.containsKey("email")) {
+			String msg=problems.get("email");
+			problems.clear();
+			problems.put("email", msg);
+			throw new NonExistentUserException(problems);
 		}
 		Optional<User> users=usersRepo.findByEmail(forgotPassword.getEmail());
 		if(users.isEmpty()) {
-			throw new NonExistentUserException();
+			problems.clear();
+			problems.put("email", "No user with email");
+			throw new NonExistentUserException(problems);
 		}
-		
 		User user=users.get();
 		String token=UUID.randomUUID().toString().replace("-","");
 		user.setForgotPasswordToken(token);
@@ -124,11 +133,15 @@ public class AccountService implements IAccountService{
 	
 	@Override
 	public UserModel newPassword(UserModel newPassword) throws InvalidTokenException,InvalidDataException {
+		Map<String,String> problems=(new UserRequest(newPassword)).validate();
+		if(problems.containsKey("password")) {
+			String msg=problems.get("password");
+			problems.clear();
+			problems.put("password", msg);
+			throw new InvalidDataException(problems);
+		}
 		if(newPassword.getForgotPasswordToken()==null || newPassword.getForgotPasswordToken().equals("")) {
 			throw new InvalidTokenException();
-		}
-		if(newPassword.getPassword()==null || newPassword.getPassword().equals("")) {
-			throw new InvalidDataException();
 		}
 		
 		Optional<User> users=usersRepo.findByForgotPasswordTokenAndForgotPasswordTokenEndTimeAfter(newPassword.getForgotPasswordToken(),new Timestamp(System.currentTimeMillis()));
