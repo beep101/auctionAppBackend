@@ -18,6 +18,10 @@
     float: left;
 }
 
+.inputFieldContainer{
+    margin-bottom: 12px;
+}
+
 .inputFieldWide{
     width: 300px;
     font-family: 'Lato', sans-serif;
@@ -30,8 +34,7 @@
     color: #5a5a5a;
     border-width: 1px;
     border-style: solid;
-    margin: 8px;
-    margin-bottom: 15px;
+    margin: 4px;
 }
 
 .buttonWide{
@@ -57,6 +60,13 @@
     font-family: 'Lato', sans-serif;
     margin: 10px;
     color: #9c2510;
+}
+
+.warningMessageInputLabel{
+    font-family: 'Lato', sans-serif;
+    margin: 2px;
+    color: #9c2510;
+    font-size: 12px;
 }
 
 .highlightMessage{

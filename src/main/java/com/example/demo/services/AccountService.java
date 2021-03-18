@@ -2,11 +2,15 @@ package com.example.demo.services;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Path.Node;
 import javax.validation.Validation;
 
 import org.springframework.mail.SimpleMailMessage;
@@ -24,6 +28,7 @@ import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.interfaces.IAccountService;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
+import com.example.demo.validations.UserRequest;
 
 public class AccountService implements IAccountService{
 	private UsersRepository usersRepo;
@@ -70,14 +75,14 @@ public class AccountService implements IAccountService{
 
 	@Override
 	public UserModel signUp(UserModel signup)throws InvalidDataException,ExistingUserException,NonExistentUserException {
-		Set<ConstraintViolation<UserModel>> violations=Validation.buildDefaultValidatorFactory().getValidator().validate(signup);
-		if(!violations.isEmpty()) {
-			String problems=violations.stream().map(x->x.getMessage()+", ").reduce("",String::concat);
-			problems=problems.substring(0, problems.length() - 2);
+		Map<String,String> problems=(new UserRequest(signup)).validate();
+		if(!problems.isEmpty()) {
 			throw new InvalidDataException(problems);
 		}
 		if(usersRepo.findByEmail(signup.getEmail()).isPresent()) {
-			throw new ExistingUserException();
+			problems=new HashMap<>();
+			problems.put("email", "Email alredy in use");
+			throw new ExistingUserException(problems);
 		}
 		User newUser=new User();
 		newUser.setName(signup.getFirstName());

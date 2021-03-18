@@ -29,6 +29,8 @@ public class ExceptionHandleControllerAdvice {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", ex.getMessage());
+        if(!ex.getErrors().isEmpty())
+        	body.put("errors", ex.getErrors());
 
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
@@ -49,6 +51,8 @@ public class ExceptionHandleControllerAdvice {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", ex.getMessage());
+        if(!ex.getErrors().isEmpty())
+        	body.put("errors", ex.getErrors());
 
     	return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }

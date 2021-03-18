@@ -33,14 +33,19 @@ export function signup(userData,handler){
             let msg="";
             if(error.response){
                 if(error.response.status<500){
-                    msg=error.response.data.message;
+                    if(error.response.data.errors){
+                        handler(false,error.response.data.errors);
+                        return;
+                    }else{
+                        msg={msg:error.response.data.message}
+                    }
                 }else{
-                    msg="Something went wrong, please try again";
+                    msg={msg:"Something went wrong, please try again"};
                 }
             }else if(error.request){
-                msg="Something went wrong, please try again";
+                msg={msg:"Something went wrong, please try again"};
             }else{
-                msg="Something went wrong";
+                msg={msg:"Something went wrong"};
             }
             handler(false,msg);
         }
