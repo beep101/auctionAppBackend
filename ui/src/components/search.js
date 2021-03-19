@@ -31,10 +31,13 @@ class Search extends React.Component{
     }
         
     componentDidMount=()=>{
-        this.searchText=this.context.searchText;
         this.loadCategories();
-        this.load();
         this.context.setSearchCallback((text)=>{this.textChanged(text);});
+        this.context.search(null);
+    }
+
+    componentWillUnmount=()=>{
+        this.context.removeSearchCallback();
     }
 
     textChanged=(text)=>{
@@ -59,10 +62,17 @@ class Search extends React.Component{
     
 
     load=()=>{
-        searchItems(this.searchText,this.selectedCategories,this.loadCount,6,this.sort,(success, data)=>{
+        searchItems(this.searchText,this.selectedCategories,this.loadCount,SHOP_LOAD_COUNT,this.sort,(success, data)=>{
             if(success){
                 if(data.length<SHOP_LOAD_COUNT){
                     this.setState({['loadMore']:false});
+                }else if(data.length==SHOP_LOAD_COUNT){
+                    searchItems(this.searchText,this.selectedCategories,this.loadCount+1,SHOP_LOAD_COUNT,this.sort,(success, data)=>{
+                        if(success)
+                            if(data.length==0){
+                                this.setState({['loadMore']:false});
+                            }
+                    }); 
                 }
                 if(this.loadCount!=0){
                     this.setState({['items']:[...this.state.items,...data]});
