@@ -15,7 +15,7 @@ class NavBar extends React.Component{
             <div className="navBar">
                 <div className="logoStyle">
                     <Link to="/">
-                    Auction Purple
+                        <img className="logoImg" src="/images/logo.svg"/>
                     </Link>
                 </div>
                 <div className="searchBox">
