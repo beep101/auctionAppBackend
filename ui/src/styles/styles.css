@@ -346,6 +346,8 @@ hr.solid{
     font-family: 'Lato', sans-serif;
     color: #5a5a5a;
     font-size: larger;
+
+    cursor: pointer;
 }
 
 .gridPrice{
@@ -400,7 +402,7 @@ hr.gridBreak{
 }
 
 .categoryButton{
-    color: #5d5d5d;;
+    color: #5a5a5a;;
     font-size: medium;
     font-family: 'Lato', sans-serif;
     cursor: pointer;
@@ -409,7 +411,7 @@ hr.gridBreak{
 }
 
 .categoryButtonSelected{
-    color: #5d5d5d;
+    color: #5a5a5a;
     font-size: medium;
     font-family: 'Lato', sans-serif;
     cursor: pointer;
@@ -604,6 +606,8 @@ hr.gridBreak{
 }
 
 .gridItemImgContainer{
+    
+    position: relative;
     height: 85%;
     width: 100%;
     display: flex;
@@ -613,8 +617,6 @@ hr.gridBreak{
     border-color: #d8d8d8;
     border-width: 1px;
     border-style: solid;
-
-    cursor: pointer;
 }
 
 .color5a5a5aMarginLeft{
@@ -740,8 +742,6 @@ td.bidTable{
     border-color: #d8d8d8;
     border-width: 1px;
     border-style: solid;
-
-    cursor: pointer;
 }
 .listImg{
     max-width: 90%;
@@ -760,6 +760,8 @@ td.bidTable{
     font-size: large;
     font-weight: bold;
     color: #5a5a5a;
+
+    cursor: pointer;
 }
 
 .listDescription{
@@ -815,6 +817,8 @@ hr.solidVerticalLine{
     border-style: solid;
 
     cursor: pointer;
+
+    background-color: #ffffff;
 
     color: #d8d8d8;
     font-size: medium;
@@ -901,4 +905,44 @@ hr.solidVerticalLine{
 
     background-color: #AB944E;
     color: #F6F2E5;
+}
+
+.gridItemOverlay{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(131, 103, 216, .3)
+
+}
+
+.gridItemButtonContainer{
+    display: flex;
+}
+
+.gridItemButton{
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    padding-left: 12px;
+    padding-right: 6px;
+
+    margin: 10px;
+
+    border-color: #5a5a5a;
+    border-width: 1px;
+    border-style: solid;
+
+    cursor: pointer;
+
+    background-color: #ffffff;
+
+    color: #5a5a5a;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;
 }

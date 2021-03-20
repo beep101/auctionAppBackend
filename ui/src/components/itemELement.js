@@ -6,6 +6,9 @@ class ItemElement extends React.Component{
 
     constructor(props){
         super(props);
+        this.state={
+            hover:false
+        }
     }
     render(){
         let itemClass,imageClass,textClass,nameClass,priceClass,imgContClass;
@@ -25,15 +28,20 @@ class ItemElement extends React.Component{
             priceClass="listPrice";
         }
         return(
-            <div className={itemClass}>
-                <Link to={this.props.link} className={imgContClass}>
+            <div className={itemClass} onMouseOver={()=>this.setState({hover: true})} onMouseOut={()=>this.setState({hover: false})} > 
+                <div className={imgContClass}>
                     <img crossorigin="anonymous" className={imageClass} src={this.props.item.images[0]}/>
-                </Link>
+                    {this.state.hover&&this.props.type=="grid"&&<div className="gridItemOverlay">
+                        <ListItemButtons bidLink={this.props.link} mode="grid"/>
+                    </div>}
+                </div>
                 <div className={textClass}>
-                    <span className={nameClass}>{this.props.item.name}</span>
+                    <Link to={this.props.link}>
+                        <span className={nameClass}>{this.props.item.name}</span>
+                    </Link>
                     {this.props.type==="list"&&<div className="listDescription">{this.props.item.description}</div>}
                     <span className={priceClass}>Starts From ${this.props.item.startingprice}</span>
-                    {this.props.type==="list"&&<ListItemButtons/>}
+                    {this.props.type==="list"&&<ListItemButtons bidLink={this.props.link} mode="list"/>}
                 </div>
             </div>
         );
