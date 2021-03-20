@@ -15,10 +15,11 @@ class Search extends React.Component{
         this.sort="default";
 
         this.sorts=[
-            {value:"default",name:"Default Sort"},
-            {value:"newness",name:"Sort By Newness"},
-            {value:"priceAsc",name:"Sort By Price Ascending"},
-            {value:"priceDesc",name:"Sort By Price Descending"}
+            {value:"default",name:"Default"},
+            {value:"newness",name:"Newest first"},
+            {value:"timeleft",name:"Time left"},
+            {value:"priceAsc",name:"By Price Ascending"},
+            {value:"priceDesc",name:"By Price Descending"}
         ]
 
         this.state={

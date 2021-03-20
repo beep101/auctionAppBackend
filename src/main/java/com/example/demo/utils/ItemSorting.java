@@ -3,12 +3,14 @@ package com.example.demo.utils;
 import org.springframework.data.domain.Sort;
 
 public enum ItemSorting {
-	NEWNESS,PRICEASC,PRICEDESC,DEFAULT;
+	NEWNESS,TIMELEFT,PRICEASC,PRICEDESC,DEFAULT;
 	
 	public Sort getSort() {
 		switch(this) {
 			case NEWNESS:
 				return Sort.by("starttime").descending();
+			case TIMELEFT:
+				return Sort.by("endtime").ascending();
 			case PRICEASC:
 				return Sort.by("startingprice").ascending();
 			case PRICEDESC:

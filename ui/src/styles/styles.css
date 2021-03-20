@@ -699,6 +699,7 @@ td.bidTable{
     padding-left: 10px;
     padding-right: 10px;
  
+    background: url('https://auction-purple.herokuapp.com/images/select_arrow.svg') no-repeat 4px 4px;
     -moz-appearance: none; 
     -webkit-appearance: none; 
     appearance: none;
