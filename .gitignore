@@ -186,3 +186,4 @@ yarn-error.log*
 #secrets
 application-dev.properties
 
+vsCodeWorkspace.code-workspace
