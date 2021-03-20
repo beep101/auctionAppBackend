@@ -379,8 +379,9 @@ hr.gridBreak{
 }
 
 .categoriesList{
+    width: 15vw;
     padding:5px;
-    margin-right: 40px;
+    margin-right: 2vw;
     list-style-type: none;
     border-color: #d8d8d8;
     border-width: 1px;
@@ -388,36 +389,38 @@ hr.gridBreak{
 }
 
 .categoryButtonTitle{
-    color: #5a5a5a;
-    font-size: medium;
-    font-weight: bold;
+    color: #8367D8;
+    font-size: small;
     font-family: 'Lato', sans-serif;
 
     padding: 3px;
-    padding-left: 25px;
-    padding-right: 25px;
+    padding-left: 8px;
     padding-bottom: 8px;
-    text-align: center;
+    text-align: left;
 }
 
 .categoryButton{
-    color:#d8d8d8;
+    color: #5d5d5d;;
     font-size: medium;
     font-family: 'Lato', sans-serif;
     cursor: pointer;
     padding: 3px;
-    padding-right: 60px;
     padding-left: 8px;
 }
 
 .categoryButtonSelected{
-    color: #8367D8;
+    color: #5d5d5d;
     font-size: medium;
     font-family: 'Lato', sans-serif;
     cursor: pointer;
     padding: 3px;
-    padding-right: 60px;
     padding-left: 8px;
+}
+
+.categoriesButtonIcon{
+    float: right;
+    height: 12px;
+    width: 12px;
 }
 
 .loadEnabled{
@@ -699,7 +702,8 @@ td.bidTable{
     padding-left: 10px;
     padding-right: 10px;
  
-    background: url('https://auction-purple.herokuapp.com/images/select_arrow.svg') no-repeat 4px 4px;
+    background: url('https://auction-purple.herokuapp.com/images/select_arrow.svg');
+    background-repeat: no-repeat;
     -moz-appearance: none; 
     -webkit-appearance: none; 
     appearance: none;

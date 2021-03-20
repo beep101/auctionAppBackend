@@ -96,18 +96,14 @@ class Search extends React.Component{
     }
 
     selectCategory=(cat)=>{
-        if(cat===""){
-            this.setState({['selectedCategories']:[]});
-            this.selectedCategories=[];
+        if(this.state.selectedCategories.includes(cat)){
+            this.setState({['selectedCategories']:this.state.selectedCategories.filter((x)=>x!=cat)});
+            this.selectedCategories=this.selectedCategories.filter((x)=>x!=cat);
         }else{
-            if(this.state.selectedCategories.includes(cat)){
-                this.setState({['selectedCategories']:this.state.selectedCategories.filter((x)=>x!=cat)});
-                this.selectedCategories=this.selectedCategories.filter((x)=>x!=cat);
-            }else{
-                this.setState({['selectedCategories']:[...this.state.selectedCategories,cat]})
-                this.selectedCategories.push(cat);
-            }
+            this.setState({['selectedCategories']:[...this.state.selectedCategories,cat]})
+            this.selectedCategories.push(cat);
         }
+
         this.loadCount=0;
         this.setState({['loadMore']:true});
         this.load()
@@ -118,12 +114,15 @@ class Search extends React.Component{
         <div className="shopContainer">
            
             <div className="categoriesList">
-                <div className="categoryButtonTitle">Product Categories</div>
-                <div className={this.state.selectedCategories.length===0?"categoryButtonSelected":"categoryButton"}
-                    onClick={()=>this.selectCategory("")}>all categories</div>
-                {this.state.categories.map(category=><div
-                    className={this.state.selectedCategories.includes(category.id)?"categoryButtonSelected":"categoryButton"}
-                    onClick={()=>this.selectCategory(category.id)}>{category.name}</div>)}
+                <div className="categoryButtonTitle">PRODUCT CATEGORIES</div>
+                {this.state.categories.map(category=>
+                <div className={this.state.selectedCategories.includes(category.id)?"categoryButtonSelected":"categoryButton"}
+                onClick={()=>this.selectCategory(category.id)}>
+                    {category.name}
+                    <img className="categoriesButtonIcon"
+                    src={this.state.selectedCategories.includes(category.id)?
+                    "/images/category_selected.svg":"/images/category_unselected.svg"}/>
+                </div>)}
             </div>
             <div className="shopItemWrapper">
                 <div className="sortDisplayBar">
