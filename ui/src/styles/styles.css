@@ -623,6 +623,7 @@ hr.gridBreak{
 }
 
 .itemPage{
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -861,4 +862,43 @@ hr.solidVerticalLine{
 .displayModeContainer{
     display: flex;
     align-items: center;
+}
+
+.successItemMsg{
+    width: 100%;
+    text-align: center;
+
+    padding-top: .5vw;
+    padding-bottom: .5vw;
+    font-size: large;
+    font-family: 'Lato', sans-serif;
+
+    background-color: #417505;
+    color: #F0F3EE;
+}
+
+.errorItemMsg{
+    width: 100%;
+    text-align: center;
+
+    padding-top: .5vw;
+    padding-bottom: .5vw;
+    font-size: large;
+    font-family: 'Lato', sans-serif;
+
+    background-color: #AB944E;
+    color: #F6F2E5;
+}
+
+.warningItemMsg{
+    width: 100%;
+    text-align: center;
+
+    padding-top: .5vw;
+    padding-bottom: .5vw;
+    font-size: large;
+    font-family: 'Lato', sans-serif;
+
+    background-color: #AB944E;
+    color: #F6F2E5;
 }

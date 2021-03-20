@@ -84,12 +84,12 @@ class Item extends React.Component{
 
     placeBid=()=>{
         if(this.context.jwt===""){
-            toast.error('Have to be logged in to place bids', DEFAULT_TOAST_CONFIG);
+            this.setState({['msg']:'Have to be logged in to place bids',['msgType']:'warningItemMsg'});
             return;
         }
         let bidAmount=parseFloat(this.state.bidAmount)
         if(!bidAmount){
-            toast.error('Bid amount value not valid', DEFAULT_TOAST_CONFIG);
+            this.setState({['msg']:'Bid amount value not valid',['msgType']:'warningItemMsg'});
             return;
         }
         let bid={
@@ -99,10 +99,10 @@ class Item extends React.Component{
         }
         addBid(bid,this.context.jwt,(success,data)=>{
             if(success){
-                toast.success('Bid placed successefuly', DEFAULT_TOAST_CONFIG);
+                this.setState({['msg']:'Bid placed successefuly',['msgType']:'successItemMsg'});
                 this.loadBids();
             }else{
-                toast.error('Bid failed, bid amount is too low', DEFAULT_TOAST_CONFIG);
+                this.setState({['msg']:'Bid failed, bid amount is too low',['msgType']:'errorItemMsg'});
             }
         })
     }
@@ -111,17 +111,7 @@ class Item extends React.Component{
         if(this.state.item.id){
             return(
             <div className="itemPage">
-                <ToastContainer
-                    position="top-center"
-                    autoClose={3000}
-                    hideProgressBar={true}
-                    newestOnTop
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable={false}
-                    pauseOnHover={false}
-                />
+                {this.state.msg&&<div className={this.state.msgType}>{this.state.msg}</div>}
                 <div className="itemContainer">
                     <div className="itemImageContainer">
                         <div className="itemImageMainFrame">
@@ -188,7 +178,7 @@ class Item extends React.Component{
             )
         }else{
             return(
-                <div>
+                <div className="warningItemMsg">
                     No data
                 </div>
             );
