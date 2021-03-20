@@ -689,7 +689,7 @@ td.bidTable{
 .selectSorting{
 	font-family: 'Lato', sans-serif;
 	color: #5a5a5a;
-    text-align: center;
+    text-align: left;
 
     border-color: #d8d8d8;
     border-width: 1px;
@@ -698,10 +698,10 @@ td.bidTable{
     padding: 3px;
     padding-left: 10px;
     padding-right: 10px;
-
-    -moz-appearance:none; 
-    -webkit-appearance:none; 
-    appearance:none;
+ 
+    -moz-appearance: none; 
+    -webkit-appearance: none; 
+    appearance: none;
 }
 
 .listItemContainer{
