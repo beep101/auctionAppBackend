@@ -5,7 +5,7 @@ import {getAllCategories} from '../apiConsumer/categoryConsumer';
 import {searchItems} from '../apiConsumer/itemFetchConsumer' 
 import {SHOP_LOAD_COUNT} from '../utils/constants'
 import Select from 'react-select';
-import {SORTING_SELECT_THEME} from '../utils/constants'
+import {SORTING_SELECT_THEME, SORTING_SELECT_STYLES} from '../utils/constants'
 
 class Search extends React.Component{
 
@@ -132,7 +132,8 @@ class Search extends React.Component{
             <div className="shopItemWrapper">
                 <div className="sortDisplayBar">
                     <span className='width200px'>
-                        <Select options={this.sorts} isSearchable={false} onChange={this.sortChanged} theme={SORTING_SELECT_THEME} defaultValue={this.sorts[0]}/>
+                        <Select options={this.sorts} isSearchable={false} onChange={this.sortChanged}
+                                styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} defaultValue={this.sorts[0]}/>
                     </span>
                     <span className="displayModeContainer">
                         <span onClick={(() => this.displayChanged("grid"))} id="grid" className={this.state.display==="grid"?"displayModeSelected":"displayMode"}>

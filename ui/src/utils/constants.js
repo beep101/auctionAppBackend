@@ -20,4 +20,17 @@ export const SORTING_SELECT_THEME=(theme)=>({
     },
 })
 
+export const SORTING_SELECT_STYLES = {
+    control: base => ({
+      ...base,
+      fontFamily: "'Lato', sans-serif"
+    }),
+    menu: base => ({
+      ...base,
+      fontFamily: "'Lato', sans-serif"
+    })
+  };
+
 export const SHOP_LOAD_COUNT=6;
+
+export const ITEM_MSG_DELAY= 6000;

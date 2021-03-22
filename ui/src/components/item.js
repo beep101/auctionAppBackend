@@ -5,6 +5,7 @@ import {getBidsLimited, addBid} from '../apiConsumer/bidConsumer'
 import BidLine from './bidLine';
 import AuthContext from '../context';
 import 'react-toastify/dist/ReactToastify.css';
+import {ITEM_MSG_DELAY} from '../utils/constants'
 
 class Item extends React.Component{
 
@@ -42,7 +43,7 @@ class Item extends React.Component{
                 this.setState({['item']:data});
                 this.setState({['displayedImage']:data.images[0]})
             }else{
-                console.log("Cannot load item");
+                this.setState({['msg']:'Cannot load item',['msgType']:'itemMsg warningItemMsg'});
             }
         });
         this.loadBids();
@@ -111,7 +112,7 @@ class Item extends React.Component{
 
     setMsg=(msg,type)=>{
         this.setState({['msg']:msg,['msgType']:type});
-        setTimeout(()=>{this.setState({['msg']:''});},6000);
+        setTimeout(()=>{this.setState({['msg']:''});},ITEM_MSG_DELAY);
         
     }
 
@@ -186,9 +187,7 @@ class Item extends React.Component{
             )
         }else{
             return(
-                <div className="warningItemMsg">
-                    No data
-                </div>
+                <div className="itemPage"></div>
             );
         }
     }
