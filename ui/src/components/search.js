@@ -4,6 +4,8 @@ import ItemElement from './itemELement';
 import {getAllCategories} from '../apiConsumer/categoryConsumer';
 import {searchItems} from '../apiConsumer/itemFetchConsumer' 
 import {SHOP_LOAD_COUNT} from '../utils/constants'
+import Select from 'react-select';
+import {SORTING_SELECT_THEME} from '../utils/constants'
 
 class Search extends React.Component{
 
@@ -15,11 +17,11 @@ class Search extends React.Component{
         this.sort="default";
 
         this.sorts=[
-            {value:"default",name:"Default"},
-            {value:"newness",name:"Newest first"},
-            {value:"timeleft",name:"Time left"},
-            {value:"priceAsc",name:"By Price Ascending"},
-            {value:"priceDesc",name:"By Price Descending"}
+            {value:"default",label:"Default"},
+            {value:"newness",label:"Newest first"},
+            {value:"timeleft",label:"Time left"},
+            {value:"priceAsc",label:"By Price Ascending"},
+            {value:"priceDesc",label:"By Price Descending"}
         ]
 
         this.state={
@@ -48,11 +50,11 @@ class Search extends React.Component{
         this.load()
     }
 
-    sortChanged=(event)=>{
-        if(this.sort!=event.target.value){
+    sortChanged=(sort)=>{
+        if(this.sort!=sort.value){
             this.setState({['loadMore']:true});
             this.loadCount=0;
-            this.sort=event.target.value;
+            this.sort=sort.value;
             this.load()
         }
     }
@@ -63,6 +65,9 @@ class Search extends React.Component{
     
 
     load=()=>{
+        if(!this.state.loadMore){
+            return;
+        }
         searchItems(this.searchText,this.selectedCategories,this.loadCount,SHOP_LOAD_COUNT,this.sort,(success, data)=>{
             if(success){
                 if(data.length<SHOP_LOAD_COUNT){
@@ -127,9 +132,7 @@ class Search extends React.Component{
             <div className="shopItemWrapper">
                 <div className="sortDisplayBar">
                     <span>
-                        <select className="selectSorting" name="sort" id="sort" onChange={this.sortChanged}>
-                            {this.sorts.map(sort=><option value={sort.value}>{sort.name}</option>)}
-                        </select>
+                        <Select options={this.sorts} isSearchable={false} onChange={this.sortChanged} theme={SORTING_SELECT_THEME} defaultValue={this.sorts[0]}/>
                     </span>
                     <span className="displayModeContainer">
                         <span onClick={(() => this.displayChanged("grid"))} id="grid" className={this.state.display==="grid"?"displayModeSelected":"displayMode"}>
