@@ -65,9 +65,6 @@ class Search extends React.Component{
     
 
     load=()=>{
-        if(!this.state.loadMore){
-            return;
-        }
         searchItems(this.searchText,this.selectedCategories,this.loadCount,SHOP_LOAD_COUNT,this.sort,(success, data)=>{
             if(success){
                 if(data.length<SHOP_LOAD_COUNT){
@@ -150,7 +147,7 @@ class Search extends React.Component{
                     {this.state.items.map(item=><ItemElement link={"/item?id="+item.id} item={item} type={this.state.display}/>)}
                 </div>
                 <div className="width10">
-                    <div className={this.state.loadMore?"loadEnabled":"loadDisabled"} onClick={this.load}>Load More</div>
+                    <div className={this.state.loadMore?"loadEnabled":"loadDisabled"} onClick={()=>this.state.loadMore&&this.load()}>Load More</div>
                 </div>
             </div>
         </div>
