@@ -13,7 +13,10 @@ export const SORTING_SELECT_THEME=(theme)=>({
     borderRadius: 0,
     colors: {
         ...theme.colors,
-        primary25: '#8367D8'
+        primary25: '#8367D8',
+        primary: '#8367D8',
+        primary75: "#5d5d5d",
+        neutral10: "#5d5d5d"
     },
 })
 

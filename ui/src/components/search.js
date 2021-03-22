@@ -131,7 +131,7 @@ class Search extends React.Component{
             </div>
             <div className="shopItemWrapper">
                 <div className="sortDisplayBar">
-                    <span>
+                    <span className='width200px'>
                         <Select options={this.sorts} isSearchable={false} onChange={this.sortChanged} theme={SORTING_SELECT_THEME} defaultValue={this.sorts[0]}/>
                     </span>
                     <span className="displayModeContainer">

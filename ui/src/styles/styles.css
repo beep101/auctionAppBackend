@@ -636,7 +636,7 @@ table.bidTable{
     border-width: 1px;
     border-style: solid;
     box-shadow: 0 0 5px #d8d8d8;
-    width: 100%;
+    width: 60vw;
 
     color:#5a5a5a;
     font-family: 'Lato', sans-serif;
@@ -875,17 +875,17 @@ hr.solidVerticalLine{
     text-align: center;
 
     max-height: 100%;
-    transition: max-height 1s ease;
+    transition: max-height 1s ease, padding-top .3s ease, padding-bottom .3s ease;
     padding-top: .5vw;
     padding-bottom: .5vw;
-    
+
     font-size: large;
     font-family: 'Lato', sans-serif;
 }
 
 .itemMsg:empty {
     max-height: 0;
-    transition: max-height 1s ease;
+    transition: max-height 1s ease, padding-top .3s ease, padding-bottom .3s ease;
     padding-top: 0;
     padding-bottom: 0;
 }
@@ -949,4 +949,8 @@ hr.solidVerticalLine{
     font-size: medium;
     font-weight: bold;
     font-family: 'Lato', sans-serif;
+}
+
+.width200px{
+    width: 200px;
 }
