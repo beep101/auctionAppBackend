@@ -3,6 +3,9 @@ import AuthContext from '../context';
 import ItemElement from './itemELement';
 import {getAllCategories} from '../apiConsumer/categoryConsumer';
 import {searchItems} from '../apiConsumer/itemFetchConsumer' 
+import {SHOP_LOAD_COUNT} from '../utils/constants'
+import Select from 'react-select';
+import {SORTING_SELECT_THEME, SORTING_SELECT_STYLES} from '../utils/constants'
 
 class Search extends React.Component{
 
@@ -14,10 +17,11 @@ class Search extends React.Component{
         this.sort="default";
 
         this.sorts=[
-            {value:"default",name:"Default Sort"},
-            {value:"newness",name:"Sort By Newness"},
-            {value:"priceAsc",name:"Sort By Price Ascending"},
-            {value:"priceDesc",name:"Sort By Price Descending"}
+            {value:"default",label:"Default"},
+            {value:"newness",label:"Newest first"},
+            {value:"timeleft",label:"Time left"},
+            {value:"priceAsc",label:"By Price Ascending"},
+            {value:"priceDesc",label:"By Price Descending"}
         ]
 
         this.state={
@@ -30,10 +34,13 @@ class Search extends React.Component{
     }
         
     componentDidMount=()=>{
-        this.searchText=this.context.searchText;
         this.loadCategories();
-        this.load();
         this.context.setSearchCallback((text)=>{this.textChanged(text);});
+        this.context.search(null);
+    }
+
+    componentWillUnmount=()=>{
+        this.context.removeSearchCallback();
     }
 
     textChanged=(text)=>{
@@ -43,11 +50,11 @@ class Search extends React.Component{
         this.load()
     }
 
-    sortChanged=(event)=>{
-        if(this.sort!=event.target.value){
+    sortChanged=(sort)=>{
+        if(this.sort!=sort.value){
             this.setState({['loadMore']:true});
             this.loadCount=0;
-            this.sort=event.target.value;
+            this.sort=sort.value;
             this.load()
         }
     }
@@ -55,12 +62,23 @@ class Search extends React.Component{
     displayChanged=(event)=>{
         this.setState({['display']:event})
     }
+    
 
     load=()=>{
-        searchItems(this.searchText,this.selectedCategories,this.loadCount,6,this.sort,(success, data)=>{
+        if(!this.state.loadMore){
+            return;
+        }
+        searchItems(this.searchText,this.selectedCategories,this.loadCount,SHOP_LOAD_COUNT,this.sort,(success, data)=>{
             if(success){
-                if(data.length===0){
+                if(data.length<SHOP_LOAD_COUNT){
                     this.setState({['loadMore']:false});
+                }else if(data.length==SHOP_LOAD_COUNT){
+                    searchItems(this.searchText,this.selectedCategories,this.loadCount+1,SHOP_LOAD_COUNT,this.sort,(success, data)=>{
+                        if(success)
+                            if(data.length==0){
+                                this.setState({['loadMore']:false});
+                            }
+                    }); 
                 }
                 if(this.loadCount!=0){
                     this.setState({['items']:[...this.state.items,...data]});
@@ -83,18 +101,14 @@ class Search extends React.Component{
     }
 
     selectCategory=(cat)=>{
-        if(cat===""){
-            this.setState({['selectedCategories']:[]});
-            this.selectedCategories=[];
+        if(this.state.selectedCategories.includes(cat)){
+            this.setState({['selectedCategories']:this.state.selectedCategories.filter((x)=>x!=cat)});
+            this.selectedCategories=this.selectedCategories.filter((x)=>x!=cat);
         }else{
-            if(this.state.selectedCategories.includes(cat)){
-                this.setState({['selectedCategories']:this.state.selectedCategories.filter((x)=>x!=cat)});
-                this.selectedCategories=this.selectedCategories.filter((x)=>x!=cat);
-            }else{
-                this.setState({['selectedCategories']:[...this.state.selectedCategories,cat]})
-                this.selectedCategories.push(cat);
-            }
+            this.setState({['selectedCategories']:[...this.state.selectedCategories,cat]})
+            this.selectedCategories.push(cat);
         }
+
         this.loadCount=0;
         this.setState({['loadMore']:true});
         this.load()
@@ -105,19 +119,21 @@ class Search extends React.Component{
         <div className="shopContainer">
            
             <div className="categoriesList">
-                <div className="categoryButtonTitle">Product Categories</div>
-                <div className={this.state.selectedCategories.length===0?"categoryButtonSelected":"categoryButton"}
-                    onClick={()=>this.selectCategory("")}>all categories</div>
-                {this.state.categories.map(category=><div
-                    className={this.state.selectedCategories.includes(category.id)?"categoryButtonSelected":"categoryButton"}
-                    onClick={()=>this.selectCategory(category.id)}>{category.name}</div>)}
+                <div className="categoryButtonTitle">PRODUCT CATEGORIES</div>
+                {this.state.categories.map(category=>
+                <div className={this.state.selectedCategories.includes(category.id)?"categoryButtonSelected":"categoryButton"}
+                onClick={()=>this.selectCategory(category.id)}>
+                    {category.name}
+                    <img className="categoriesButtonIcon"
+                    src={this.state.selectedCategories.includes(category.id)?
+                    "/images/category_selected.svg":"/images/category_unselected.svg"}/>
+                </div>)}
             </div>
             <div className="shopItemWrapper">
                 <div className="sortDisplayBar">
-                    <span>
-                        <select className="selectSorting" name="sort" id="sort" onChange={this.sortChanged}>
-                            {this.sorts.map(sort=><option value={sort.value}>{sort.name}</option>)}
-                        </select>
+                    <span className='width200px'>
+                        <Select options={this.sorts} isSearchable={false} onChange={this.sortChanged}
+                                styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} defaultValue={this.sorts[0]}/>
                     </span>
                     <span className="displayModeContainer">
                         <span onClick={(() => this.displayChanged("grid"))} id="grid" className={this.state.display==="grid"?"displayModeSelected":"displayMode"}>

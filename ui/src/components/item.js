@@ -4,9 +4,8 @@ import {getItemById} from '../apiConsumer/itemFetchConsumer'
 import {getBidsLimited, addBid} from '../apiConsumer/bidConsumer'
 import BidLine from './bidLine';
 import AuthContext from '../context';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { DEFAULT_TOAST_CONFIG} from "../utils/constants"
+import {ITEM_MSG_DELAY} from '../utils/constants'
 
 class Item extends React.Component{
 
@@ -18,20 +17,24 @@ class Item extends React.Component{
                 id:params['id'],
                 item:{},
                 bids:[],
-                bidAmount:0
+                bidAmount:0,
+                msg:"",
+                msgType:"itemMsg"
             }
         }else{
             this.state={
                 id:"",
                 item:{},
                 bids:[],
-                bidAmount:0
+                bidAmount:0,
+                msg:"",
+                msgType:"itemMsg"
             }
         }
     }
 
     onChange=(e)=>{
-        this.setState({[e.target.name]:e.target.value})
+        this.setState({[e.target.name]:e.target.value});
     }
 
     componentDidMount=()=>{
@@ -40,7 +43,7 @@ class Item extends React.Component{
                 this.setState({['item']:data});
                 this.setState({['displayedImage']:data.images[0]})
             }else{
-                console.log("Cannot load item");
+                this.setState({['msg']:'Cannot load item',['msgType']:'itemMsg warningItemMsg'});
             }
         });
         this.loadBids();
@@ -84,12 +87,12 @@ class Item extends React.Component{
 
     placeBid=()=>{
         if(this.context.jwt===""){
-            toast.error('Have to be logged in to place bids', DEFAULT_TOAST_CONFIG);
+            this.setMsg('Have to be logged in to place bids','itemMsg warningItemMsg');
             return;
         }
         let bidAmount=parseFloat(this.state.bidAmount)
         if(!bidAmount){
-            toast.error('Bid amount value not valid', DEFAULT_TOAST_CONFIG);
+            this.setMsg('Bid amount value not valid','itemMsg warningItemMsg');
             return;
         }
         let bid={
@@ -99,29 +102,25 @@ class Item extends React.Component{
         }
         addBid(bid,this.context.jwt,(success,data)=>{
             if(success){
-                toast.success('Bid placed successefuly', DEFAULT_TOAST_CONFIG);
+                this.setMsg('Bid placed successefuly','itemMsg successItemMsg');
                 this.loadBids();
             }else{
-                toast.error('Bid failed, bid amount is too low', DEFAULT_TOAST_CONFIG);
+                this.setMsg('Bid failed, bid amount is too low','itemMsg errorItemMsg');
             }
         })
+    }
+
+    setMsg=(msg,type)=>{
+        this.setState({['msg']:msg,['msgType']:type});
+        setTimeout(()=>{this.setState({['msg']:''});},ITEM_MSG_DELAY);
+        
     }
 
     render(){
         if(this.state.item.id){
             return(
             <div className="itemPage">
-                <ToastContainer
-                    position="top-center"
-                    autoClose={3000}
-                    hideProgressBar={true}
-                    newestOnTop
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable={false}
-                    pauseOnHover={false}
-                />
+                <div className={this.state.msgType}>{this.state.msg}</div>
                 <div className="itemContainer">
                     <div className="itemImageContainer">
                         <div className="itemImageMainFrame">
@@ -188,9 +187,7 @@ class Item extends React.Component{
             )
         }else{
             return(
-                <div>
-                    No data
-                </div>
+                <div className="itemPage"></div>
             );
         }
     }

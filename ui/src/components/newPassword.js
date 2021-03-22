@@ -20,14 +20,19 @@ class NewPassword extends React.Component{
         return(
             <div className="formContainer">
 
-                <div>
+                <div className="inputFieldContainer">
                     <label className="inputLabel">Password</label><br/>
+                    
                     <input className="inputFieldWide" id="passwd" name="password"
                     type="password" onChange={this.onChange} value={this.state.password}/>
+
+                    {this.state.msg&&this.state.msg.password&&
+                    <div className="warningMessageInputLabel">{this.state.msg.password}</div>}
+                
                 </div>
                 
                 <button className="buttonWide" onClick={this.newPassReq}>Change password</button>
-                {this.state.msg && <p className="warningMessage">{this.state.msg}</p>}
+                {this.state.msg && this.state.msg.response && <p className="warningMessage">{this.state.msg}</p>}
             </div>
         )
     }
@@ -35,6 +40,11 @@ class NewPassword extends React.Component{
     newPassReq=(e)=>{
         const token=queryString.parse(this.props.location.search)['token'];
         let passwd=this.state.password;
+        if(passwd.length<6){
+            let msg={password:"Password too short"};
+            this.setState({['msg']:msg})
+            return;
+        }
         newPassword(token,passwd,(success,message)=>{
             if(success){
                 this.setState({
@@ -46,7 +56,7 @@ class NewPassword extends React.Component{
             else{
                 this.setState({
                     password:'',
-                    msg:'Your request might be expired'
+                    msg:message
                 });
             }
         });

@@ -6,20 +6,22 @@ export function login(credentials,handler){
             handler(true,response.data.jwt);
         },
         (error)=>{
-            let msg="";
+            let msg={};
             if(error.response){
                 if(error.response.status<500){
-                    msg="Bad username or password";
+                    if(error.response.data.errors){
+                        handler(false,error.response.data.errors);
+                        return;
+                    }else{
+                        msg={response:error.response.data.message}
+                    }
                 }else{
-                    msg="Something went wrong, please try again";
+                    msg={response:"Please try again"};
                 }
-                console.log(error.response);
             }else if(error.request){
-                msg="Something went wrong, please try again";
-                console.log(error.request);
+                msg={response:"Please try again"};
             }else{
-                msg="Something went wrong";
-                console.log(error.message);
+                msg={response:"Please try again"};
             }
             handler(false,msg);
         }
@@ -35,17 +37,19 @@ export function signup(userData,handler){
             let msg="";
             if(error.response){
                 if(error.response.status<500){
-                    msg="User with same email alredy exists";
+                    if(error.response.data.errors){
+                        handler(false,error.response.data.errors);
+                        return;
+                    }else{
+                        msg={msg:error.response.data.message}
+                    }
                 }else{
-                    msg="Something went wrong, please try again";
+                    msg={msg:"Something went wrong, please try again"};
                 }
-                console.log(error.response);
             }else if(error.request){
-                msg="Something went wrong, please try again";
-                console.log(error.request);
+                msg={msg:"Something went wrong, please try again"};
             }else{
-                msg="Something went wrong";
-                console.log(error.message);
+                msg={msg:"Something went wrong"};
             }
             handler(false,msg);
         }
@@ -55,10 +59,27 @@ export function signup(userData,handler){
 export function forgotPassword(email,handler){
     post("forgotPassword",{email}).then(
         (response)=>{
-            handler(true,"");
+            handler(true,{response:'Request successeful, please check your email'});
         },
         (error)=>{
-            handler(false,"");
+            let msg="";
+            if(error.response){
+                if(error.response.status<500){
+                    if(error.response.data.errors){
+                        handler(false,error.response.data.errors);
+                        return;
+                    }else{
+                        msg={response:error.response.data.message}
+                    }
+                }else{
+                    msg={response:"Something went wrong, please try again"};
+                }
+            }else if(error.request){
+                msg={response:"Something went wrong, please try again"};
+            }else{
+                msg={response:"Something went wrong"};
+            }
+            handler(false,msg);
         }
     );
 }
@@ -69,7 +90,24 @@ export function newPassword(token,password,handler){
             handler(true,"");
         },
         (error)=>{
-            handler(false,"");
+            let msg="";
+            if(error.response){
+                if(error.response.status<500){
+                    if(error.response.data.errors){
+                        handler(false,error.response.data.errors);
+                        return;
+                    }else{
+                        msg={response:error.response.data.message}
+                    }
+                }else{
+                    msg={response:"Something went wrong, please try again"};
+                }
+            }else if(error.request){
+                msg={response:"Something went wrong, please try again"};
+            }else{
+                msg={response:"Something went wrong"};
+            }
+            handler(false,msg);
         }
     );
 

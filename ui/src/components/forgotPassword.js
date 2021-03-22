@@ -1,5 +1,6 @@
 import React from 'react'
 import { forgotPassword } from '../apiConsumer/accountConsumer';
+import {validateEmail} from '../utils/functions';
 
 class ForgotPassword extends React.Component{
 
@@ -8,7 +9,7 @@ class ForgotPassword extends React.Component{
         this.state={
             email:'',
             success:false,
-            msg:''
+            msg:{}
         }
     }
 
@@ -20,20 +21,25 @@ class ForgotPassword extends React.Component{
         if(!this.state.success){
             return(
                 <div className="formContainer">
-                    <div>
+                    <div className="inputFieldContainer">
                         <label className="inputLabel">Email</label><br/>
+
                         <input className="inputFieldWide" id="email" name="email"
                         onChange={this.onChange} value={this.state.email}/>
+
+                        {this.state.msg&&this.state.msg.email&&
+                        <div className="warningMessageInputLabel">{this.state.msg.email}</div>}
+
                     </div>
                     
                     <button className="buttonWide" onClick={this.forgotReq}>Forgot password</button>
-                    {this.state.msg===""?null:<p className="warningMessage">{this.state.msg}</p>}
+                    {this.state.msg && this.state.msg.response && <p className="warningMessage">{this.state.msg.response}</p>}
                 </div>
             )
         }else{
             return(
                 <div className="formContainer">
-                    <p className="successMessage">{this.state.msg}</p>
+                    <p className="successMessage">{this.state.msg.response}</p>
                 </div>    
             )         
         }
@@ -42,19 +48,24 @@ class ForgotPassword extends React.Component{
 
     forgotReq=(e)=>{
         let email=this.state.email;
+        if(!validateEmail(email)){
+            let msg={email:"Please enter valid email"};
+            this.setState({['msg']:msg})
+            return;
+        }
         forgotPassword(email,(success,message)=>{
             if(success){
                 this.setState({
                     email:'',
                     success:true,
-                    msg:'Request successeful, please check your email'
+                    msg:message
                 });
             }
             else{
                 this.setState({
                     email:'',
                     success:false,
-                    msg:"Please enter valid email address"
+                    msg:message
                 });
             }
         });

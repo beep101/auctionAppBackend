@@ -7,20 +7,18 @@ export class AuthProvider extends React.Component{
 
     constructor(props){
         super(props);
+        this.searchCallback=(text)=>{console.log('No callback set')};
+        this.searchText="";
         let token=localStorage.getItem('token');
         if(token){
             this.state={
                 jwt:token,
-                user:jwtDecode(token),
-                searchText:"",
-                searchCallback:()=>{console.log('No callback set')}
+                user:jwtDecode(token)
             }
         }else{
             this.state={
                 jwt:"",
-                user:{},
-                searchText:"",
-                searchCallback:()=>{console.log('No callback set')}
+                user:{}
             }
         }
     }
@@ -29,7 +27,6 @@ export class AuthProvider extends React.Component{
         this.setState({
             jwt:jwt,
             user:jwtDecode(jwt),
-            searchText:"",
             searchCallback:()=>{console.log('No callback set')}
         })
     }
@@ -38,26 +35,31 @@ export class AuthProvider extends React.Component{
         this.setState({
             jwt:"",
             user:{},
-            searchText:"",
             searchCallback:()=>{console.log('No callback set')}
         })
     }
 
-    setSearchText=(text)=>{
-        this.setState({['searchText']:text});
-        this.state.searchCallback(text);
+    search=(text)=>{
+        if(text!=null){
+            this.searchText=text;
+        }
+        this.searchCallback(this.searchText);
     }
 
     setSearchCallback=(callback)=>{
-        this.setState({['searchCallback']:callback})
+        this.searchCallback=callback;
+    }
+
+    removeSearchCallback=()=>{
+        this.searchCallback=(text)=>{console.log('No callback set')};
     }
 
 
     render(){
-        const {jwt,user,searchText}=this.state;
-        const {login,logout,setSearchText,setSearchCallback}=this;
+        const {jwt,user}=this.state;
+        const {login,logout,search,setSearchCallback,removeSearchCallback}=this;
         return(
-            <AuthContext.Provider value={{jwt,user,searchText,login,logout,setSearchText,setSearchCallback}}>
+            <AuthContext.Provider value={{jwt,user,login,logout,search,setSearchCallback,removeSearchCallback}}>
                 {this.props.children}
             </AuthContext.Provider>
         )

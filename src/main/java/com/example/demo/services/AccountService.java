@@ -2,8 +2,16 @@ package com.example.demo.services;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Path.Node;
+import javax.validation.Validation;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,6 +28,7 @@ import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.interfaces.IAccountService;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
+import com.example.demo.validations.UserRequest;
 
 public class AccountService implements IAccountService{
 	private UsersRepository usersRepo;
@@ -57,20 +66,27 @@ public class AccountService implements IAccountService{
 				login.setJwt(jwt);
 				return login;
 			}else {
-				throw new BadCredentialsException();
+				Map<String,String> problems=new HashMap<>();
+				problems.put("password", "Invalid password");
+				throw new BadCredentialsException(problems);
 			}
 		}else {
-			throw new BadCredentialsException();
+			Map<String,String> problems=new HashMap<>();
+			problems.put("email", "No user with email");
+			throw new BadCredentialsException(problems);
 		}
 	}
 
 	@Override
 	public UserModel signUp(UserModel signup)throws InvalidDataException,ExistingUserException,NonExistentUserException {
-		if(signup.getEmail().isBlank()||signup.getPassword().isBlank()||signup.getFirstName().isBlank()||signup.getLastName().isBlank()) {
-			throw new InvalidDataException();
+		Map<String,String> problems=(new UserRequest(signup)).validate();
+		if(!problems.isEmpty()) {
+			throw new InvalidDataException(problems);
 		}
 		if(usersRepo.findByEmail(signup.getEmail()).isPresent()) {
-			throw new ExistingUserException();
+			problems=new HashMap<>();
+			problems.put("email", "Email alredy in use");
+			throw new ExistingUserException(problems);
 		}
 		User newUser=new User();
 		newUser.setName(signup.getFirstName());
@@ -91,14 +107,19 @@ public class AccountService implements IAccountService{
 	
 	@Override
 	public UserModel forgotPassword(UserModel forgotPassword) throws NonExistentUserException {
-		if( forgotPassword.getEmail()==null||forgotPassword.getEmail().equals("")) {
-			throw new NonExistentUserException();
+		Map<String,String> problems=(new UserRequest(forgotPassword)).validate();
+		if(problems.containsKey("email")) {
+			String msg=problems.get("email");
+			problems.clear();
+			problems.put("email", msg);
+			throw new NonExistentUserException(problems);
 		}
 		Optional<User> users=usersRepo.findByEmail(forgotPassword.getEmail());
 		if(users.isEmpty()) {
-			throw new NonExistentUserException();
+			problems.clear();
+			problems.put("email", "No user with email");
+			throw new NonExistentUserException(problems);
 		}
-		
 		User user=users.get();
 		String token=UUID.randomUUID().toString().replace("-","");
 		user.setForgotPasswordToken(token);
@@ -112,11 +133,15 @@ public class AccountService implements IAccountService{
 	
 	@Override
 	public UserModel newPassword(UserModel newPassword) throws InvalidTokenException,InvalidDataException {
+		Map<String,String> problems=(new UserRequest(newPassword)).validate();
+		if(problems.containsKey("password")) {
+			String msg=problems.get("password");
+			problems.clear();
+			problems.put("password", msg);
+			throw new InvalidDataException(problems);
+		}
 		if(newPassword.getForgotPasswordToken()==null || newPassword.getForgotPasswordToken().equals("")) {
 			throw new InvalidTokenException();
-		}
-		if(newPassword.getPassword()==null || newPassword.getPassword().equals("")) {
-			throw new InvalidDataException();
 		}
 		
 		Optional<User> users=usersRepo.findByForgotPasswordTokenAndForgotPasswordTokenEndTimeAfter(newPassword.getForgotPasswordToken(),new Timestamp(System.currentTimeMillis()));
