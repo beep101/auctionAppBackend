@@ -62,6 +62,12 @@ public class ItemController {
 		return imageService.loadImagesForItem(itemService.getItem(itemId));
 	}
 	
+	@ApiOperation(value = "Returns random item", notes = "Public access")
+	@GetMapping("/api/items/featuredItem")
+	public ItemModel getItemFeatured() throws NotFoundException{
+		return imageService.loadImagesForItem(itemService.getItemFeatured());
+	}
+	
 	@ApiOperation(value = "Returns all active items", notes = "Public access")
 	@GetMapping("/api/items")
 	public Collection<ItemModel> getItems(@RequestParam int page,@RequestParam int count) {

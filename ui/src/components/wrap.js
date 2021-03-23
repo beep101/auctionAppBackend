@@ -19,6 +19,7 @@ import Item from './item';
 import Search from './search';
 import ForgotPassword from './forgotPassword';
 import NewPassword from './newPassword';
+import AllCategories from './allCategories';
 
 class Wrap extends Component{
 
@@ -52,6 +53,7 @@ class Wrap extends Component{
                         <Route path="/search" exact component={Search}/>
                         <Route path="/forgotPassword" exact component={ForgotPassword} />
                         <Route path="/newPassword" exact component={NewPassword} />
+                        <Route path="/allCategories" exact component={AllCategories} />
                     </div>
 
                     <div id="footer"  className="footerBar">

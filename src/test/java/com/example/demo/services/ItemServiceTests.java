@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -206,6 +207,8 @@ public class ItemServiceTests extends EasyMockSupport{
 		ItemModel model;
 		items.add(item);
 		
+		Optional<Item> itemOpt=Optional.of(item);
+		
 		List<Category> categories=new ArrayList<>();
 		expect(categoriesRepo.findAllById(anyObject())).andReturn(categories).anyTimes();
 		
@@ -218,6 +221,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterOrderByStarttimeDesc(anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCaseAndCategoryIn(anyObject(),anyString(),anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(anyObject(),anyString(),anyObject())).andReturn(items).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterRandom(anyObject())).andReturn(itemOpt).anyTimes();
 		replayAll();
 		
 		models=itemService.getItems(new PaginationParams(0,1));
@@ -319,6 +323,17 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
+		
+		model=itemService.getItemFeatured();
+		assertEquals(model.getId(), item.getId());
+		assertEquals(model.getName(), item.getName());
+		assertEquals(model.getDescription(), item.getDescription());
+		assertEquals(model.getStartingprice(), item.getStartingprice());
+		assertEquals(model.getSold(), item.getSold());
+		assertEquals(model.getStarttime(), item.getStarttime());
+		assertEquals(model.getEndtime(), item.getEndtime());
+		assertEquals(model.getSeller().getId(), item.getSeller().getId());
+		
 		verifyAll();
 	}
 	
@@ -328,6 +343,16 @@ public class ItemServiceTests extends EasyMockSupport{
 		replayAll();
 		
 		itemService.getItem(1);
+		
+		verifyAll();
+	}
+	
+	@Test(expected = NotFoundException.class)
+	public void getItemFeaturedNoItemShouldThrowException() throws NotFoundException{
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterRandom(anyObject())).andReturn(Optional.empty());
+		replayAll();
+		
+		itemService.getItemFeatured();
 		
 		verifyAll();
 	}
