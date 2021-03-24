@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -65,6 +66,15 @@ public class ItemService implements IItemService {
 	public Collection<ItemModel> getItems(PaginationParams pgbl) {
 		Collection<ItemModel> items=itemsRepo.findAll(pgbl.getPageable()).stream().map(x->x.toModel()).collect(Collectors.toList());
 		return items;
+	}
+	
+	@Override
+	public ItemModel getItemFeatured() throws NotFoundException {
+		Optional<Item> itemOpt=itemsRepo.findBySoldFalseAndEndtimeAfterRandom(new Timestamp(System.currentTimeMillis()));
+		if(itemOpt.isPresent()) {
+			return itemOpt.get().toModel();
+		}
+		throw new NotFoundException();
 	}
 
 	@Override

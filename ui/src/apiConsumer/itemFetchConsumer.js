@@ -66,3 +66,14 @@ export function getItemById(id,handler){
         }
     )
 }
+
+export function getFeaturedItem(handler){
+    get('items/featured').then(
+        (response)=>{
+            handler(true,response.data)
+        },
+        (error)=>{
+            handler(false,"")
+        }
+    );
+}
