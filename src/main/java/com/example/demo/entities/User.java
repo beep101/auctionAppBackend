@@ -50,6 +50,10 @@ public class User implements Serializable {
 	//bi-directional many-to-one association to Item
 	@OneToMany(mappedBy="seller")
 	private List<Item> items;
+	
+	@ManyToOne
+	@JoinColumn(name="address")
+	private Address address;
 
 	public User() {
 	}
@@ -108,6 +112,14 @@ public class User implements Serializable {
 
 	public void setBids(List<Bid> bids) {
 		this.bids = bids;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
 	}
 
 	public Timestamp getForgotPasswordTokenEndTime() {

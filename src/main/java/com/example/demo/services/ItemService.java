@@ -124,7 +124,7 @@ public class ItemService implements IItemService {
 		
 		Collection<ItemModel> items;
 		if(categoriesList!=null) {
-			items=itemsRepo.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCaseAndCategoryIn(crr,term,categoriesList,pgbl.getPageable())
+			items=itemsRepo.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCaseAndSubcategoryCategoryIn(crr,term,categoriesList,pgbl.getPageable())
 					.stream().map(x->x.toModel()).collect(Collectors.toList());
 		}else{
 			items=itemsRepo.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(crr,term,pgbl.getPageable())

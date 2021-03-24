@@ -93,4 +93,10 @@ public class ItemController {
 										  @RequestParam int page,@RequestParam int count,@RequestParam(required = false, defaultValue = "default") ItemSorting sort)throws InvalidDataException{
 		return imageService.loadImagesForItems(itemService.findItemsValidFilterCategories(term,categories,new SortingPaginationParams(page,count,sort)));
 	}
+	
+	@ApiOperation(value = "Creating new item for sale", notes = "Only authenticated users")
+	@PostMapping("/api/items")
+	public ItemModel addItem(@RequestBody ItemModel model) {
+		return imageService.loadImagesForItem(itemService.addItem(model));
+	}
 }

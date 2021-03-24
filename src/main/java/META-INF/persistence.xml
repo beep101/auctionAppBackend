@@ -4,6 +4,8 @@
 		<class>com.example.demo.entities.Bid</class>
 		<class>com.example.demo.entities.Item</class>
 		<class>com.example.demo.entities.User</class>
+		<class>com.example.demo.entities.Subcategory</class>
+		<class>com.example.demo.entities.Address</class>
 	</persistence-unit>
 
 </persistence>

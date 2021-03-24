@@ -54,8 +54,12 @@ public class Item implements Serializable {
 	private User seller;
 	
 	@ManyToOne
-	@JoinColumn(name="category")
-	private Category category;
+	@JoinColumn(name="subcategory")
+	private Subcategory subcategory;
+	
+	@ManyToOne
+	@JoinColumn(name="address")
+	private Address address;
 
 	public Item() {
 	}
@@ -97,11 +101,11 @@ public class Item implements Serializable {
 	}
 
 	public Category getCategory() {
-		return category;
+		return subcategory.getCategory();
 	}
 
 	public void setCategory(Category category) {
-		this.category = category;
+		this.subcategory.setCategory(category);;
 	}
 
 	public void setSeller(User seller) {
@@ -154,6 +158,22 @@ public class Item implements Serializable {
 		this.sold = sold;
 	}
 	
+	public Subcategory getSubcategory() {
+		return subcategory;
+	}
+
+	public void setSubcategory(Subcategory subcategory) {
+		this.subcategory = subcategory;
+	}
+	
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
 	public ItemModel toModel() {
 		ItemModel model=new ItemModel();
 		model.setId(this.getId());

@@ -19,5 +19,5 @@ public interface ItemsRepository extends JpaRepository<Item, Integer>{
 	List<Item> findBySoldFalseAndEndtimeAfter(Timestamp timestamp,Pageable pageable);
 	
 	List<Item> findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(Timestamp timestamp,String term,Pageable pageable);
-	List<Item> findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCaseAndCategoryIn(Timestamp timestamp,String term,List<Category> categories, Pageable pageable);
+	List<Item> findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCaseAndSubcategoryCategoryIn(Timestamp timestamp,String term,List<Category> categories, Pageable pageable);
 }
