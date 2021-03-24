@@ -1,0 +1,1 @@
+update categories set name=initcap(name);

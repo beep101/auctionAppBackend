@@ -24,4 +24,6 @@ public interface IItemService {
 	Collection<ItemModel> getNewArrivalItems(PaginationParams pgbl);
 	Collection<ItemModel> getLastChanceItems(PaginationParams pgbl);
 	Collection<ItemModel> findItemsValidFilterCategories(String term, List<Integer> categories, PaginationParams pgbl)throws InvalidDataException;
+	
+	ItemModel getItemFeatured() throws NotFoundException;
 }

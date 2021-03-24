@@ -6,6 +6,7 @@ import {searchItems} from '../apiConsumer/itemFetchConsumer'
 import {SHOP_LOAD_COUNT} from '../utils/constants'
 import Select from 'react-select';
 import {SORTING_SELECT_THEME, SORTING_SELECT_STYLES} from '../utils/constants'
+import queryString from 'query-string';
 
 class Search extends React.Component{
 
@@ -30,6 +31,12 @@ class Search extends React.Component{
             categories:[],
             selectedCategories:[],
             display:"grid"
+        }
+        
+        const category = parseInt((queryString.parse(this.props.location.search))['category']);
+        if(category){
+            this.state['selectedCategories']=[category];
+            this.selectedCategories=[category];
         }
     }
         

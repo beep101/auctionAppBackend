@@ -541,7 +541,7 @@ hr.gridBreak{
     cursor: pointer;
 
     border-color: #8367D8;
-    border-width: 2px;
+    border-width: 3px;
     border-style: solid;   
 }
 
@@ -952,4 +952,104 @@ hr.solidVerticalLine{
 
 .width200px{
     width: 200px;
+}
+
+.catsAndFtd{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    margin-bottom: 4vw;
+    width: 60vw;
+}
+
+.homeCategoriesContainer{
+    width:15vw;
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+    box-shadow: 0 0 5px #d8d8d8;
+    background-color: white;
+}
+
+.homeCategoryButton{
+    font-family: 'Lato', sans-serif;
+    font-size: large;
+    color: #5a5a5a;
+    padding-left: 1vw;
+    padding-top: .5vw;
+    padding-bottom: .5vw;
+
+    border-bottom-style: solid;
+    border-bottom-color: #d8d8d8;
+    border-bottom-width: 1px;
+
+    cursor: pointer;
+}
+
+.homeCategoryAllButton{
+    font-family: 'Lato', sans-serif;
+    font-size: large;
+    color: #5a5a5a;
+    padding-left: 1vw;
+    padding-top: .5vw;
+    padding-bottom: 1vw;
+
+    cursor: pointer;
+}
+
+.homeCategoryTitle{
+    font-family: 'Lato', sans-serif;
+    font-size: larger;
+    font-weight: bold;
+    color: #8367D8;
+
+    padding-left: 1vw;
+    padding-top: 1vw;
+    padding-bottom: .5vw;
+}
+
+.feturedItemContainer{
+    display: flex;
+    align-items: center;
+    width: 40vw;
+}
+
+.featuredItemImgContainer{
+    width: 20vw;
+    height: 30vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.featuredItemTextContainer{
+    width:20vw;
+}
+
+.feturedItemDescriptionText{
+    color:#5a5a5a;
+    font-family: 'Lato', sans-serif;
+    padding-top: .6vw;
+    padding-bottom: 1vw;
+}
+
+.featuredItemStartPrice{
+    font-size: larger;
+    font-family: 'Lato', sans-serif;
+    color: #8367D8;
+    padding-top: .6vw;
+}
+
+.featuredItemName{
+    font-size: xx-large;
+    font-family: 'Lato', sans-serif;
+    color: #5a5a5a;
+}
+
+.featuredButton{
+    width: 8vw;
+}
+
+.catsAndFtdBackground{
 }
