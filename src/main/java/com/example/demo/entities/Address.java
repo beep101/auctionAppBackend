@@ -3,6 +3,8 @@ package com.example.demo.entities;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import com.example.demo.models.AddressModel;
+
 
 /**
  * The persistent class for the "addresses" database table.
@@ -83,5 +85,26 @@ public class Address implements Serializable {
 
 	public void setZip(String zip) {
 		this.zip = zip;
+	}
+	
+	public AddressModel toModel() {
+		AddressModel model=new AddressModel();
+		
+		model.setId(id);
+		model.setAddress(address);
+		model.setCity(city);
+		model.setZip(zip);
+		model.setCountry(country);
+		model.setPhone(phone);
+		return model;
+	}
+	
+	public void populate(AddressModel model) {
+		this.setId(model.getId());
+		this.setAddress(model.getAddress());
+		this.setCity(model.getCity());
+		this.setZip(model.getZip());
+		this.setCountry(model.getCountry());
+		this.setPhone(model.getPhone());
 	}
 }

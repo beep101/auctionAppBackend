@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -63,6 +61,14 @@ public class ImageStorageS3 implements IImageStorageService{
 			throw new ImageUploadException();
 		}
 		return imageHash;
+	}
+	
+	@Override
+	public List<String> addImages(String itemId,List<byte[]> imagesJpgs) throws ImageUploadException, ImageHashException{
+		List<String> hashes=new ArrayList<>();
+		for(byte[] img:imagesJpgs)
+			hashes.add(addImage(itemId, img));
+		return hashes;
 	}
 	
 	@Override

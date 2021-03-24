@@ -34,8 +34,11 @@ import com.example.demo.entities.User;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.ItemModel;
+import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.repositories.ItemsRepository;
+import com.example.demo.repositories.SubcategoriesRepository;
+import com.example.demo.services.interfaces.IImageStorageService;
 import com.example.demo.utils.ItemSorting;
 import com.example.demo.utils.PaginationParams;
 import com.example.demo.utils.SortingPaginationParams;
@@ -47,9 +50,15 @@ public class ItemServiceTests extends EasyMockSupport{
 	ItemsRepository itemsRepoMock;
 	@Mock
 	CategoriesRepository categoriesRepo;
+	@Mock
+	IImageStorageService imageService;
+	@Mock
+	SubcategoriesRepository subcategoriesRepo;
+	@Mock
+	AddressesRepository addressesRepo;
 	
 	@TestSubject
-	ItemService itemService=new ItemService(itemsRepoMock, categoriesRepo);
+	ItemService itemService=new ItemService(imageService,itemsRepoMock, categoriesRepo,subcategoriesRepo,addressesRepo);
 	
 	@Test
 	public void testPagebleCreationShouldCreateValidPageableAllMethods() throws InvalidDataException {

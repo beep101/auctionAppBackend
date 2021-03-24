@@ -90,4 +90,14 @@ public class ExceptionHandleControllerAdvice {
 
     	return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(InsertFailedException.class)
+    public ResponseEntity<Object> handleInvalidTokenException(InsertFailedException ex, WebRequest request){
+    	
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getMessage());
+
+    	return new ResponseEntity<>(body, HttpStatus.I_AM_A_TEAPOT);
+    }
 }

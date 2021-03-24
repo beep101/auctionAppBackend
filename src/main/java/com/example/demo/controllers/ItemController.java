@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,12 +15,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.entities.User;
+import com.example.demo.exceptions.InsertFailedException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.ItemModel;
 import com.example.demo.models.UserModel;
+import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.repositories.ItemsRepository;
+import com.example.demo.repositories.SubcategoriesRepository;
 import com.example.demo.services.ImageStorageS3;
 import com.example.demo.services.ItemService;
 import com.example.demo.services.interfaces.IImageStorageService;
@@ -46,14 +51,18 @@ public class ItemController {
 	private ItemsRepository itemsRepo;
 	@Autowired
 	private CategoriesRepository categoriesRepo;
+	@Autowired
+	private SubcategoriesRepository subcategoriesRepo;
+	@Autowired
+	private AddressesRepository addressesRepo;
 	
 	private IItemService itemService;
 	private IImageStorageService imageService;
 	
 	@PostConstruct
 	public void init() {
-		itemService=new ItemService(itemsRepo,categoriesRepo);
 		imageService=new ImageStorageS3(id, key, imageBucketBaseUrl);
+		itemService=new ItemService(imageService,itemsRepo,categoriesRepo,subcategoriesRepo,addressesRepo);
 	}
 	
 	@ApiOperation(value = "Returns item specified by ID", notes = "Public access")
@@ -102,7 +111,8 @@ public class ItemController {
 	
 	@ApiOperation(value = "Creating new item for sale", notes = "Only authenticated users")
 	@PostMapping("/api/items")
-	public ItemModel addItem(@RequestBody ItemModel model) {
-		return imageService.loadImagesForItem(itemService.addItem(model));
+	public ItemModel addItem(@RequestBody ItemModel model)  throws InvalidDataException, InsertFailedException{
+		User principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return imageService.loadImagesForItem(itemService.addItem(model,principal));
 	}
 }
