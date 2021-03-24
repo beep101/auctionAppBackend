@@ -1,10 +1,10 @@
-insert into categories(name) values('Men');
-insert into categories(name) values('Women');
-insert into categories(name) values('Kids');
-insert into categories(name) values('Accessories');
-insert into categories(name) values('Home');
-insert into categories(name) values('Art');
-insert into categories(name) values('Computers');
+insert into categories(name) values('men');
+insert into categories(name) values('women');
+insert into categories(name) values('kids');
+insert into categories(name) values('accessories');
+insert into categories(name) values('home');
+insert into categories(name) values('art');
+insert into categories(name) values('computers');
 
 insert into  items(name,description,startingPrice,startTime,endTime,seller,category)
 			values('Sunglasses','Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin elementum ligula sed tortor sollicitudin semper. Nullam interdum odio et tincidunt sagittis. Morbi metus erat, vulputate non turpis id, pellentesque faucibus nibh. Donec dapibus turpis eu dolor dapibus porta. Phasellus eu lectus ut urna pulvinar elementum. Quisque non imperdiet lorem. Nulla.',

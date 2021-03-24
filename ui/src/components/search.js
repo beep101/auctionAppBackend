@@ -33,8 +33,7 @@ class Search extends React.Component{
             display:"grid"
         }
         
-        let params = queryString.parse(this.props.location.search)
-        let category=parseInt(params['category'])
+        const category = parseInt((queryString.parse(this.props.location.search))['category']);
         if(category){
             this.state['selectedCategories']=[category];
             this.selectedCategories=[category];

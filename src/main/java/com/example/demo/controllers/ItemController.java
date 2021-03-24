@@ -63,7 +63,7 @@ public class ItemController {
 	}
 	
 	@ApiOperation(value = "Returns random item", notes = "Public access")
-	@GetMapping("/api/items/featuredItem")
+	@GetMapping("/api/items/featured")
 	public ItemModel getItemFeatured() throws NotFoundException{
 		return imageService.loadImagesForItem(itemService.getItemFeatured());
 	}
