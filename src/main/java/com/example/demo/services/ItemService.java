@@ -98,9 +98,9 @@ public class ItemService implements IItemService {
 				problems.put("address", "Nonexistent address");
 				throw new InvalidDataException(problems);
 			}
-			newAddress=true;
 		}else {
 			item.setAddress(addressesRepo.save(item.getAddress()));
+			newAddress=true;
 		}
 		
 		item=itemsRepo.save(item);

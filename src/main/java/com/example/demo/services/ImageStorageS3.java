@@ -31,8 +31,7 @@ public class ImageStorageS3 implements IImageStorageService{
 	private IAwsS3Adapter s3;	
 	private String bucketName="auction.purple.item.pics";
 	private String baseUrl;
-	
-	//aws keys for s3bucket
+
 	public ImageStorageS3(String baseUrl,IAwsS3Adapter s3) {
 		this.s3=s3;
 		this.baseUrl=baseUrl;
@@ -62,19 +61,6 @@ public class ImageStorageS3 implements IImageStorageService{
 		for(byte[] img:imagesJpgs)
 			hashes.add(addImage(itemId, img));
 		return hashes;
-	}
-	
-	@Override
-	public byte[] getImage(String itemId,String imageHash) throws ImageFetchException{
-		String key=itemId+"/"+imageHash+".jpg";
-		S3Object object=s3.getObject(bucketName, key);
-		byte[] img=null;
-		try {
-			img=object.getObjectContent().readAllBytes();
-		} catch (IOException e) {
-			throw new ImageFetchException();
-		}
-		return img;
 	}
 
 	@Override
