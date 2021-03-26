@@ -14,11 +14,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -29,19 +25,16 @@ import com.example.demo.exceptions.ImageHashException;
 import com.example.demo.exceptions.ImageUploadException;
 import com.example.demo.models.ItemModel;
 import com.example.demo.services.interfaces.IImageStorageService;
+import com.example.demo.utils.IAwsS3Adapter;
 
 public class ImageStorageS3 implements IImageStorageService{
-	private AmazonS3 s3;
+	private IAwsS3Adapter s3;	
 	private String bucketName="auction.purple.item.pics";
-	
 	private String baseUrl;
 	
 	//aws keys for s3bucket
-	public ImageStorageS3(String id, String key,String baseUrl) {
-		s3=AmazonS3ClientBuilder.standard()
-				.withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(id,key)))
-				.withRegion(Regions.EU_CENTRAL_1)
-				.build();
+	public ImageStorageS3(String baseUrl,IAwsS3Adapter s3) {
+		this.s3=s3;
 		this.baseUrl=baseUrl;
 	}
 
@@ -56,7 +49,7 @@ public class ImageStorageS3 implements IImageStorageService{
 		metadata.setContentLength(imageJpg.length);
 		metadata.setContentType("image/jpg");
 		try {
-			s3.putObject(new PutObjectRequest(bucketName, key, input, metadata));
+			s3.putObject(new PutObjectRequest(bucketName, key, input, metadata).withCannedAcl(CannedAccessControlList.PublicRead));
 		}catch(AmazonServiceException ex) {
 			throw new ImageUploadException();
 		}

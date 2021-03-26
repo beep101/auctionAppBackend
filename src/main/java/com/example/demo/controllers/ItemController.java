@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,7 @@ import com.example.demo.services.ImageStorageS3;
 import com.example.demo.services.ItemService;
 import com.example.demo.services.interfaces.IImageStorageService;
 import com.example.demo.services.interfaces.IItemService;
+import com.example.demo.utils.AwsS3Adapter;
 import com.example.demo.utils.ItemSorting;
 import com.example.demo.utils.PaginationParams;
 import com.example.demo.utils.SortingPaginationParams;
@@ -61,7 +63,7 @@ public class ItemController {
 	
 	@PostConstruct
 	public void init() {
-		imageService=new ImageStorageS3(id, key, imageBucketBaseUrl);
+		imageService=new ImageStorageS3(imageBucketBaseUrl,new AwsS3Adapter(id, key));
 		itemService=new ItemService(imageService,itemsRepo,categoriesRepo,subcategoriesRepo,addressesRepo);
 	}
 	

@@ -40,9 +40,9 @@ public class ItemRequest {
 	
 	private AddressModel address;
 
-	//@NotNull(message="Required at least 3 images")
-	//@Size(min=3, message = "Required at least 3 images" )
-	private List<MultipartFile> imageFiles;
+	@NotNull(message="Required at least 3 images")
+	@Size(min=3, message = "Required at least 3 images" )
+	private List<byte[]> imageFiles;
 	
 	
 	public ItemRequest(ItemModel model) {
@@ -98,10 +98,7 @@ public class ItemRequest {
 
 	private Map<String,String> validateImagesJpg(){
 		Map<String,String> problems=new HashMap<>();
-		for(MultipartFile img:imageFiles)
-			if(!(img.getContentType().toLowerCase().equals("image/jpg")
-			   ||img.getContentType().toLowerCase().equals("image/jpeg")))
-				problems.put("images", "Images must be of type jpg or jpeg");		
+		//if byte data check needed	
 		return problems;
 	}
 }

@@ -69,24 +69,26 @@ public class ItemService implements IItemService {
 		if(!problems.isEmpty()) {
 			throw new InvalidDataException(problems);
 		}
+		
 		itemModel.setSold(false);
 		itemModel.getSeller().setId(user.getId());
-		Optional<Subcategory> subcatOpt=subcateogriesRepo.findById(itemModel.getSubcategory().getId());
+		Item item=new Item();
+		item.populate(itemModel);
+		
+		Optional<Subcategory> subcatOpt=subcateogriesRepo.findById(item.getSubcategory().getId());
 		if(subcatOpt.isEmpty()){
 			problems.clear();
 			problems.put("subcategory", "Nonexistent subcategory");
 			throw new InvalidDataException(problems);
 		}
 		
-		Item item=new Item();
-		item.populate(itemModel);
-		
+		boolean newAddress=false;
 		if(item.getAddress()==null) {
 			if(user.getAddress()!=null) {
 				item.setAddress(user.getAddress());
 			}else {
 				problems.clear();
-				problems.put("address", "Address mus be defined for item or seller");
+				problems.put("address", "Address must be defined for item or seller");
 				throw new InvalidDataException(problems);
 			}
 		}else if(item.getAddress().getId()!=0) {
@@ -96,31 +98,30 @@ public class ItemService implements IItemService {
 				problems.put("address", "Nonexistent address");
 				throw new InvalidDataException(problems);
 			}
+			newAddress=true;
 		}else {
 			item.setAddress(addressesRepo.save(item.getAddress()));
 		}
+		
 		item=itemsRepo.save(item);
 		if(item.getId()==0) {
 			problems.clear();
 			problems.put("save","Cannot save data");
+			if(newAddress) {
+				addressesRepo.delete(item.getAddress());
+			}
 			throw new InvalidDataException(problems);
 		}
-		/*
-		List<byte[]> images=new ArrayList<>();
-		for(MultipartFile image:itemModel.getImageFiles()) {
-			try {
-				images.add(image.getBytes());
-			} catch (IOException e) {
-				throw new InsertFailedException();
-			}
-		}
+		
 		try {
-			imageService.addImages(Integer.toString(item.getId()), images);
+			imageService.addImages(Integer.toString(item.getId()), itemModel.getImageFiles());
 		} catch (ImageUploadException | ImageHashException e) {
 			itemsRepo.delete(item);
+			if(newAddress) {
+				addressesRepo.delete(item.getAddress());
+			}
 			throw new InsertFailedException();
 		}
-		*/
 		return item.toModel();
 	}
 

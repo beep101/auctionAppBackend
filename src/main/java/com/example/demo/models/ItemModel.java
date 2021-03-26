@@ -29,7 +29,7 @@ public class ItemModel {
 	
 	private AddressModel address;
 	private SubcategoryModel subcategory;
-	private List<MultipartFile> imageFiles;
+	private List<byte[]> imageFiles;
 	
 	public int getId() {
 		return id;
@@ -119,11 +119,11 @@ public class ItemModel {
 		this.address = address;
 	}
 
-	public List<MultipartFile> getImageFiles() {
+	public List<byte[]> getImageFiles() {
 		return imageFiles;
 	}
 
-	public void setImageFiles(List<MultipartFile> imageFiles) {
+	public void setImageFiles(List<byte[]> imageFiles) {
 		this.imageFiles = imageFiles;
 	}
 
