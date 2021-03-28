@@ -3,6 +3,8 @@ package com.example.demo.entities;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import com.example.demo.models.SubcategoryModel;
+
 
 /**
  * The persistent class for the "subcategories" database table.
@@ -52,5 +54,12 @@ public class Subcategory implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
+	public SubcategoryModel toModel() {
+		SubcategoryModel model=new SubcategoryModel();
+		model.setId(this.getId());
+		model.setName(this.getName());
+		model.setCategory(this.getCategory().toModelNoSubcategories());
+		return model;
+	}
 }

@@ -1,7 +1,7 @@
 import React, {Component, useContext} from 'react';
 import Login from './login';
 import Register from './register';
-import AuthContext, { AuthProvider } from '../context';
+import AuthContext from '../context';
 import SocialMediaLinks from "../static/socialMediaLink";
 import NavBar from './navbar';
 import LoginSignupAccountButtons from './loginSignupAccountButtons';
@@ -10,7 +10,6 @@ import About from '../static/aboutus';
 import TermsAndConditions from '../static/termsandconditions';
 import PrivacyPolicy from '../static/privacypolicy';
 import Home from './home';
-import Shop from './shop';
 import Account from './account';
 import "../styles/styles.css"
 import StaticLinks from '../static/staticLinks';
@@ -20,6 +19,7 @@ import Search from './search';
 import ForgotPassword from './forgotPassword';
 import NewPassword from './newPassword';
 import AllCategories from './allCategories';
+import AddItem from './addItem';
 
 class Wrap extends Component{
 
@@ -54,6 +54,7 @@ class Wrap extends Component{
                         <Route path="/forgotPassword" exact component={ForgotPassword} />
                         <Route path="/newPassword" exact component={NewPassword} />
                         <Route path="/allCategories" exact component={AllCategories} />
+                        <Route path="/addItem" exact component={AddItem}/>
                     </div>
 
                     <div id="footer"  className="footerBar">

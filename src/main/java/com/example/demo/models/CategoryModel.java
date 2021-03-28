@@ -1,10 +1,11 @@
 package com.example.demo.models;
 
-import com.example.demo.entities.Category;
+import java.util.List;
 
 public class CategoryModel {
 	private int id;
 	private String name;
+	private List<SubcategoryModel> subcategories;
 	
 	public int getId() {
 		return id;
@@ -21,6 +22,12 @@ public class CategoryModel {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
+
+	public List<SubcategoryModel> getSubcategories() {
+		return subcategories;
+	}
+
+	public void setSubcategories(List<SubcategoryModel> subcategories) {
+		this.subcategories = subcategories;
+	}
 }
