@@ -59,7 +59,9 @@ public class AccountService implements IAccountService{
 		Optional<User> users=usersRepo.findByEmail(login.getEmail());
 		if(users.isPresent()) {
 			if(hashUtil.checkPassword(login.getPassword(), users.get().getPasswd())) {
-				String jwt=jwtUtil.generateToken(users.get(), new HashMap<String, Object>());
+				Map<String,Object> data= new HashMap<String, Object>();
+				data.put("address", users.get().getAddress().toModel());
+				String jwt=jwtUtil.generateToken(users.get(),data);
 				login.setId(users.get().getId());
 				login.setFirstName(users.get().getName());
 				login.setLastName(users.get().getSurname());

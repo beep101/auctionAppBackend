@@ -1051,5 +1051,10 @@ hr.solidVerticalLine{
     width: 8vw;
 }
 
+.DayPicker-Day--disabled {
+    color: red;
+    cursor:default
+}
+
 .catsAndFtdBackground{
 }

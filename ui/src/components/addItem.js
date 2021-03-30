@@ -11,39 +11,40 @@ class AddItem extends React.Component{
         //else
         this.state={
             step:1,
-            data:{
-                name:"",
-                description:"",
-                startingPrice:0.01,
-                startdate:"",
-                enddate:"",
-                subcategory:null,
-                address:null,
-                imageFiles:[]
-            }
+        }
+        this.data={
+            name:"",
+            description:null,
+            startingPrice:0.01,
+            startdate:"",
+            enddate:"",
+            subcategory:null,
+            address:null,
+            imageFiles:[],
+            images:[]
         }
     }
 
     next=(data)=>{
-        console.log(data);
         for (const val in data) {
-            this.setState({['data']:{[val]:data[val]}});
+            this.data[val]=data[val];
         }
+        console.log(data);
         this.setState({['step']:this.state.step+1});
     }
     back=(data)=>{
         for (const val in data) {
-            this.setState({[val]:data[val]});
+            this.data[val]=data[val];
         }
         this.setState({['step']:this.state.step-1});
     }
     render(){
         if(this.state.step==1)
-            return(<AddItemStep1 next={this.next} back={this.back} data={this.state.data}/>)
+            return(<AddItemStep1 next={this.next} back={this.back} data={this.data}/>)
         else if (this.state.step==2)
-            return(<AddItemStep2 next={this.next} back={this.back} data={this.state.data}/>)
+            return(<AddItemStep2 next={this.next} back={this.back} data={this.data}/>)
         else if(this.state.step==3)
-            return(<AddItemStep3 next={this.next} back={this.back} data={this.state.data}/>)
+            return(<AddItemStep3 next={this.next} back={this.back} data={this.data}/>)
         else
             <div></div>
     }
