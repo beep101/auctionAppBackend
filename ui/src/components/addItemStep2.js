@@ -1,35 +1,63 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
+import {ONE_DAY_MILIS} from '../utils/constants';
 import "react-day-picker/lib/style.css";
 import "../styles/styles.css";
 
 function AddItemStep2(props){
-    let disabledStart=new Date();
-    disabledStart.setHours(12,0,0,0);
-    let disabledEnd=new Date();
-    disabledEnd.setHours(12,0,0,0);
-    disabledEnd.setTime(disabledStart.getTime()+24*60*60*1000);
+    let [disabledStart,setDisabledStart]=useState(new Date());
+    useEffect(()=>{
+        let ds=new Date();
+        ds.setHours(12,0,0,0)
+        setDisabledStart(ds);
+    },[]);
 
-    let sd=new Date();
-    sd.setHours(12,0,0,0);
-    const [startDate,setStartDate]=useState(sd);
-    let ed=new Date();
-    ed.setTime(startDate.getTime()+5*24*60*60*1000);
-    ed.setHours(12,0,0,0);
-    const [endDate,setEndDate]=useState(ed);
+    let [disabledEnd,setDisabledEnd]=useState(new Date());
+    useEffect(()=>{
+        let de=new Date();
+        de.setTime(de+ONE_DAY_MILIS);
+        de.setHours(12,0,0,0);
+        setDisabledEnd(de)
+    },[]);
 
-    let data=useRef({
-        starttime:props.starttime,
-        endtime:props.endtime,
-        startingprice:props.startingprice
-    });
-    
+
+    const [startDate,setStartDate]=useState(new Date());
+    useEffect(()=>{
+        if(props.data.startDate)
+            if(typeof props.data.startDate === 'string' || props.data.startDate instanceof String)
+                startDateChange(new Date(props.data.startDate));
+            else
+                startDateChange(props.data.startDate);
+        else{
+            let sd=new Date();
+            sd.setHours(12,0,0,0);
+            setStartDate(sd);
+        }
+    },[]);
+
+    const [endDate,setEndDate]=useState(new Date());
+    useEffect(()=>{
+        if(props.data.endDate){
+            if(typeof props.data.endDate === 'string' || props.data.endDate instanceof String)
+                endDateChange(new Date(props.data.endDate));
+            else
+                endDateChange(props.data.endDate);
+        }else{
+            let ed=new Date();
+            ed.setTime(ed.getTime()+5*ONE_DAY_MILIS);
+            ed.setHours(12,0,0,0);
+            setEndDate(ed);
+        }
+    },[]);
+
+    const [startingPrice,setStartingPrice]=useState(props.data.startingPrice?props.data.startingPrice:0.01)
     const [msg,setMsg]=useState({})
 
     const onChange=(e)=>{
-        data.current[e.target.name]=e.target.value;
+        if(e.target.name=="startingPrice")
+            setStartingPrice(e.target.value);
         let newMsg={
-            startingprice:undefined,
+            startingPrice:undefined,
             startDate:msg.startDate,
             endDate:msg.endDate
         };
@@ -39,9 +67,9 @@ function AddItemStep2(props){
     const onNext=()=>{
         let valid=true;
         let msg={}
-        if(!data.current.startingprice||data.current.startingprice<0.01){
+        if(!startingPrice||startingPrice<0.01){
             valid=false;
-            msg.startingprice="Start price can't be empty";
+            msg.startingPrice="Start price can't be empty";
         }
         if(startDate.getTime()<disabledStart.getTime()){
             valid=false;
@@ -51,23 +79,39 @@ function AddItemStep2(props){
             valid=false;
             newMsg.endDate="Invalid end date, must be after start day";
         }
+        let data={
+            startDate:startDate,
+            endDate:endDate,
+            startingPrice:startingPrice
+        }
         setMsg(msg);
         if(valid)
-            props.next(data.current);
+            props.next(data);
+    }
+    const onBack=()=>{
+        let data={
+            startDate:startDate,
+            endDate:endDate,
+            startingPrice:startingPrice
+        }
+        props.back(data);   
     }
 
     const startDateChange=(date)=>{
         let newMsg={
             startDate:undefined,
-            startingprice:msg.startingprice,
+            startingPrice:msg.startingPrice,
             endDate:msg.endDate
         };
 
         setStartDate(date);
-        disabledEnd.setTime(date.getTime()+24*60*60*1000);
+        let de=new Date();
+        de.setTime(date.getTime()+ONE_DAY_MILIS);
+        setDisabledEnd(de);
+
         if(date.getTime()>=endDate.getTime()){
             let ed=new Date();
-            ed.setTime(date.getTime()+24*60*60*1000);
+            ed.setTime(date.getTime()+ONE_DAY_MILIS);
             setEndDate(ed);
             newMsg.endDate=undefined;
         }
@@ -82,7 +126,7 @@ function AddItemStep2(props){
         setEndDate(date);
         let newMsg={
             startDate:msg.startDate,
-            startingprice:msg.startingprice,
+            startingPrice:msg.startingPrice,
             endDate:undefined
         };
         if(date.getTime()<disabledEnd.getTime()||date.getTime()<=startDate.getTime()){
@@ -95,8 +139,8 @@ function AddItemStep2(props){
         <div className="formContainer">
             <div className="inputFieldContainer">
                 <label className="inputLabel">Your start price</label><br/>
-                <input className="inputFieldWide" id="startingprice" name="startingprice" type="number" onChange={onChange}/>
-                {msg.startingprice&&<div className="warningMessageInputLabel">{msg.startingprice}</div>}
+                <input className="inputFieldWide" id="startingPrice" name="startingPrice" type="number" onChange={onChange} value={startingPrice}/>
+                {msg.startingPrice&&<div className="warningMessageInputLabel">{msg.startingPrice}</div>}
             </div>
             <div className="inputFieldContainer">
                 <DayPickerInput onDayChange={startDateChange} value={startDate} disabledDays={[{ before: disabledStart }]}/>
@@ -104,13 +148,17 @@ function AddItemStep2(props){
                 {msg.startDate&&<div className="warningMessageInputLabel">{msg.startDate}</div>}
                 {msg.endDate&&<div className="warningMessageInputLabel">{msg.endDate}</div>}
             </div>
-            <div className="inputFieldContainer">
-                <div className="bidButton" onClick={()=>{props.back(data)}}>
-                    Back
-                </div>
-                <div className="bidButton" onClick={onNext}>
-                    Next
-                </div>
+            <div className="inputFieldContainer categorySelectsInline">
+                <span className="categorySelectContainer">
+                    <div className="bidButton" onClick={onBack}>
+                        Back
+                    </div>
+                </span>
+                <span className="categorySelectContainer">
+                    <div className="bidButton" onClick={onNext}>
+                        Next
+                    </div>
+                </span>
             </div>
         </div>
     )

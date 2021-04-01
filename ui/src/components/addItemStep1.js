@@ -70,7 +70,6 @@ function AddItemStep1(props){
     const onNext=()=>{
         let valid=true;
         let msg={}
-        /*
         if(!data.current.name||!data.current.name.length>0){
             valid=false;
             msg.name="Name can't be empty";
@@ -87,7 +86,7 @@ function AddItemStep1(props){
             valid=false;
             msg.images="At least 3 images required";
         }
-        setMsg(msg);*/
+        setMsg(msg);
         if(valid)
             props.next(data.current);
     }
@@ -99,47 +98,55 @@ function AddItemStep1(props){
                 <input className="inputFieldWide" id="name" name="name" onChange={onChange} defaultValue={data.current.name}/>
                 {msg.name&&<div className="warningMessageInputLabel">{msg.name}</div>}
             </div>
-            <div className="inputFieldContainer">
-                {data.current.subcategory?
-                <Select options={categories} isSearchable={false} name="categories" onChange={selectCategory}
-                    styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} defaultValue={data.current.subcategory.sub.cat}/>
-                :<Select options={categories} isSearchable={false} name="categories" onChange={selectCategory}
-                styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME}/>}
-                {data.current.subcategory?
-                <Select options={subcategories} isSearchable={false} name="subcategories" onChange={selectSubcategory}
-                    styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME}  defaultValue={data.current.subcategory.sub}/>
-                :<Select options={subcategories} isSearchable={false} name="subcategories" onChange={selectSubcategory}
-                    styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME}/>
-                }
+            <div className="inputFieldContainer categorySelectsInline">
+                <span className="categorySelectContainer">
+                    {data.current.subcategory?
+                    <Select options={categories} isSearchable={false} name="categories" onChange={selectCategory}
+                        styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} defaultValue={data.current.subcategory.sub.cat}/>
+                    :<Select options={categories} isSearchable={false} name="categories" onChange={selectCategory}
+                    styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME}/>}
+                </span>
+                <span className="categorySelectContainer">
+                    {data.current.subcategory?
+                    <Select options={subcategories} isSearchable={false} name="subcategories" onChange={selectSubcategory}
+                        styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME}  defaultValue={data.current.subcategory.sub}/>
+                    :<Select options={subcategories} isSearchable={false} name="subcategories" onChange={selectSubcategory}
+                        styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME}/>}
+                </span>
                 {msg.cats&&<div className="warningMessageInputLabel">{msg.cats}</div>}
             </div>
             <div className="inputFieldContainer">
                 <label className="inputLabel">Description</label><br/>
-                <Editor id="description" name="description" editorState={editorState} onChange={editorUpdate} />
+                <div className="textEditorContainer">
+                    <Editor id="description" name="description" editorState={editorState} onChange={editorUpdate} />
+                </div>
                 {msg.description&&<div className="warningMessageInputLabel">{msg.description}</div>}
             </div>
             <div className="inputFieldContainer">
+                <label className="inputLabel">Images</label><br/>
                 <Dropzone onDrop={onDrop} accept="image/jpg,image/jpeg">
                     {({getRootProps, getInputProps}) => (
                         <section>
-                        <div {...getRootProps()}>
+                        <div {...getRootProps()} className="dropImagesZone">
                             <input {...getInputProps()} />
-                            <p>Drag 'n' drop some files here, or click to select files</p>
+                            <p className="simpleText paddingSimpleText">Drag and drop files here, or click to select files</p>
+                            <ul >
+                                {images.length > 0 && images.map(image => (
+                                    <li className="contactList simpleText">
+                                        {image.name}
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
-                        <ul className="list-group mt-2">
-                            {images.length > 0 && images.map(image => (
-                                <li className="list-group-item list-group-item-success">
-                                {image.name}
-                                </li>
-                            ))}
-                        </ul>
                         </section>
                     )}
                 </Dropzone>
                 {msg.images&&<div className="warningMessageInputLabel">{msg.images}</div>}
             </div>
-            <div className="inputFieldContainer">
-                <div className="bidButton" onClick={onNext}>Next</div>
+            <div className="inputFieldContainer categorySelectsInline flexToRight">
+                <span className="categorySelectContainer">
+                    <div className="bidButton" onClick={onNext}>Next</div>
+                </span>
             </div>
         </div>
     );

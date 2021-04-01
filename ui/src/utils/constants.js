@@ -36,3 +36,9 @@ export const SHOP_LOAD_COUNT=6;
 export const ITEM_MSG_DELAY= 6000;
 
 export const SHORT_DESCRIPTION_CHAR_COUNT=150;
+
+export const PHONE_REGEX_PATTERNS=["^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$",
+                          "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$" ,
+                          "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$"];
+
+export const ONE_DAY_MILIS=24*60*60*1000;

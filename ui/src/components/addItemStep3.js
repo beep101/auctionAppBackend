@@ -1,115 +1,177 @@
-import React, { useRef, useState } from 'react'
-import {Loader,LoaderOptions} from 'google-maps'
+import React, { useEffect, useRef, useState } from 'react'
+import {Loader} from 'google-maps'
 import {MAPS_API_KEY} from '../utils/apiAccess'
+import {PHONE_REGEX_PATTERNS} from '../utils/constants'
 
-function AddItemStep3(props){
-    let data=useRef({
+class AddItemStep3 extends React.Component{
+
+    constructor(props){
+        super(props)
+
+        this.state={
+            address:props.address?props.address.address:'',
+            city:props.address?props.address.city:'',
+            country:props.address?props.address.country:'',
+            zip:props.zip?props.address.zip:'',
+            phone:props.phone?props.address.phone:'',
+            msg:{}
+        }
+    }
         
-    });
+    componentDidMount=()=>{
+        this.addressField=document.querySelector('#address')
+        const loader=new Loader(MAPS_API_KEY,{
+            version: "weekly",
+            libraries: ["places"]
+        });
 
-    const [address,setAddress]=useState(props.address?props.address.address:'');
-    const [city,setCity]=useState(props.address?props.address.city:'');
-    const [country,setCountry]=useState(props.address?props.address.country:'');
-    const [zip,setZip]=useState(props.zip?props.address.zip:'');
-    const [phone,setPhone]=useState(props.phone?props.address.phone:'');
-    const [msg,setMsg]=useState({});
+        loader.load().then((google)=>{
+            let autocomplete = new google.maps.places.Autocomplete(this.addressField, {
+                fields: ["address_components", "geometry"],
+                types: ["address"],
+            });
 
-    let addressField=document.querySelector('#address')
-
-    const loader=new Loader(MAPS_API_KEY,{
-        version: "weekly",
-    });
-    let google=await loader.load();
-    Promise.allSettled([]).then(success=>google=success,error=>console.log("err "+error));
-    console.log(google);
-    let autocomplete = new google.maps.places.Autocomplete(addressField, {
-        fields: ["address_components", "geometry"],
-        types: ["address"],
-    });
-    autocomplete.addListener("place_changed", fillData);
-
-    const fillData=()=>{
-        const place = autocomplete.getPlace();
-        for (const component of place.address_components){
-            const compType=component.types[0];
-
-            let address;
-            let city;
-            let country;
-            let zip;
-
-            switch (compType) {
-                case "street_number": {
-                    setAddress(`${component.long_name}`);
-                    break;
-                }
-                case "route": {
-                    setCity(component.short_name);
-                    break;
-                }
-                case "postal_code": {
-                    setZip(component.long_name);
-                    break;
-                }
-                case "locality":{
-                    setPhone(component.long_name);
-                    break;
-                }
-                case "country":{
-                    setCountry(component.long_name);
-                    break;
+            const fillData=()=>{
+                const place = autocomplete.getPlace();
+                this.state.address="";
+                for (const component of place.address_components){
+                    const compType=component.types[0];
+                    switch (compType) {
+                        case "street_number": {
+                            this.setState({['address']:`${this.state.address} ${component.long_name}`});
+                            break;
+                        }
+                        case "route": {
+                            this.setState({['address']:`${component.short_name} ${this.state.address}`});
+                            break;
+                        }
+                        case "postal_code": {
+                            this.setState({['zip']:component.long_name});
+                            break;
+                        }
+                        case "locality":{
+                            this.setState({['city']:component.long_name});
+                            break;
+                        }
+                        case "country":{
+                            this.setState({['country']:component.long_name});
+                            break;
+                        }
+                    }
                 }
             }
-          
+
+            autocomplete.addListener("place_changed", fillData);
+        });
+    }
+
+    onChange=(e)=>{
+        this.setState({[e.target.name]:e.target.value});
+    }
+
+    onNext=()=>{
+        let valid=true;
+        let msg={}
+        if(!this.state.address||!this.state.address.length>0){
+            valid=false;
+            msg.address="Address name can't be empty";
+        }
+        if(!this.state.city||!this.state.city.length>0){
+            valid=false;
+            msg.city="City name can't be empty";
+        }
+        if(!this.state.zip||!this.state.zip.length>0){
+            valid=false;
+            msg.zip="ZIP code can't be empty";
+        }
+        if(!this.state.country||!this.state.country.length>0){
+            valid=false;
+            msg.country="Country name can't be empty";
+        }
+        if(this.state.phone){
+            let isPhoneValid=false;
+            for(const pattern in PHONE_REGEX_PATTERNS){
+                let regex=new RegExp(pattern);
+                if(regex.test(this.state.phone))
+                    isPhoneValid=true;
+            }
+            if(!isPhoneValid){
+                valid=false;
+                msg.phone="Phone number format is invalid";
+            }
+        }
+        this.setState({['msg']:msg});
+        let data={
+            address:{
+                address:this.state.address,
+                city:this.state.city,
+                country:this.state.country,
+                zip:this.state.zip,
+                phone:this.state.phone
+            }
+        }
+        if(valid){
+            this.props.next(data);
         }
     }
 
-
-    const onChange=(e)=>{
-
+    onBack=()=>{
+        let data={
+            address:{
+                address:this.state.address,
+                city:this.state.city,
+                country:this.state.country,
+                zip:this.state.zip,
+                phone:this.state.phone
+            }
+        }
+        this.props.back(data)
     }
 
-    const onNext=()=>{
-        
+    render(){
+        return(
+            <div className="formContainer" >
+                <div className="inputFieldContainer">
+                    <label className="inputLabel">Address</label><br/>
+                    <input className="inputFieldWide" id="address" name="address" onChange={this.onChange} value={this.state.address}/>
+                    {this.state.msg.address&&<div className="warningMessageInputLabel">{this.state.msg.address}</div>}
+                </div>
+                <div className="inputFieldContainer">
+                    <label className="inputLabel">City</label><br/>
+                    <input className="inputFieldWide" id="city" name="city" onChange={this.onChange} value={this.state.city}/>
+                    {this.state.msg.city&&<div className="warningMessageInputLabel">{this.state.msg.city}</div>}
+                </div>
+                <div className="inputFieldContainer">
+                    <label className="inputLabel">ZIP code</label><br/>
+                    <input className="inputFieldWide" id="zip" name="zip" onChange={this.onChange} value={this.state.zip}/>
+                    {this.state.msg.zip&&<div className="warningMessageInputLabel">{this.state.msg.zip}</div>}
+                </div>
+                <div className="inputFieldContainer">
+                    <label className="inputLabel">Country</label><br/>
+                    <input className="inputFieldWide" id="country" name="country" onChange={this.onChange} value={this.state.country}/>
+                    {this.state.msg.country&&<div className="warningMessageInputLabel">{this.state.msg.country}</div>}
+                </div>
+                <div className="inputFieldContainer">
+                    <label className="inputLabel">Phone</label><br/>
+                    <input className="inputFieldWide" id="phone" name="phone" onChange={this.onChange} value={this.state.phone}/>
+                    {this.state.msg.phone&&<div className="warningMessageInputLabel">{this.state.msg.phone}</div>}
+                </div>
+                <div className="inputFieldContainer categorySelectsInline">
+                    <span className="categorySelectContainer">
+                        <div className="bidButton" onClick={this.onBack}>
+                            Back
+                        </div>
+                    </span>
+                    <span className="categorySelectContainer">
+                        <div className="bidButton" onClick={this.onNext}>
+                            Next
+                        </div>
+                    </span>
+                </div>
+            </div>
+        );
     }
 
-    return(
-        <div className="formContainer" >
-            <div className="inputFieldContainer">
-                <label className="inputLabel">Address</label><br/>
-                <input className="inputFieldWide" id="address" name="address" onChange={onChange} value={address}/>
-                {msg.address&&<div className="warningMessageInputLabel">{msg.address}</div>}
-            </div>
-            <div className="inputFieldContainer">
-                <label className="inputLabel">City</label><br/>
-                <input className="inputFieldWide" id="city" name="city" onChange={onChange} value={city}/>
-                {msg.city&&<div className="warningMessageInputLabel">{msg.city}</div>}
-            </div>
-            <div className="inputFieldContainer">
-                <label className="inputLabel">ZIP code</label><br/>
-                <input className="inputFieldWide" id="zip" name="zip" onChange={onChange} value={zip}/>
-                {msg.zip&&<div className="warningMessageInputLabel">{msg.zip}</div>}
-            </div>
-            <div className="inputFieldContainer">
-                <label className="inputLabel">Country</label><br/>
-                <input className="inputFieldWide" id="country" name="country" onChange={onChange} value={country}/>
-                {msg.country&&<div className="warningMessageInputLabel">{msg.country}</div>}
-            </div>
-            <div className="inputFieldContainer">
-                <label className="inputLabel">Phone</label><br/>
-                <input className="inputFieldWide" id="phone" name="phone" onChange={onChange} value={phone}/>
-                {msg.phone&&<div className="warningMessageInputLabel">{msg.phone}</div>}
-            </div>
-            <div className="inputFieldContainer">
-                <div className="bidButton" onClick={()=>{props.back(data)}}>
-                    Back
-                </div>
-                <div className="bidButton" onClick={onNext}>
-                    Next
-                </div>
-            </div>
-        </div>
-    )
 }
 
 export default AddItemStep3
