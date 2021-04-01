@@ -20,6 +20,7 @@ import com.example.demo.entities.User;
 import com.example.demo.exceptions.InsertFailedException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.exceptions.UnauthenticatedException;
 import com.example.demo.models.ItemModel;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
@@ -113,8 +114,13 @@ public class ItemController {
 	
 	@ApiOperation(value = "Creating new item for sale", notes = "Only authenticated users")
 	@PostMapping("/api/items")
-	public ItemModel addItem(@RequestBody ItemModel model)  throws InvalidDataException, InsertFailedException{
-		User principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	public ItemModel addItem(@RequestBody ItemModel model)  throws InvalidDataException, InsertFailedException,UnauthenticatedException{
+		User principal=null;
+		try {
+			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		}catch(ClassCastException ex) {
+			throw new UnauthenticatedException();
+		}
 		return imageService.loadImagesForItem(itemService.addItem(model,principal));
 	}
 }

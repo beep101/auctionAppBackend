@@ -4,21 +4,25 @@ import AuthContext from '../context';
 import AddItemStep1 from './addItemStep1'
 import AddItemStep2 from './addItemStep2';
 import AddItemStep3 from './addItemStep3';
+import { css } from "@emotion/core";
+import PulseLoader from "react-spinners/PulseLoader";
+import { withRouter } from "react-router-dom";
 
 class AddItem extends React.Component{
     constructor(props){
         super(props);
         if(localStorage.getItem('addItemData')&&localStorage.getItem('addItemStep')){
             this.state={
-                step:localStorage.getItem('addItemStep'),
-                request:"Waiting for response"
+                step:parseInt(localStorage.getItem('addItemStep')),
+                success:true
             }
             this.data=JSON.parse(localStorage.getItem('addItemData'));
+            console.log(this.state);
+            console.log(this.data)
         }else{
             this.state={
                 step:1,
-                requestStatus:"Waiting for response",
-                requestStatusStyle:"neutralMessage"
+                success:true
             }
             this.data={
                 name:"",
@@ -62,13 +66,17 @@ class AddItem extends React.Component{
             let imgSplit=this.data.imageFiles[img].split(",");
             imgFiles.push(imgSplit[imgSplit.length-1])
         }
+        let startDate=new Date();
+        if(this.data.startDate.getDate()!=startDate.getDate()){
+            startDate=this.data.startDate;
+        }
         let data={
             seller: {id: parseInt(this.context.user.jti)},
             subcategory: {id:this.data.subcategory.id},
             name: this.data.name,
             description: JSON.stringify(this.data.description),
             startingprice: this.data.startingPrice,
-            starttime: this.data.startDate,
+            starttime: startDate,
             endtime: this.data.endDate,
             address: this.data.address,
             imageFiles:imgFiles
@@ -76,10 +84,10 @@ class AddItem extends React.Component{
         addItem(data,this.context.jwt,(success,data)=>{
             if(success){
                 this.setState({['requestStatusStyle']:"successMessage"});
-                this.setState({['requestStatus']:"Item posted successefully"});
+                this.props.history.push(`/item?id=${data.id}`);
+
             }else{
-                this.setState({['requestStatusStyle']:"warningMessage"});
-                this.setState({['requestStatus']:"Error on item post"});
+                this.setState({['success']:false});
             }
         });
     }
@@ -92,14 +100,12 @@ class AddItem extends React.Component{
         else if(this.state.step==3)
             return(<AddItemStep3 next={this.next} back={this.back} data={this.data}/>)
         else
-            return(
-                <div className="formContainer">
-                    <p className={this.state.requestStatusStyle}>{this.state.requestStatus}</p>
-                </div>
-            )
+            return(this.state.success?<div className="fullSize"><PulseLoader color="#8367D8" css={css} size={50}/></div>
+                    :<div className="fullSize"><div className="warningMessage">Error on item post</div></div>)
+
     }
 }
 
 AddItem.contextType=AuthContext;
 
-export default AddItem
+export default withRouter(AddItem)

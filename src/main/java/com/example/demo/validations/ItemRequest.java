@@ -81,8 +81,8 @@ public class ItemRequest {
 	
 	private Map<String,String> validateStartEndTime(){
 		Map<String,String> problems=new HashMap<>();
-		if(this.starttime.before(new Timestamp(System.currentTimeMillis() - ONE_HOUR_MILIS))) {
-			problems.put("starttime", "Start time cannot be older than one hour");
+		if(this.starttime.before(new Timestamp(System.currentTimeMillis() - ONE_DAY_MILIS))) {
+			problems.put("starttime", "Start time cannot be older than one day");
 		}
 		if(this.starttime.before(new Timestamp(System.currentTimeMillis() - FIVE_DAYS_MILIS))) {
 			problems.put("starttime", "Start time cannot be more than five days in future");

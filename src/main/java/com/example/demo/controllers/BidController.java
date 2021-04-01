@@ -18,6 +18,7 @@ import com.example.demo.entities.User;
 import com.example.demo.exceptions.BidAmountLowException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.exceptions.UnauthenticatedException;
 import com.example.demo.models.BidModel;
 import com.example.demo.repositories.BidsRepository;
 import com.example.demo.repositories.ItemsRepository;
@@ -45,8 +46,13 @@ public class BidController {
 	
 	@ApiOperation(value = "Adds bid to item", notes = "Only authenticated users")
 	@PostMapping("/api/bids")
-	public BidModel addBid( @RequestBody BidModel bid) throws InvalidDataException, BidAmountLowException, NotFoundException {
-		User principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	public BidModel addBid( @RequestBody BidModel bid) throws InvalidDataException, BidAmountLowException, NotFoundException, UnauthenticatedException{
+		User principal=null;
+		try {
+			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		}catch(ClassCastException ex) {
+			throw new UnauthenticatedException();
+		}
 		return bidService.addBid(bid,principal);
 	}
 	

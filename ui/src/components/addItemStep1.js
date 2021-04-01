@@ -17,9 +17,12 @@ function AddItemStep1(props){
     });
 
     const [categories,setCategories]=useState([]);
-    const [subcategories,setSubcateogories]=useState([]);
+    const [subcategories,setSubcateogories]=useState(props.data.subcategory?
+        props.data.subcategory.sub.cat.subs.map(element=>
+        {return {value:element.id,label:element.name,cat:props.data.subcategory.sub.cat}}
+        ):[]);
     const [msg,setMsg]=useState({});
-    const [images,setImages]=useState(data.current.images);
+    const [images,setImages]=useState(props.data.images);
     const [editorState,setEditorState]=useState(()=>data.current.description?
     EditorState.createWithContent(convertFromRaw(data.current.description)):EditorState.createEmpty());
 
@@ -52,8 +55,9 @@ function AddItemStep1(props){
     }
 
     const onDrop = useCallback((acceptedFiles) => {
+        console.log([...images,...acceptedFiles])
         setImages([...images,...acceptedFiles]);
-        data.current.images=[...acceptedFiles,...data.current.images];
+        data.current.images=[...data.current.images,...acceptedFiles];
         acceptedFiles.forEach((file) => {
           const reader = new FileReader()
           reader.onabort = () => console.log('File reading was aborted')
@@ -130,13 +134,13 @@ function AddItemStep1(props){
                         <div {...getRootProps()} className="dropImagesZone">
                             <input {...getInputProps()} />
                             <p className="simpleText paddingSimpleText">Drag and drop files here, or click to select files</p>
-                            <ul >
-                                {images.length > 0 && images.map(image => (
+                            {images.length > 0 && <ul >
+                                {images.map(image => (
                                     <li className="contactList simpleText">
                                         {image.name}
                                     </li>
                                 ))}
-                            </ul>
+                            </ul>}
                         </div>
                         </section>
                     )}

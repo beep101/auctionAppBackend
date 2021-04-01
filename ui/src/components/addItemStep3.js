@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import {Loader} from 'google-maps'
 import {MAPS_API_KEY} from '../utils/apiAccess'
 import {PHONE_REGEX_PATTERNS} from '../utils/constants'
+import citiesAndCountries from '../utils/countriesAndCities.json';
 
 class AddItemStep3 extends React.Component{
 
     constructor(props){
         super(props)
-
         this.state={
             address:props.address?props.address.address:'',
             city:props.address?props.address.city:'',
@@ -16,6 +16,7 @@ class AddItemStep3 extends React.Component{
             phone:props.phone?props.address.phone:'',
             msg:{}
         }
+        console.log(citiesAndCountries);
     }
         
     componentDidMount=()=>{
@@ -158,13 +159,13 @@ class AddItemStep3 extends React.Component{
                 </div>
                 <div className="inputFieldContainer categorySelectsInline">
                     <span className="categorySelectContainer">
-                        <div className="bidButton" onClick={this.onBack}>
+                        <div className="bidButton lightGrayBorder" onClick={this.onBack}>
                             Back
                         </div>
                     </span>
                     <span className="categorySelectContainer">
                         <div className="bidButton" onClick={this.onNext}>
-                            Next
+                            Done
                         </div>
                     </span>
                 </div>

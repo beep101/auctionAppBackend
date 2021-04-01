@@ -137,20 +137,31 @@ function AddItemStep2(props){
 
     return(
         <div className="formContainer">
-            <div className="inputFieldContainer">
+            <div className="inputFieldContainer verticalFlex">
                 <label className="inputLabel">Your start price</label><br/>
                 <input className="inputFieldWide" id="startingPrice" name="startingPrice" type="number" onChange={onChange} value={startingPrice}/>
                 {msg.startingPrice&&<div className="warningMessageInputLabel">{msg.startingPrice}</div>}
             </div>
             <div className="inputFieldContainer">
-                <DayPickerInput onDayChange={startDateChange} value={startDate} disabledDays={[{ before: disabledStart }]}/>
-                <DayPickerInput onDayChange={endDateChange} value={endDate} disabledDays={[{ before: disabledEnd }]} />
+                <div className="dateInputContainer">
+                    <div className="inputFieldContainer verticalFlex">
+                        <label className="inputLabel">Start date</label><br/>
+                        <DayPickerInput onDayChange={startDateChange} value={startDate} inputProps={{ className: 'dateInputField' }} disabledDays={[{ before: disabledStart }]}/>
+                    </div>
+                    <div className="inputFieldContainer verticalFlex">
+                        <label className="inputLabel">End date</label><br/>
+                        <DayPickerInput onDayChange={endDateChange} value={endDate} inputProps={{ className: 'dateInputField' }} disabledDays={[{ before: disabledEnd }]} />
+                    </div>
+                </div>
                 {msg.startDate&&<div className="warningMessageInputLabel">{msg.startDate}</div>}
                 {msg.endDate&&<div className="warningMessageInputLabel">{msg.endDate}</div>}
             </div>
+            <div className="auctionDatesMessageContainer">
+                The auction will be automatically closed when the end time comes. The highest bid will win the auction.
+            </div>
             <div className="inputFieldContainer categorySelectsInline">
                 <span className="categorySelectContainer">
-                    <div className="bidButton" onClick={onBack}>
+                    <div className="bidButton lightGrayBorder" onClick={onBack}>
                         Back
                     </div>
                 </span>
