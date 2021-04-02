@@ -2,21 +2,26 @@ import React from 'react'
 import {Loader} from 'google-maps'
 import {MAPS_API_KEY} from '../utils/apiAccess'
 import {PHONE_REGEX_PATTERNS} from '../utils/constants'
-import citiesAndCountries from '../utils/countriesAndCities.json';
+import citiesAndCountries from '../utils/countriesAndCities';
+import Autocomplete from 'react-autocomplete';
+import {AUTOCOMPLETE_MENU_STYLE} from '../utils/constants'
 
 class AddItemStep3 extends React.Component{
 
     constructor(props){
         super(props)
         this.state={
-            address:props.address?props.address.address:'',
-            city:props.address?props.address.city:'',
-            country:props.address?props.address.country:'',
-            zip:props.zip?props.address.zip:'',
-            phone:props.phone?props.address.phone:'',
-            msg:{}
+            address:props.data.address?props.data.address.address:'',
+            city:props.data.address?props.data.address.city:'',
+            country:props.data.address?props.data.address.country:'',
+            zip:props.data.address?props.data.address.zip:'',
+            phone:props.data.address?props.data.address.phone:'',
+            msg:{},
+            countriesAutocomplete:Object.keys(citiesAndCountries).map(x=>({id:x,label:x})),
+            citiesAutocomplete:[]
         }
-        console.log(citiesAndCountries);
+        console.log(props);
+        console.log(this.state);
     }
         
     componentDidMount=()=>{
@@ -72,7 +77,7 @@ class AddItemStep3 extends React.Component{
 
     onNext=()=>{
         let valid=true;
-        let msg={}
+        let msg={};
         if(!this.state.address||!this.state.address.length>0){
             valid=false;
             msg.address="Address name can't be empty";
@@ -129,6 +134,11 @@ class AddItemStep3 extends React.Component{
         this.props.back(data)
     }
 
+    renderAutocompleteItem=(item, isHighlighted) =>
+        <div className={isHighlighted ? 'autocompleteItem highlightBackgound' : 'autocompleteItem' }>
+            {item.label}
+        </div>
+
     render(){
         return(
             <div className="formContainer" >
@@ -138,19 +148,60 @@ class AddItemStep3 extends React.Component{
                     {this.state.msg.address&&<div className="warningMessageInputLabel">{this.state.msg.address}</div>}
                 </div>
                 <div className="inputFieldContainer">
-                    <label className="inputLabel">City</label><br/>
-                    <input className="inputFieldWide" id="city" name="city" onChange={this.onChange} value={this.state.city}/>
+                    <div className="dateInputContainer">
+                        <div className="inputFieldContainer verticalFlex">
+                            <label className="inputLabel">Country</label><br/>
+                            <Autocomplete
+                                className="inputFieldWide narrowed"
+                                id="country"
+                                name="country"
+                                
+                                inputProps={{className:"inputFieldWide narrowed"}}
+                                wrapperProps={{className:"autocompleteWrapper"}}
+                                menuStyle={AUTOCOMPLETE_MENU_STYLE}
+                                
+                                shouldItemRender={(item, value) => item.label.toLowerCase().startsWith(value.toLowerCase())}
+
+                                getItemValue={item=>item.label}
+                                renderItem={this.renderAutocompleteItem}
+                                onChange={(e)=>this.setState({['country']:e.target.value})}
+                                value={this.state.country}
+                                items={this.state.countriesAutocomplete}
+                                onSelect={(value)=>{
+                                    this.setState({['country']:value});
+                                    this.setState({['citiesAutocomplete']:citiesAndCountries[value].map(x=>({id:x,label:x}))});
+                                }}
+                            />
+                        </div>
+                        <div className="inputFieldContainer verticalFlex">
+                            <label className="inputLabel">City</label><br/>
+                            <Autocomplete
+                                className="inputFieldWide narrowed"
+                                id="city"
+                                name="city"
+
+                                inputProps={{className:"inputFieldWide narrowed"}}
+                                wrapperProps={{className:"autocompleteWrapper"}}
+                                menuStyle={AUTOCOMPLETE_MENU_STYLE}
+
+                                shouldItemRender={(item, value) => item.label.toLowerCase().startsWith(value.toLowerCase())}
+
+                                getItemValue={(item)=>item.label}
+                                renderItem={this.renderAutocompleteItem}
+                                onChange={(e)=>this.setState({['city']:e.target.value})}
+                                value={this.state.city}
+                                items={this.state.citiesAutocomplete}
+                                onSelect={(value)=>this.setState({['city']:value})}
+                            />
+                        </div>
+                    </div>
                     {this.state.msg.city&&<div className="warningMessageInputLabel">{this.state.msg.city}</div>}
-                </div>
+                    {this.state.msg.country&&<div className="warningMessageInputLabel">{this.state.msg.country}</div>}
                 <div className="inputFieldContainer">
                     <label className="inputLabel">ZIP code</label><br/>
                     <input className="inputFieldWide" id="zip" name="zip" onChange={this.onChange} value={this.state.zip}/>
                     {this.state.msg.zip&&<div className="warningMessageInputLabel">{this.state.msg.zip}</div>}
                 </div>
-                <div className="inputFieldContainer">
-                    <label className="inputLabel">Country</label><br/>
-                    <input className="inputFieldWide" id="country" name="country" onChange={this.onChange} value={this.state.country}/>
-                    {this.state.msg.country&&<div className="warningMessageInputLabel">{this.state.msg.country}</div>}
                 </div>
                 <div className="inputFieldContainer">
                     <label className="inputLabel">Phone</label><br/>

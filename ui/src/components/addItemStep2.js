@@ -73,11 +73,11 @@ function AddItemStep2(props){
         }
         if(startDate.getTime()<disabledStart.getTime()){
             valid=false;
-            newMsg.startDate="Invalid start date, date must be today or later";
+            msg.startDate="Invalid start date, date must be today or later";
         }
         if(endDate.getTime()<=startDate.getTime()){
             valid=false;
-            newMsg.endDate="Invalid end date, must be after start day";
+            msg.endDate="Invalid end date, must be after start day";
         }
         let data={
             startDate:startDate,

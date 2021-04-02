@@ -6,6 +6,7 @@ import BidLine from './bidLine';
 import AuthContext from '../context';
 import 'react-toastify/dist/ReactToastify.css';
 import {ITEM_MSG_DELAY} from '../utils/constants'
+import ReactMarkdown from 'react-markdown'
 
 class Item extends React.Component{
 
@@ -166,7 +167,7 @@ class Item extends React.Component{
                         <div>
                             <div className="itemStartPrice color5a5a5aMarginLeft">Details</div>
                             
-                            <div className="itemDescriptionText">{this.state.item.description}</div>
+                            <ReactMarkdown className="itemDescriptionText">{this.state.item.description}</ReactMarkdown>
                         </div>
                     </div>
                     

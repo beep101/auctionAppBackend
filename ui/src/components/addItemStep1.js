@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {getAllCategories} from '../apiConsumer/categoryConsumer';
-import {SORTING_SELECT_STYLES, SORTING_SELECT_THEME} from '../utils/constants';
+import {SORTING_SELECT_STYLES, SORTING_SELECT_THEME,WYSIWYG_EDITOR_STYLE} from '../utils/constants';
 import Select from 'react-select';
 import Dropzone from  'react-dropzone';
-import {Editor, EditorState} from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import {EditorState} from 'draft-js';
 import { convertFromRaw, convertToRaw } from 'draft-js';
-import 'draft-js/dist/Draft.css';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 function AddItemStep1(props){
     let data=useRef({
@@ -47,11 +48,16 @@ function AddItemStep1(props){
     }
 
     const selectCategory=(category)=>{
+        if(data.current.subcategory){
+            onClear();
+            data.current.subcategory=null;
+        }
         setSubcateogories(category.subs.map(element=>{return {value:element.id,label:element.name,cat:category}}));
     }
 
     const selectSubcategory=(subcategory)=>{
-        data.current['subcategory']={id:subcategory.value,sub:subcategory};
+        if(subcategory)
+            data.current['subcategory']={id:subcategory.value,sub:subcategory};
     }
 
     const onDrop = useCallback((acceptedFiles) => {
@@ -94,6 +100,12 @@ function AddItemStep1(props){
         if(valid)
             props.next(data.current);
     }
+
+    const selectInputRef = useRef();
+
+    const onClear = () => {
+      selectInputRef.current.select.clearValue();
+    };
     
     return(
         <div className="formContainer" >
@@ -105,24 +117,29 @@ function AddItemStep1(props){
             <div className="inputFieldContainer categorySelectsInline">
                 <span className="categorySelectContainer">
                     {data.current.subcategory?
-                    <Select options={categories} isSearchable={false} name="categories" onChange={selectCategory}
+                    <Select options={categories} isSearchable={false} name="categories" onChange={selectCategory} placeholder="Category"
                         styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} defaultValue={data.current.subcategory.sub.cat}/>
-                    :<Select options={categories} isSearchable={false} name="categories" onChange={selectCategory}
-                    styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME}/>}
+                    :<Select options={categories} isSearchable={false} name="categories" onChange={selectCategory} placeholder="Category"
+                        styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} />}
                 </span>
                 <span className="categorySelectContainer">
                     {data.current.subcategory?
-                    <Select options={subcategories} isSearchable={false} name="subcategories" onChange={selectSubcategory}
-                        styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME}  defaultValue={data.current.subcategory.sub}/>
+                    <Select options={subcategories} isSearchable={false} name="subcategories" onChange={selectSubcategory} ref={selectInputRef}
+                        styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME}  defaultValue={data.current.subcategory.sub} placeholder="Subcategory"/>
                     :<Select options={subcategories} isSearchable={false} name="subcategories" onChange={selectSubcategory}
-                        styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME}/>}
+                        styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} ref={selectInputRef} placeholder="Subcategory"/>}
                 </span>
                 {msg.cats&&<div className="warningMessageInputLabel">{msg.cats}</div>}
             </div>
             <div className="inputFieldContainer">
                 <label className="inputLabel">Description</label><br/>
                 <div className="textEditorContainer">
-                    <Editor id="description" name="description" editorState={editorState} onChange={editorUpdate} />
+                    <Editor
+                        
+                        editorState={editorState}
+                        onEditorStateChange={editorUpdate}
+                        toolbar={WYSIWYG_EDITOR_STYLE}
+                    />
                 </div>
                 {msg.description&&<div className="warningMessageInputLabel">{msg.description}</div>}
             </div>

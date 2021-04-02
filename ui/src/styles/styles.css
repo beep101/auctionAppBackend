@@ -49,6 +49,10 @@
     margin: 4px;
 }
 
+.narrowed{
+    width: 140px;
+}
+
 .buttonWide{
     width: 300px;
     border: none;
@@ -1050,7 +1054,6 @@ hr.solidVerticalLine{
 
 .feturedItemDescriptionText{
     color:#5a5a5a;
-    font-family: 'Lato', sans-serif;
     padding-top: .6vw;
     padding-bottom: 1vw;
 }
@@ -1111,11 +1114,11 @@ hr.solidVerticalLine{
     border-width: 1px;
     border-style: solid;
 
-    height: 10vw;
-
     z-index: 0;
     position: relative;
     margin-top: 15px;
+
+    color: #5a5a5a
 }
 
 .flexToRight{
@@ -1183,4 +1186,28 @@ hr.solidVerticalLine{
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.autocompleteItem{
+    color:#5a5a5a;
+    font-family: 'Lato', sans-serif;  
+    font-size: medium;  
+    background-color: white;
+    cursor: pointer;
+}
+
+.autocompleteWrapper{
+    position: relative; 
+}
+
+.highlightBackgound{
+    background-color: #8367D8;
+}
+
+.wysiwygWrapper{
+    display: block;
+    height: 25vw;
+}
+
+.wysiwygEditor{
 }

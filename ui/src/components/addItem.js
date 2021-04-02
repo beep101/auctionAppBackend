@@ -7,9 +7,10 @@ import AddItemStep3 from './addItemStep3';
 import { css } from "@emotion/core";
 import PulseLoader from "react-spinners/PulseLoader";
 import { withRouter } from "react-router-dom";
+import { draftToMarkdown } from 'markdown-draft-js';
 
 class AddItem extends React.Component{
-    constructor(props){
+    constructor(props,context){
         super(props);
         if(localStorage.getItem('addItemData')&&localStorage.getItem('addItemStep')){
             this.state={
@@ -31,12 +32,12 @@ class AddItem extends React.Component{
                 startDate:null,
                 endDate:null,
                 subcategory:null,
-                address:null,
+                address:context.user.address?context.user.address:null,
                 imageFiles:[],
                 images:[]
             }
         }
-
+        console.log(this.data)
     }
 
     next=(data)=>{
@@ -74,13 +75,14 @@ class AddItem extends React.Component{
             seller: {id: parseInt(this.context.user.jti)},
             subcategory: {id:this.data.subcategory.id},
             name: this.data.name,
-            description: JSON.stringify(this.data.description),
+            description: draftToMarkdown(this.data.description),
             startingprice: this.data.startingPrice,
             starttime: startDate,
             endtime: this.data.endDate,
             address: this.data.address,
             imageFiles:imgFiles
         }
+        console.log(data)
         addItem(data,this.context.jwt,(success,data)=>{
             if(success){
                 this.setState({['requestStatusStyle']:"successMessage"});
