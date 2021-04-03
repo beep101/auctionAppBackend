@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
+import com.example.demo.entities.User;
+import com.example.demo.exceptions.InsertFailedException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.ItemModel;
@@ -14,7 +16,7 @@ import com.example.demo.utils.PaginationParams;
 
 public interface IItemService {
 	ItemModel getItem(int id) throws NotFoundException;
-	ItemModel addItem(ItemModel item);
+	ItemModel addItem(ItemModel item,User user) throws InvalidDataException,InsertFailedException;
 	ItemModel modItem(ItemModel item);
 	ItemModel delItem(ItemModel item);
 	

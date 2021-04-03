@@ -1,0 +1,13 @@
+CREATE TABLE addresses(
+	id serial PRIMARY KEY,
+	addres VARCHAR NOT NULL,
+	city VARCHAR NOT NULL,
+	zip VARCHAR NOT NULL,
+	country VARCHAR NOT NULL, 
+	phone VARCHAR
+);
+
+ALTER TABLE users ADD COLUMN address INTEGER;
+ALTER TABLE users ADD FOREIGN KEY (address) REFERENCES addresses(id);
+ALTER TABLE items ADD COLUMN address INTEGER;
+ALTER TABLE items ADD FOREIGN KEY (address) REFERENCES addresses(id);

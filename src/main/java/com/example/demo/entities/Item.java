@@ -54,8 +54,12 @@ public class Item implements Serializable {
 	private User seller;
 	
 	@ManyToOne
-	@JoinColumn(name="category")
-	private Category category;
+	@JoinColumn(name="subcategory")
+	private Subcategory subcategory;
+	
+	@ManyToOne
+	@JoinColumn(name="address")
+	private Address address;
 
 	public Item() {
 	}
@@ -97,11 +101,11 @@ public class Item implements Serializable {
 	}
 
 	public Category getCategory() {
-		return category;
+		return subcategory.getCategory();
 	}
 
 	public void setCategory(Category category) {
-		this.category = category;
+		this.subcategory.setCategory(category);;
 	}
 
 	public void setSeller(User seller) {
@@ -154,6 +158,22 @@ public class Item implements Serializable {
 		this.sold = sold;
 	}
 	
+	public Subcategory getSubcategory() {
+		return subcategory;
+	}
+
+	public void setSubcategory(Subcategory subcategory) {
+		this.subcategory = subcategory;
+	}
+	
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
 	public ItemModel toModel() {
 		ItemModel model=new ItemModel();
 		model.setId(this.getId());
@@ -164,7 +184,38 @@ public class Item implements Serializable {
 		model.setEndtime(this.getEndtime());
 		model.setSold(this.getSold());
 		model.setSeller(this.seller.toModel());
+		if(this.address!=null) {
+			model.setAddress(this.address.toModel());
+		}
 		return model;
+	}
+	
+	public void populate(ItemModel model) {
+		this.setId(model.getId());
+		this.setName(model.getName());
+		this.setDescription(model.getDescription());
+		this.setStartingprice(model.getStartingprice());
+		this.setStarttime(model.getStarttime());
+		this.setEndtime(model.getEndtime());
+		this.setSold(model.getSold());
+		
+		if(model.getSubcategory()!=null) {
+			Subcategory subcategory=new Subcategory();
+			subcategory.setId(model.getSubcategory().getId());
+			this.setSubcategory(subcategory);
+		}
+		
+		if(model.getSeller()!=null) {
+			User seller=new User();
+			seller.setId(model.getSeller().getId());
+			this.setSeller(seller);
+		}
+		
+		if(model.getAddress()!=null) {
+			Address address=new Address();
+			address.populate(model.getAddress());
+			this.setAddress(address);
+		}
 	}
 	
 

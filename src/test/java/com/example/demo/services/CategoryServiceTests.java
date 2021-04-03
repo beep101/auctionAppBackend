@@ -18,7 +18,6 @@ import org.junit.Test;
 
 import com.example.demo.entities.Category;
 import com.example.demo.models.CategoryModel;
-import com.example.demo.models.UserModel;
 import com.example.demo.repositories.CategoriesRepository;
 
 @RunWith(EasyMockRunner.class)
