@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,7 +120,7 @@ public class ItemService implements IItemService {
 	}
 
 	@Override
-	public Collection<ItemModel> findItemsValidFilterCategories(String term,List<Integer> categories, PaginationParams pgbl) throws InvalidDataException{
+	public Collection<ItemModel> findItemsValidFilterCategories(String term,List<Integer> categories, List<Integer> subcategories, BigDecimal minPrice, BigDecimal maxPrice, PaginationParams pgbl) throws InvalidDataException{
 		Timestamp crr=new Timestamp(System.currentTimeMillis());
 
 		List<Category> categoriesList=null;
@@ -131,6 +132,14 @@ public class ItemService implements IItemService {
 			throw new InvalidDataException();
 		}
 		
+		List<Category> subcategoriesList=null;
+		try {
+			if(subcategories.size()!=0) {
+				subcategoriesList=categoriesRepo.findAllById(subcategories);
+			}
+		}catch(NumberFormatException ex) {
+			throw new InvalidDataException();
+		}		
 		
 		Collection<ItemModel> items;
 		if(categoriesList!=null) {

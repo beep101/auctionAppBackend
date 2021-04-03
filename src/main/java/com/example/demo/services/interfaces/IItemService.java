@@ -1,5 +1,6 @@
 package com.example.demo.services.interfaces;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,7 +24,8 @@ public interface IItemService {
 	Collection<ItemModel> getActiveItemsByCategory(int categoryId, PaginationParams pgbl);
 	Collection<ItemModel> getNewArrivalItems(PaginationParams pgbl);
 	Collection<ItemModel> getLastChanceItems(PaginationParams pgbl);
-	Collection<ItemModel> findItemsValidFilterCategories(String term, List<Integer> categories, PaginationParams pgbl)throws InvalidDataException;
+	Collection<ItemModel> findItemsValidFilterCategories(String term, List<Integer> categories, List<Integer> subcategories,
+														 BigDecimal minPrice, BigDecimal maxPrice, PaginationParams pgbl)throws InvalidDataException;
 	
 	ItemModel getItemFeatured() throws NotFoundException;
 }

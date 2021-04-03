@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 
@@ -95,8 +96,11 @@ public class ItemController {
 	
 	@ApiOperation(value = "Enables searching items by name and filtering by different parameters", notes = "Public access")
 	@GetMapping("/api/items/search")
-	public Collection<ItemModel> findItem(@RequestParam String term,@RequestParam List<Integer> categories,
-										  @RequestParam int page,@RequestParam int count,@RequestParam(required = false, defaultValue = "default") ItemSorting sort)throws InvalidDataException{
-		return imageService.loadImagesForItems(itemService.findItemsValidFilterCategories(term,categories,new SortingPaginationParams(page,count,sort)));
+	public Collection<ItemModel> findItem(@RequestParam String term,@RequestParam List<Integer> categories, @RequestParam List<Integer> subcategories,
+										  @RequestParam(required = false, defaultValue= "null") BigDecimal minPrice,
+										  @RequestParam(required = false, defaultValue= "null") BigDecimal maxPrice,
+										  @RequestParam int page,@RequestParam int count,
+										  @RequestParam(required = false, defaultValue = "default") ItemSorting sort)throws InvalidDataException{
+		return imageService.loadImagesForItems(itemService.findItemsValidFilterCategories(term,categories,subcategories,minPrice,maxPrice,new SortingPaginationParams(page,count,sort)));
 	}
 }
