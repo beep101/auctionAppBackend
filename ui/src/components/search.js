@@ -1,12 +1,14 @@
 import React from 'react';
 import AuthContext from '../context';
 import ItemElement from './itemELement';
-import {getAllCategories} from '../apiConsumer/categoryConsumer';
 import {searchItems} from '../apiConsumer/itemFetchConsumer' 
 import {SHOP_LOAD_COUNT} from '../utils/constants'
 import Select from 'react-select';
 import {SORTING_SELECT_THEME, SORTING_SELECT_STYLES} from '../utils/constants'
 import queryString from 'query-string';
+import PriceFilter from './priceFilter';
+import CategorySubcategoryMenu from './categorySubcategoryMenu';
+import FilterItem from './filterItem';
 
 class Search extends React.Component{
 
@@ -15,7 +17,10 @@ class Search extends React.Component{
         this.loadCount=0;
         this.searchText="";
         this.selectedCategories=[];
+        this.selectedSubcategories=[];
         this.sort="default";
+        this.minPrice=null;
+        this.maxPrice=null;
 
         this.sorts=[
             {value:"default",label:"Default"},
@@ -28,20 +33,19 @@ class Search extends React.Component{
         this.state={
             items:[],
             loadMore: true,
-            categories:[],
-            selectedCategories:[],
             display:"grid"
         }
         
         const category = parseInt((queryString.parse(this.props.location.search))['category']);
         if(category){
-            this.state['selectedCategories']=[category];
-            this.selectedCategories=[category];
+            this.category=category;
+            this.selectedCategories=[category]
+        }else{
+            this.category=null;
         }
     }
         
     componentDidMount=()=>{
-        this.loadCategories();
         this.context.setSearchCallback((text)=>{this.textChanged(text);});
         this.context.search(null);
     }
@@ -69,15 +73,14 @@ class Search extends React.Component{
     displayChanged=(event)=>{
         this.setState({['display']:event})
     }
-    
 
     load=()=>{
-        searchItems(this.searchText,this.selectedCategories,this.loadCount,SHOP_LOAD_COUNT,this.sort,(success, data)=>{
+        searchItems(this.searchText,this.selectedCategories,this.selectedSubcategories,this.minPrice,this.maxPrice,this.loadCount,SHOP_LOAD_COUNT,this.sort,(success, data)=>{
             if(success){
                 if(data.length<SHOP_LOAD_COUNT){
                     this.setState({['loadMore']:false});
                 }else if(data.length==SHOP_LOAD_COUNT){
-                    searchItems(this.searchText,this.selectedCategories,this.loadCount+1,SHOP_LOAD_COUNT,this.sort,(success, data)=>{
+                    searchItems(this.searchText,this.selectedCategories,this.selectedSubcategories,this.minPrice,this.maxPrice,this.loadCount+1,SHOP_LOAD_COUNT,this.sort,(success, data)=>{
                         if(success)
                             if(data.length==0){
                                 this.setState({['loadMore']:false});
@@ -94,25 +97,23 @@ class Search extends React.Component{
         })
     }
 
-    loadCategories=()=>{
-        getAllCategories((success,data)=>{
-            if(success){
-                this.setState({['categories']: data.slice(1)})
-            }else{
-                console.log("Cannot fetch categories")
-            }
-        });
+    setCategories=(categories)=>{
+        this.selectedCategories=categories;
+        this.loadCount=0;
+        this.setState({['loadMore']:true});
+        this.load()
     }
 
-    selectCategory=(cat)=>{
-        if(this.state.selectedCategories.includes(cat)){
-            this.setState({['selectedCategories']:this.state.selectedCategories.filter((x)=>x!=cat)});
-            this.selectedCategories=this.selectedCategories.filter((x)=>x!=cat);
-        }else{
-            this.setState({['selectedCategories']:[...this.state.selectedCategories,cat]})
-            this.selectedCategories.push(cat);
-        }
-
+    setSubcategories=(subcategories)=>{
+        this.selectedSubcategories=subcategories;
+        this.loadCount=0;
+        this.setState({['loadMore']:true});
+        this.load()
+    }
+    
+    rangeSet=(min,max)=>{
+        this.minPrice=min;
+        this.maxPrice=max;
         this.loadCount=0;
         this.setState({['loadMore']:true});
         this.load()
@@ -120,18 +121,14 @@ class Search extends React.Component{
 
     render(){
         return(
+        <div className="centeredVerticalFlex">
+            <div className="activeFiltersContainer">
+                <FilterItem name="filter" disable={()=>{}}/>
+            </div>
         <div className="shopContainer">
-           
-            <div className="categoriesList">
-                <div className="categoryButtonTitle">PRODUCT CATEGORIES</div>
-                {this.state.categories.map(category=>
-                <div className={this.state.selectedCategories.includes(category.id)?"categoryButtonSelected":"categoryButton"}
-                onClick={()=>this.selectCategory(category.id)}>
-                    {category.name}
-                    <img className="categoriesButtonIcon"
-                    src={this.state.selectedCategories.includes(category.id)?
-                    "/images/category_selected.svg":"/images/category_unselected.svg"}/>
-                </div>)}
+            <div>
+                <CategorySubcategoryMenu preset={this.category} setCategories={this.setCategories} setSubcategories={this.setSubcategories} />
+                <PriceFilter rangeSet={this.rangeSet}/>
             </div>
             <div className="shopItemWrapper">
                 <div className="sortDisplayBar">
@@ -157,6 +154,7 @@ class Search extends React.Component{
                     <div className={this.state.loadMore?"loadEnabled":"loadDisabled"} onClick={()=>this.state.loadMore&&this.load()}>Load More</div>
                 </div>
             </div>
+        </div>
         </div>
         );
     }

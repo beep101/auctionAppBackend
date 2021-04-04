@@ -60,7 +60,8 @@ public class AccountService implements IAccountService{
 		if(users.isPresent()) {
 			if(hashUtil.checkPassword(login.getPassword(), users.get().getPasswd())) {
 				Map<String,Object> data= new HashMap<String, Object>();
-				data.put("address", users.get().getAddress().toModel());
+				if(users.get().getAddress()!=null)
+					data.put("address", users.get().getAddress().toModel());
 				String jwt=jwtUtil.generateToken(users.get(),data);
 				login.setId(users.get().getId());
 				login.setFirstName(users.get().getName());

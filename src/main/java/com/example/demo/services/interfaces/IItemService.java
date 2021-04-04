@@ -10,6 +10,7 @@ import com.example.demo.entities.User;
 import com.example.demo.exceptions.InsertFailedException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.models.HistogramResponseModel;
 import com.example.demo.models.ItemModel;
 import com.example.demo.utils.ItemSorting;
 import com.example.demo.utils.PaginationParams;
@@ -26,8 +27,11 @@ public interface IItemService {
 	Collection<ItemModel> getActiveItemsByCategory(int categoryId, PaginationParams pgbl);
 	Collection<ItemModel> getNewArrivalItems(PaginationParams pgbl);
 	Collection<ItemModel> getLastChanceItems(PaginationParams pgbl);
-	Collection<ItemModel> findItemsValidFilterCategories(String term, List<Integer> categories, List<Integer> subcategories,
-														 BigDecimal minPrice, BigDecimal maxPrice, PaginationParams pgbl)throws InvalidDataException;
+	Collection<ItemModel> findItemsValidFilterCategories(String term, List<Integer> categories, PaginationParams pgbl)throws InvalidDataException;
+	Collection<ItemModel> findItemsValidFilterCategoriesSubcaetgoriesPrice(String term,List<Integer> categories, List<Integer> subcategories,
+														 BigDecimal minPrice, BigDecimal maxPrice, PaginationParams pgbl) throws InvalidDataException;
+
 	
 	ItemModel getItemFeatured() throws NotFoundException;
+	HistogramResponseModel pricesHistogramForItems() throws NotFoundException;
 }

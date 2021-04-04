@@ -22,6 +22,7 @@ import com.example.demo.exceptions.InsertFailedException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.exceptions.UnauthenticatedException;
+import com.example.demo.models.HistogramResponseModel;
 import com.example.demo.models.ItemModel;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
@@ -109,11 +110,11 @@ public class ItemController {
 	@ApiOperation(value = "Enables searching items by name and filtering by different parameters", notes = "Public access")
 	@GetMapping("/api/items/search")
 	public Collection<ItemModel> findItem(@RequestParam String term,@RequestParam List<Integer> categories, @RequestParam List<Integer> subcategories,
-										  @RequestParam(required = false, defaultValue= "null") BigDecimal minPrice,
-										  @RequestParam(required = false, defaultValue= "null") BigDecimal maxPrice,
+										  @RequestParam(required = false) BigDecimal minPrice,
+										  @RequestParam(required = false) BigDecimal maxPrice,
 										  @RequestParam int page,@RequestParam int count,
 										  @RequestParam(required = false, defaultValue = "default") ItemSorting sort)throws InvalidDataException{
-		return imageService.loadImagesForItems(itemService.findItemsValidFilterCategories(term,categories,subcategories,minPrice,maxPrice,new SortingPaginationParams(page,count,sort)));
+		return imageService.loadImagesForItems(itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(term,categories,subcategories,minPrice,maxPrice,new SortingPaginationParams(page,count,sort)));
 	}
 	
 	@ApiOperation(value = "Creating new item for sale", notes = "Only authenticated users")
@@ -127,4 +128,11 @@ public class ItemController {
 		}
 		return imageService.loadImagesForItem(itemService.addItem(model,principal));
 	}
+	
+	@ApiOperation(value = "Returns prices histogram histogram", notes = "Pubic access")
+	@GetMapping("/api/items/priceHistogram")
+	public HistogramResponseModel getPriceHistogram() throws NotFoundException{
+		return itemService.pricesHistogramForItems();
+	}
+	
 }
