@@ -230,7 +230,8 @@ public class ItemService implements IItemService {
 					.stream().map(x->x.toModel()).collect(Collectors.toList());
 		}
 		return items;
-	}	
+	}
+	
 	@Override
 	public Collection<ItemModel> findItemsValidFilterCategoriesSubcaetgoriesPrice(String term,List<Integer> categories, List<Integer> subcategories, BigDecimal minPrice, BigDecimal maxPrice, PaginationParams pgbl) throws InvalidDataException{
 		Timestamp crr=new Timestamp(System.currentTimeMillis());

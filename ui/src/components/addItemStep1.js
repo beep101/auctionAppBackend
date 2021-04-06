@@ -17,6 +17,8 @@ function AddItemStep1(props){
         images:props.data.images
     });
 
+    let dropzone=useRef();
+
     const [categories,setCategories]=useState([]);
     const [subcategories,setSubcateogories]=useState(props.data.subcategory?
         props.data.subcategory.sub.cat.subs.map(element=>
@@ -24,6 +26,15 @@ function AddItemStep1(props){
         ):[]);
     const [msg,setMsg]=useState({});
     const [images,setImages]=useState(props.data.images);
+    useEffect(()=>{
+        console.log(dropzone.current)
+        new Dropzone(dropzone.current,{init:function(){
+            let drop=this;
+            let mockFile={ name: "Filename 2", size: 12345 };
+            console.log(drop)
+            drop.displayExistingFile(mockFile, "https://i.picsum.photos/id/959/600/600.jpg");
+        }});
+    },[]);
     const [editorState,setEditorState]=useState(()=>data.current.description?
     EditorState.createWithContent(convertFromRaw(data.current.description)):EditorState.createEmpty());
 
@@ -61,7 +72,6 @@ function AddItemStep1(props){
     }
 
     const onDrop = useCallback((acceptedFiles) => {
-        console.log([...images,...acceptedFiles])
         setImages([...images,...acceptedFiles]);
         data.current.images=[...data.current.images,...acceptedFiles];
         acceptedFiles.forEach((file) => {
@@ -135,7 +145,6 @@ function AddItemStep1(props){
                 <label className="inputLabel">Description</label><br/>
                 <div className="textEditorContainer">
                     <Editor
-                        
                         editorState={editorState}
                         onEditorStateChange={editorUpdate}
                         toolbar={WYSIWYG_EDITOR_STYLE}
@@ -145,7 +154,7 @@ function AddItemStep1(props){
             </div>
             <div className="inputFieldContainer">
                 <label className="inputLabel">Images</label><br/>
-                <Dropzone onDrop={onDrop} accept="image/jpg,image/jpeg">
+                <Dropzone onDrop={onDrop} accept="image/jpg,image/jpeg" ref={dropzone}>
                     {({getRootProps, getInputProps}) => (
                         <section>
                         <div {...getRootProps()} className="dropImagesZone">
