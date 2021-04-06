@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.BadCredentialsException;
 import com.example.demo.exceptions.ExistingUserException;
 import com.example.demo.exceptions.InvalidDataException;
@@ -53,25 +54,25 @@ public class AccountController {
 	
 	@ApiOperation(value = "Requires valid email and password to return JWT", notes = "Public access")
 	@PostMapping("/api/login")
-	public UserModel login(@RequestBody UserModel data) throws BadCredentialsException {
+	public UserModel login(@RequestBody UserModel data) throws AuctionAppException {
 		return accountService.login(data);
 	}
 	
 	@ApiOperation(value = "Creates new user account", notes = "Public access")
 	@PostMapping("/api/signup")
-	public UserModel signup(@RequestBody UserModel data) throws InvalidDataException, ExistingUserException, NonExistentUserException {
+	public UserModel signup(@RequestBody UserModel data) throws AuctionAppException {
 		return accountService.signUp(data);
 	}
 	
 	@ApiOperation(value = "Uses user email to generate password recovery link that is sent to email", notes = "Public access")
 	@PostMapping("/api/forgotPassword")
-	public UserModel forgotPassword(@RequestBody UserModel data) throws NonExistentUserException {
+	public UserModel forgotPassword(@RequestBody UserModel data) throws AuctionAppException {
 		return accountService.forgotPassword(data);
 	}
 	
 	@ApiOperation(value = "Link used to change forgotten password, requires recovery token", notes = "Public access")
 	@PostMapping("api/newPassword")
-	public UserModel newPassword(@RequestBody UserModel data) throws InvalidTokenException, InvalidDataException {
+	public UserModel newPassword(@RequestBody UserModel data) throws AuctionAppException {
 		return accountService.newPassword(data);
 	}
 }

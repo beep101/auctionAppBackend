@@ -3,7 +3,7 @@ package com.example.demo.exceptions;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InvalidDataException extends Exception {
+public class InvalidDataException extends AuctionAppException {
 	
 	private Map<String,String> errors;
 	

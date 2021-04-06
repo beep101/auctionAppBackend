@@ -224,11 +224,6 @@
 		    <artifactId>javax.el</artifactId>
 		    <version>3.0.0</version>
 		</dependency>
-		<dependency>
-	    <groupId>commons-fileupload</groupId>
-	    	<artifactId>commons-fileupload</artifactId>
-	   		<version>1.4</version>
-		</dependency>
 	</dependencies>
 
 	<build>

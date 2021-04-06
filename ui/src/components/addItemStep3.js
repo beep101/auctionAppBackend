@@ -78,19 +78,19 @@ class AddItemStep3 extends React.Component{
     onNext=()=>{
         let valid=true;
         let msg={};
-        if(!this.state.address||!this.state.address.length>0){
+        if(!this.state.address){
             valid=false;
             msg.address="Address name can't be empty";
         }
-        if(!this.state.city||!this.state.city.length>0){
+        if(!this.state.city){
             valid=false;
             msg.city="City name can't be empty";
         }
-        if(!this.state.zip||!this.state.zip.length>0){
+        if(!this.state.zip){
             valid=false;
             msg.zip="ZIP code can't be empty";
         }
-        if(!this.state.country||!this.state.country.length>0){
+        if(!this.state.country){
             valid=false;
             msg.country="Country name can't be empty";
         }

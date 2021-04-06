@@ -26,6 +26,11 @@ public class AddressRequest {
 	
 	private String phone;
 	
+	private final String VALID_PHONE_NUMBERS_PATTERNS 
+    = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$" 
+    + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$" 
+    + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$";
+	
 	public AddressRequest(AddressModel model) {
 		this.address=model.getAddress();
 		this.city=model.getCity();
@@ -58,11 +63,7 @@ public class AddressRequest {
 		if(this.phone==null||this.phone.isBlank())
 			return problems;
 		else {
-			String patterns 
-		      = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$" 
-		      + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$" 
-		      + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$";
-			Pattern pattern = Pattern.compile(patterns);
+			Pattern pattern = Pattern.compile(VALID_PHONE_NUMBERS_PATTERNS);
 			if(!pattern.matcher(this.phone).matches()) {
 				problems.put("phone", "Phone number format is invalid");
 			}

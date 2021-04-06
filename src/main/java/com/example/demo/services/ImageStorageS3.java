@@ -19,6 +19,7 @@ import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.ImageDeleteException;
 import com.example.demo.exceptions.ImageFetchException;
 import com.example.demo.exceptions.ImageHashException;
@@ -38,7 +39,7 @@ public class ImageStorageS3 implements IImageStorageService{
 	}
 
 	@Override
-	public String addImage(String itemId,byte[] imageJpg) throws ImageUploadException, ImageHashException{
+	public String addImage(String itemId,byte[] imageJpg) throws AuctionAppException{
 		String imageHash=md5(imageJpg);
 		String key=itemId+"/"+imageHash+".jpg";
 		
@@ -56,7 +57,7 @@ public class ImageStorageS3 implements IImageStorageService{
 	}
 	
 	@Override
-	public List<String> addImages(String itemId,List<byte[]> imagesJpgs) throws ImageUploadException, ImageHashException{
+	public List<String> addImages(String itemId,List<byte[]> imagesJpgs) throws AuctionAppException{
 		List<String> hashes=new ArrayList<>();
 		for(byte[] img:imagesJpgs)
 			hashes.add(addImage(itemId, img));
@@ -64,7 +65,7 @@ public class ImageStorageS3 implements IImageStorageService{
 	}
 
 	@Override
-	public String deleteImage(String itemId,String imageHash) throws ImageDeleteException{
+	public String deleteImage(String itemId,String imageHash) throws AuctionAppException{
 		String key=itemId+"/"+imageHash+".jpg";
 		try {
 			s3.deleteObject(bucketName, key);

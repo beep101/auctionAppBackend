@@ -9,29 +9,25 @@ import { convertFromRaw, convertToRaw } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 function AddItemStep1(props){
-    let data=useRef({
+    const data=useRef({
         name:props.data.name,
         description:props.data.description,
         subcategory:props.data.subcategory,
-        imageFiles:props.data.imageFiles,
         images:props.data.images
     });
+    
+    const selectInputRef = useRef();
 
     const [categories,setCategories]=useState([]);
     const [subcategories,setSubcateogories]=useState(props.data.subcategory?
         props.data.subcategory.sub.cat.subs.map(element=>
         {return {value:element.id,label:element.name,cat:props.data.subcategory.sub.cat}}
-        ):[]);
+    ):[]);
     const [msg,setMsg]=useState({});
     const [images,setImages]=useState(props.data.images);
     const [editorState,setEditorState]=useState(()=>data.current.description?
     EditorState.createWithContent(convertFromRaw(data.current.description)):EditorState.createEmpty());
-
-    const editorUpdate=(state)=>{
-        data.current.description=convertToRaw(state.getCurrentContent());
-        setEditorState(state);
-    }
-
+    
     useEffect(
         ()=>{getAllCategories((success,data)=>{
             if(success){
@@ -43,44 +39,66 @@ function AddItemStep1(props){
         });
     },[]);
 
-    const onChange=(e)=>{
-        data.current[e.target.name]=e.target.value;
-    }
+    const editorUpdate=useCallback((state)=>{
+        data.current.description=convertToRaw(state.getCurrentContent());
+        setEditorState(state);
+    },[]);
 
-    const selectCategory=(category)=>{
+    const onChange=useCallback((e)=>{
+        data.current[e.target.name]=e.target.value;
+    },[]);
+
+    const selectCategory=useCallback((category)=>{
         if(data.current.subcategory){
             onClear();
             data.current.subcategory=null;
         }
         setSubcateogories(category.subs.map(element=>{return {value:element.id,label:element.name,cat:category}}));
-    }
+    },[]);
 
-    const selectSubcategory=(subcategory)=>{
+    const selectSubcategory=useCallback((subcategory)=>{
         if(subcategory)
             data.current['subcategory']={id:subcategory.value,sub:subcategory};
-    }
+    },[]);
+
+    const onClear = useCallback(() => {
+        selectInputRef.current.select.clearValue();
+    },[]);
 
     const onDrop = useCallback((acceptedFiles) => {
-        console.log([...images,...acceptedFiles])
-        setImages([...images,...acceptedFiles]);
-        data.current.images=[...data.current.images,...acceptedFiles];
         acceptedFiles.forEach((file) => {
-          const reader = new FileReader()
-          reader.onabort = () => console.log('File reading was aborted')
-          reader.onerror = () => console.log('File reading has failed')
-          reader.onload = () => {
-            data.current.imageFiles.push(reader.result);
-          }
-          reader.readAsDataURL(file)
+            const reader = new FileReader()
+            reader.onabort = () => console.log('File reading was aborted')
+            reader.onerror = () => console.log('File reading has failed')
+            reader.onload = (e) => {
+                const crrImg={name:file.name,data: e.target.result};
+                data.current.images=data.current.images.filter((elem)=>{
+                    return elem.data !== crrImg.data;
+                })
+                data.current.images.push(crrImg);
+                let newImages=[]
+                for(const img in data.current.images)
+                    newImages.push(data.current.images[img]);
+                setImages(newImages);
+            }
+            reader.readAsDataURL(file)
         })
-        
-      },
-    [])
+    },[]);
 
-    const onNext=()=>{
+    const onThumbClick=useCallback((image)=>{
+        data.current.images=data.current.images.filter((elem)=>{
+            return elem.data !== image.data;
+        })
+        let newImages=[]
+        for(const img in data.current.images)
+            newImages.push(data.current.images[img]);
+        setImages(newImages);
+    },[]);
+
+    const onNext=useCallback(()=>{
         let valid=true;
         let msg={}
-        if(!data.current.name||!data.current.name.length>0){
+        if(!data.current.name){
             valid=false;
             msg.name="Name can't be empty";
         }
@@ -92,20 +110,14 @@ function AddItemStep1(props){
             valid=false;
             msg.cats="Category and subcategory must be selected";
         }
-        if(!data.current.imageFiles||data.current.imageFiles.length<3){
+        if(!data.current.images){
             valid=false;
             msg.images="At least 3 images required";
         }
         setMsg(msg);
         if(valid)
             props.next(data.current);
-    }
-
-    const selectInputRef = useRef();
-
-    const onClear = () => {
-      selectInputRef.current.select.clearValue();
-    };
+    },[]);
     
     return(
         <div className="formContainer" >
@@ -135,7 +147,9 @@ function AddItemStep1(props){
                 <label className="inputLabel">Description</label><br/>
                 <div className="textEditorContainer">
                     <Editor
-                        
+                        toolbarClassName="wysiwygToolbar"
+                        editorClassName="wysiwygEditor"
+                        wrapperClassName="wysiwygWrapper"
                         editorState={editorState}
                         onEditorStateChange={editorUpdate}
                         toolbar={WYSIWYG_EDITOR_STYLE}
@@ -151,17 +165,18 @@ function AddItemStep1(props){
                         <div {...getRootProps()} className="dropImagesZone">
                             <input {...getInputProps()} />
                             <p className="simpleText paddingSimpleText">Drag and drop files here, or click to select files</p>
-                            {images.length > 0 && <ul >
-                                {images.map(image => (
-                                    <li className="contactList simpleText">
-                                        {image.name}
-                                    </li>
-                                ))}
-                            </ul>}
                         </div>
                         </section>
                     )}
                 </Dropzone>
+                <div className="thumbsNewImages">
+                    {images.map(image=><div className="thumbNewImageContainer">
+                        <img className="thumbNewImage" src={image.data} alt={image.name}></img>
+                        <div className="gridItemOverlay">
+                            <img onClick={()=>onThumbClick(image)} src="/images/x_medium.svg" className="thumbNewImageClose"></img>
+                        </div>
+                    </div>)}
+                </div>
                 {msg.images&&<div className="warningMessageInputLabel">{msg.images}</div>}
             </div>
             <div className="inputFieldContainer categorySelectsInline flexToRight">

@@ -33,7 +33,6 @@ class AddItem extends React.Component{
                 endDate:null,
                 subcategory:null,
                 address:context.user.address?context.user.address:null,
-                imageFiles:[],
                 images:[]
             }
         }
@@ -63,8 +62,8 @@ class AddItem extends React.Component{
         localStorage.removeItem('addItemStep');
         localStorage.removeItem('addItemData');
         let imgFiles=[];
-        for(const img in this.data.imageFiles){
-            let imgSplit=this.data.imageFiles[img].split(",");
+        for(const img in this.data.images){
+            let imgSplit=this.data.image[img].data.split(",");
             imgFiles.push(imgSplit[imgSplit.length-1])
         }
         let startDate=new Date();

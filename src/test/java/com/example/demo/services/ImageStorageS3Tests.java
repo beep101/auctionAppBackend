@@ -28,6 +28,7 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.demo.entities.Item;
+import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.ImageDeleteException;
 import com.example.demo.exceptions.ImageHashException;
 import com.example.demo.exceptions.ImageUploadException;
@@ -43,7 +44,7 @@ public class ImageStorageS3Tests extends EasyMockSupport{
 	ImageStorageS3 imageStorage=new ImageStorageS3("", s3Adapter);
 	
 	@Test
-	public void addImageShouldCreateValidPutRequest() throws ImageUploadException, ImageHashException, IOException {
+	public void addImageShouldCreateValidPutRequest() throws AuctionAppException, IOException {
 		
 		Capture<PutObjectRequest> putReqCapture=EasyMock.newCapture(CaptureType.ALL);
 		expect(s3Adapter.putObject(capture(putReqCapture))).andReturn(null).anyTimes();
@@ -60,7 +61,7 @@ public class ImageStorageS3Tests extends EasyMockSupport{
 	}
 	
 	@Test
-	public void addImagesShouldReturnValidHashList() throws ImageUploadException, ImageHashException{
+	public void addImagesShouldReturnValidHashList() throws AuctionAppException{
 		expect(s3Adapter.putObject(anyObject())).andReturn(null).anyTimes();
 		replayAll();
 		
@@ -79,7 +80,7 @@ public class ImageStorageS3Tests extends EasyMockSupport{
 	}
 	
 	@Test(expected = ImageUploadException.class)
-	public void addImageErrorOnWriteShouldThrowException() throws ImageUploadException, ImageHashException {
+	public void addImageErrorOnWriteShouldThrowException() throws AuctionAppException{
 		
 		expect(s3Adapter.putObject(anyObject())).andThrow(new AmazonServiceException("msg"));
 		
@@ -95,7 +96,7 @@ public class ImageStorageS3Tests extends EasyMockSupport{
 	
 	
 	@Test
-	public void deleteImageCreateValidRequest() throws ImageDeleteException {
+	public void deleteImageCreateValidRequest() throws AuctionAppException {
 		
 		Capture<String> reqCapture=Capture.newInstance();
 		s3Adapter.deleteObject(anyString(), capture(reqCapture));
@@ -113,7 +114,7 @@ public class ImageStorageS3Tests extends EasyMockSupport{
 	}
 	
 	@Test
-	public void deleteImageReturnsHash() throws ImageDeleteException {
+	public void deleteImageReturnsHash() throws AuctionAppException {
 		
 		s3Adapter.deleteObject(anyString(), anyString());
 		expectLastCall();
@@ -129,7 +130,7 @@ public class ImageStorageS3Tests extends EasyMockSupport{
 	}
 	
 	@Test(expected = ImageDeleteException.class)
-	public void deleteImageThrowsException() throws ImageDeleteException {
+	public void deleteImageThrowsException() throws AuctionAppException {
 		
 		s3Adapter.deleteObject(anyString(), anyString());
 		expectLastCall().andThrow(new AmazonServiceException("")).anyTimes();
