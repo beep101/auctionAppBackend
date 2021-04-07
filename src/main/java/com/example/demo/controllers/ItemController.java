@@ -114,7 +114,7 @@ public class ItemController {
 										  @RequestParam(required = false) BigDecimal minPrice,
 										  @RequestParam(required = false) BigDecimal maxPrice,
 										  @RequestParam int page,@RequestParam int count,
-										  @RequestParam(required = false, defaultValue = "default") ItemSorting sort)throws InvalidDataException{
+										  @RequestParam(required = false, defaultValue = "default") ItemSorting sort)throws AuctionAppException{
 		return imageService.loadImagesForItems(itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(term,categories,subcategories,minPrice,maxPrice,new SortingPaginationParams(page,count,sort)));
 	}
 	
@@ -132,7 +132,7 @@ public class ItemController {
 	
 	@ApiOperation(value = "Returns prices histogram histogram", notes = "Pubic access")
 	@GetMapping("/api/items/priceHistogram")
-	public HistogramResponseModel getPriceHistogram() throws NotFoundException{
+	public HistogramResponseModel getPriceHistogram() throws AuctionAppException{
 		return itemService.pricesHistogramForItems();
 	}
 	

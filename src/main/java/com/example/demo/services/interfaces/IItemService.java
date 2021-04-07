@@ -30,9 +30,9 @@ public interface IItemService {
 	Collection<ItemModel> getLastChanceItems(PaginationParams pgbl);
 	Collection<ItemModel> findItemsValidFilterCategories(String term, List<Integer> categories, PaginationParams pgbl)throws AuctionAppException;
 	Collection<ItemModel> findItemsValidFilterCategoriesSubcaetgoriesPrice(String term,List<Integer> categories, List<Integer> subcategories,
-														 BigDecimal minPrice, BigDecimal maxPrice, PaginationParams pgbl) throws InvalidDataException;
+														 BigDecimal minPrice, BigDecimal maxPrice, PaginationParams pgbl) throws AuctionAppException;
 
 	
-	ItemModel getItemFeatured() throws NotFoundException;
-	HistogramResponseModel pricesHistogramForItems() throws NotFoundException;
+	ItemModel getItemFeatured() throws AuctionAppException;
+	HistogramResponseModel pricesHistogramForItems() throws AuctionAppException;
 }
