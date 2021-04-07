@@ -2,10 +2,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Slider, Rail, Handles, Tracks } from 'react-compound-slider';
 import { getPriceHistogram } from '../apiConsumer/itemFetchConsumer';
 
-
-//add track
-//do something with css???
-//use values and percentage to programatically position handles???
 function PriceFilter(props){
 
     const heightPerCount=useRef(0);
@@ -37,19 +33,27 @@ function PriceFilter(props){
     },[])
 
     useEffect(()=>{
-        //reset only one value and keep the other one
-        //update slider
         if(props.resetMin){
-            props.rangeSet(null,null);
+            if(maxRange!=upperBound)
+                props.rangeSet(null,maxRange);
+            else
+                props.rangeSet(null,null);
             setSelectedMin(null);
+            setMinRange(0.0);
         }
         if(props.resetMax){
-            props.rangeSet(null,null);
+            if(minRange!=0.0)
+                props.rangeSet(minRange,null);
+            else
+                props.rangeSet(null,null);
             setSelectedMax(null);
+            setMaxRange(upperBound);
         }
     },[props.resetMin,props.resetMax])
 
     const onChange=(data)=>{
+        setMinRange(data[0]);
+        setMaxRange(data[1]);
         if(data[0]===0)
             data[0]=null;
         else
@@ -74,6 +78,14 @@ function PriceFilter(props){
         height: 3,
         marginTop: 6,
         backgroundColor: '#d8d8d8',
+      }
+
+      const trackStyle={
+        position: 'absolute',
+        height: 3,
+        zIndex: 1,
+        marginTop: 6,
+        backgroundColor: '#8367D8',
       }
       
       const handleStyle={
@@ -118,6 +130,20 @@ function PriceFilter(props){
                         </div>
                     )}
                     </Handles>
+                    <Tracks left={false} right={false}>
+                        {({ tracks }) => (
+                            <div className="slider-tracks">
+                                {tracks.map((track) => (
+                                    <div
+                                        style={{...trackStyle,...{
+                                            left: `${track.source.percent}%`,
+                                            width: `${track.target.percent - track.source.percent}%`,
+                                        }}}
+                                    ></div>
+                                ))}
+                            </div>
+                        )}
+                    </Tracks>
                 </Slider>
             </div>
             <div className="priceFilterText">{selectedMin?`$${selectedMin}`:'Min'} - {selectedMax?`$${selectedMax}`:'Max'}</div>
