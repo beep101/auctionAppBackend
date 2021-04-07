@@ -105,11 +105,11 @@ class Search extends React.Component{
         })
     }
 
-    setCategories=(categories)=>{
+    setCategories=(categories,catsWithNames)=>{
         this.selectedCategories=categories;
         let filters=[]
-        for(const f in categories){
-            filters.push({filter:'category',type:categories[f],value:`Cateogory ${categories[f]}`})
+        for(const c in catsWithNames){
+            filters.push({filter:'category',type:catsWithNames[c].id,value:`${catsWithNames[c].name}`})
         }
         this.setState({['removeCat']:null});
         this.setState({['categoryFilters']:filters});
@@ -118,11 +118,11 @@ class Search extends React.Component{
         this.load()
     }
 
-    setSubcategories=(subcategories)=>{
+    setSubcategories=(subcategories,subsWithNames)=>{
         this.selectedSubcategories=subcategories;
         let filters=[]
-        for(const f in subcategories){
-            filters.push({filter:'subcategory',type:subcategories[f],value:`Subcategory ${subcategories[f]}`})
+        for(const s in subsWithNames){
+            filters.push({filter:'subcategory',type:subsWithNames[s].id,value:`${subsWithNames[s].cat} : ${subsWithNames[s].name}`})
         }
         this.setState({['removeSub']:null});
         this.setState({['subcategoryFilters']:filters});
@@ -130,22 +130,33 @@ class Search extends React.Component{
         this.setState({['loadMore']:true});
         this.load()
     }
-    
+
+    removeCategory=(category)=>{
+        this.setState({['removeCat']:category});
+    }
+
+    removeSubcategory=(subcategory)=>{
+        this.setState({['removeSub']:subcategory});
+    }
+
     rangeSet=(min,max)=>{
         this.minPrice=min;
+        let newPriceFilter=[]
         if(min==null){
             this.setState({['resetMin']:false});
         }else{
-            const filter={filter:"price",type:'minPrice',value:`Min. price: $${min}`}
-            this.setState({['priceFilters']:[...this.state.priceFilters,...[filter]]});
+            newPriceFilter.push({filter:"price",type:'minPrice',value:`Min. price: $${min}`});
         }
+
         this.maxPrice=max;
         if(max==null){
             this.setState({['resetMax']:false});
         }else{
-            const filter={filter:"price",type:'maxPrice',value:`Max. price: $${max}`}
-            this.setState({['priceFilters']:[...this.state.priceFilters,...[filter]]});
+            newPriceFilter.push({filter:"price",type:'maxPrice',value:`Max. price: $${max}`});
         }
+
+        this.setState({['priceFilters']:newPriceFilter});
+
         this.loadCount=0;
         this.setState({['loadMore']:true});
         this.load()
@@ -158,14 +169,6 @@ class Search extends React.Component{
         if(type=="maxPrice"){
             this.setState({resetMax:true})
         }
-    }
-
-    removeCategory=(category)=>{
-        this.setState({['removeCat']:category});
-    }
-
-    removeSubcategory=(subcategory)=>{
-        this.setState({['removeSub']:subcategory});
     }
 
     render(){

@@ -27,11 +27,13 @@ class CategorySubcategoryMenu extends React.Component{
         if(props.removeCategory){
             this.selectedCategories=this.selectedCategories.filter((x)=>x!=props.removeCategory);
             this.setState({['selectedCategories']:this.selectedCategories});
-            this.props.setCategories(this.selectedCategories);
+            const catsWithName=this.createCategoriesWithName(this.selectedCategories);
+            this.props.setCategories(this.selectedCategories,catsWithName);
         }else if(props.removeSubcategory){
             this.selectedSubcategories=this.selectedSubcategories.filter((x)=>x!=props.removeSubcategory);
             this.setState({['selectedSubcategories']:this.selectedSubcategories});
-            this.props.setSubcategories(this.selectedSubcategories);
+            let subsWithName=this.createSubcategoriesWithName(this.selectedSubcategories);
+            this.props.setSubcategories(this.selectedSubcategories,subsWithName);
         }
     }
 
@@ -39,6 +41,7 @@ class CategorySubcategoryMenu extends React.Component{
         getAllCategories((success,data)=>{
             if(success){
                 this.setState({['categories']: data.slice(1)});
+                console.log(data);
             }else{
                 console.log("Cannot fetch categories")
             }
@@ -46,23 +49,48 @@ class CategorySubcategoryMenu extends React.Component{
     }
 
     selectCategory=(cat)=>{
-        if(this.selectedCategories.includes(cat)){
-            this.selectedCategories=this.selectedCategories.filter((x)=>x!=cat);
+        if(this.selectedCategories.includes(cat.id)){
+            this.selectedCategories=this.selectedCategories.filter((x)=>x!=cat.id);
         }else{
-            this.selectedCategories.push(cat);
+            this.selectedCategories.push(cat.id);
         }
         this.setState({['selectedCategories']:this.selectedCategories});
-        this.props.setCategories(this.selectedCategories);
+        const catsWithName=this.createCategoriesWithName(this.selectedCategories);
+        this.props.setCategories(this.selectedCategories,catsWithName);
+    }
+
+    createCategoriesWithName=(sCats)=>{
+        let catsWithName=[]
+        for(const c in sCats){
+            const crrCat=this.state.categories.filter((x)=>x.id===sCats[c])[0];
+            catsWithName.push({id:crrCat.id,name:crrCat.name})
+        }
+        return catsWithName;
     }
 
     selectSubcategory=(sub)=>{
-        if(this.selectedSubcategories.includes(sub)){
-            this.selectedSubcategories=this.selectedSubcategories.filter((x)=>x!=sub);
+        if(this.selectedSubcategories.includes(sub.id)){
+            this.selectedSubcategories=this.selectedSubcategories.filter((x)=>x!=sub.id);
         }else{
-            this.selectedSubcategories.push(sub);
+            this.selectedSubcategories.push(sub.id);
         }
         this.setState({['selectedSubcategories']:this.selectedSubcategories});
-        this.props.setSubcategories(this.selectedSubcategories);
+        let subsWithName=this.createSubcategoriesWithName(this.selectedSubcategories);
+        this.props.setSubcategories(this.selectedSubcategories,subsWithName);
+    }
+
+    createSubcategoriesWithName=(sSubs)=>{
+        let subsWithName=[]
+        for(const s in sSubs){
+            const crrSub=null;
+            for(const c in this.state.categories){
+                if(this.state.categories[c].subcategories.filter((x)=>x.id===sSubs[s]).length!=0)
+                    crrSub=this.state.categories[c].subcategories.filter((x)=>x.id===sSubs[s])[0]
+            }
+            if(crrSub)
+                subsWithName.push({id:crrSub.id,name:crrSub.name,cat:crrSub.category.name})
+        }        
+        return subsWithName;
     }
 
     expandCategory=(cat)=>{
@@ -80,7 +108,7 @@ class CategorySubcategoryMenu extends React.Component{
                 <div>
                     <div className="categoryButtonContainer">
                         <div className={this.state.selectedCategories.includes(category.id)?"categoryButton categoryButtonSelected":"categoryButton"}
-                           onClick={()=>this.selectCategory(category.id)}>{category.name}</div>
+                           onClick={()=>this.selectCategory(category)}>{category.name}</div>
                         <img className="categoriesButtonIcon"
                             onClick={()=>this.expandCategory(category.id)}
                             src={this.state.expandedCategories.includes(category.id)?
@@ -91,7 +119,7 @@ class CategorySubcategoryMenu extends React.Component{
                     {this.state.expandedCategories.includes(category.id)&&
                         category.subcategories.map(sub=>
                                 <div className={this.state.selectedSubcategories.includes(sub.id)?"subcategoryButtonSelected":"subcategoryButton"}
-                                   onClick={()=>this.selectSubcategory(sub.id)}>{sub.name}</div>
+                                   onClick={()=>this.selectSubcategory(sub)}>{sub.name}</div>
                             )}
                         </div>
                     )}

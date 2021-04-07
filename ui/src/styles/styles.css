@@ -1334,3 +1334,55 @@ hr.solidVerticalLine{
     height: 3vw;
     cursor: pointer;
 }
+.priceFilterContainer{
+    width: 15vw;
+    max-width: 15vw;
+    border-color: #d8d8d8;
+    border-style: solid;
+    border-width: 1px;
+
+    padding: 8px;
+    margin-top: 2vw;
+    margin-bottom: 2vw;
+
+    display: flex;
+    flex-direction: column;
+}
+.priceSliderFilterContainer{
+    position:relative;
+    width: 12vw;
+    height: 10vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    align-self: center;
+}
+
+.histogramContainer{
+    position: absolute;
+    width: 12vw;
+    bottom: 45%;
+    display: flex;
+    align-items: flex-end;
+}
+
+.histogramBar{
+    width: 0.5vw;
+    max-height: 4vw;
+    background-color: #E4E5EC;
+}
+
+.filterTittle{
+    color: #8367D8;
+    font-size: medium;
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+}
+
+.priceFilterText{
+    color: #5a5a5a;
+    font-size: medium;
+    font-family: 'Lato', sans-serif;
+    padding: 4px
+}
