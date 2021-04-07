@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Slider, Rail, Handles, Tracks } from 'react-compound-slider';
+import React, { useEffect, useRef, useState } from 'react'
+import { Slider, Handles, Tracks } from 'react-compound-slider';
 import { getPriceHistogram } from '../apiConsumer/itemFetchConsumer';
 
 function PriceFilter(props){
@@ -35,7 +35,7 @@ function PriceFilter(props){
     useEffect(()=>{
         if(props.resetMin){
             if(maxRange!=upperBound)
-                props.rangeSet(null,maxRange);
+                props.rangeSet(null,maxRange.toFixed(2));
             else
                 props.rangeSet(null,null);
             setSelectedMin(null);
@@ -43,7 +43,7 @@ function PriceFilter(props){
         }
         if(props.resetMax){
             if(minRange!=0.0)
-                props.rangeSet(minRange,null);
+                props.rangeSet(minRange.toFixed(2),null);
             else
                 props.rangeSet(null,null);
             setSelectedMax(null);
