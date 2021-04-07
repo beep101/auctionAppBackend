@@ -185,7 +185,6 @@ yarn-error.log*
 
 #secrets
 application-dev.properties
-apiAccess.js
 
 #vscode workspace
 vsCodeWorkspace.code-workspace
