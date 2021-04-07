@@ -61,9 +61,10 @@ class AddItem extends React.Component{
     sendRequest=()=>{
         localStorage.removeItem('addItemStep');
         localStorage.removeItem('addItemData');
+        console.log(this.data)
         let imgFiles=[];
         for(const img in this.data.images){
-            let imgSplit=this.data.image[img].data.split(",");
+            let imgSplit=this.data.images[img].data.split(",");
             imgFiles.push(imgSplit[imgSplit.length-1])
         }
         let startDate=new Date();

@@ -52,7 +52,7 @@ function AddItemStep2(props){
         }
     },[]);
 
-    const onChange=useCallback((e)=>{
+    const onChange=(e)=>{
         if(e.target.name=="startingPrice")
             setStartingPrice(e.target.value);
         let newMsg={
@@ -61,9 +61,11 @@ function AddItemStep2(props){
             endDate:msg.endDate
         };
         setMsg(newMsg);
-    },[]);
+    };
 
-    const onNext=useCallback(()=>{
+    const onNext=()=>{
+        console.log(startDate);
+        console.log(endDate);
         let valid=true;
         let msg={}
         if(!startingPrice||startingPrice<0.01){
@@ -86,18 +88,18 @@ function AddItemStep2(props){
         setMsg(msg);
         if(valid)
             props.next(data);
-    },[]);
+    };
 
-    const onBack=useCallback(()=>{
+    const onBack=()=>{
         let data={
             startDate:startDate,
             endDate:endDate,
             startingPrice:startingPrice
         }
         props.back(data);   
-    },[]);
+    };
 
-    const startDateChange=useCallback((date)=>{
+    const startDateChange=(date)=>{
         let newMsg={
             startDate:undefined,
             startingPrice:msg.startingPrice,
@@ -106,7 +108,7 @@ function AddItemStep2(props){
 
         setStartDate(date);
         let de=new Date();
-        de.setTime(date.getTime()+ONE_DAY_MILIS);
+        de.setTime(date.getTime()+ONE_DAY_MILIS-100);
         setDisabledEnd(de);
 
         if(date.getTime()>=endDate.getTime()){
@@ -120,9 +122,9 @@ function AddItemStep2(props){
             newMsg.startDate="Invalid start date, date must be today or later";
         }
         setMsg(newMsg);
-    },[]);
+    };
 
-    const endDateChange=useCallback((date)=>{
+    const endDateChange=(date)=>{
         setEndDate(date);
         let newMsg={
             startDate:msg.startDate,
@@ -133,7 +135,7 @@ function AddItemStep2(props){
             newMsg.endDate="Invalid end date, must be after start day";
         }
         setMsg(newMsg);
-    },[]);
+    };
 
     return(
         <div className="formContainer">

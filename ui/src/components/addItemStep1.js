@@ -39,31 +39,31 @@ function AddItemStep1(props){
         });
     },[]);
 
-    const editorUpdate=useCallback((state)=>{
+    const editorUpdate=(state)=>{
         data.current.description=convertToRaw(state.getCurrentContent());
         setEditorState(state);
-    },[]);
+    };
 
-    const onChange=useCallback((e)=>{
+    const onChange=(e)=>{
         data.current[e.target.name]=e.target.value;
-    },[]);
+    };
 
-    const selectCategory=useCallback((category)=>{
+    const selectCategory=(category)=>{
         if(data.current.subcategory){
             onClear();
             data.current.subcategory=null;
         }
         setSubcateogories(category.subs.map(element=>{return {value:element.id,label:element.name,cat:category}}));
-    },[]);
+    };
 
-    const selectSubcategory=useCallback((subcategory)=>{
+    const selectSubcategory=(subcategory)=>{
         if(subcategory)
             data.current['subcategory']={id:subcategory.value,sub:subcategory};
-    },[]);
+    };
 
-    const onClear = useCallback(() => {
+    const onClear = () => {
         selectInputRef.current.select.clearValue();
-    },[]);
+    };
 
     const onDrop = useCallback((acceptedFiles) => {
         acceptedFiles.forEach((file) => {
@@ -85,7 +85,7 @@ function AddItemStep1(props){
         })
     },[]);
 
-    const onThumbClick=useCallback((image)=>{
+    const onThumbClick=(image)=>{
         data.current.images=data.current.images.filter((elem)=>{
             return elem.data !== image.data;
         })
@@ -93,9 +93,9 @@ function AddItemStep1(props){
         for(const img in data.current.images)
             newImages.push(data.current.images[img]);
         setImages(newImages);
-    },[]);
+    };
 
-    const onNext=useCallback(()=>{
+    const onNext=()=>{
         let valid=true;
         let msg={}
         if(!data.current.name){
@@ -117,7 +117,7 @@ function AddItemStep1(props){
         setMsg(msg);
         if(valid)
             props.next(data.current);
-    },[]);
+    };
     
     return(
         <div className="formContainer" >
