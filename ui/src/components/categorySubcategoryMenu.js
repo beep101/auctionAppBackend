@@ -23,6 +23,18 @@ class CategorySubcategoryMenu extends React.Component{
         this.loadCategories();
     }
 
+    componentWillReceiveProps=(props)=>{
+        if(props.removeCategory){
+            this.selectedCategories=this.selectedCategories.filter((x)=>x!=props.removeCategory);
+            this.setState({['selectedCategories']:this.selectedCategories});
+            this.props.setCategories(this.selectedCategories);
+        }else if(props.removeSubcategory){
+            this.selectedSubcategories=this.selectedSubcategories.filter((x)=>x!=props.removeSubcategory);
+            this.setState({['selectedSubcategories']:this.selectedSubcategories});
+            this.props.setSubcategories(this.selectedSubcategories);
+        }
+    }
+
     loadCategories=()=>{
         getAllCategories((success,data)=>{
             if(success){

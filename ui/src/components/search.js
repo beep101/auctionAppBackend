@@ -33,7 +33,15 @@ class Search extends React.Component{
         this.state={
             items:[],
             loadMore: true,
-            display:"grid"
+            display:"grid",
+            toRemove:[],
+            resetMin:false,
+            resetMax:false,
+            priceFilters:[],
+            categoryFilters:[],
+            subcategoryFilters:[],
+            removeCat:null,
+            removeSub:null
         }
         
         const category = parseInt((queryString.parse(this.props.location.search))['category']);
@@ -99,6 +107,12 @@ class Search extends React.Component{
 
     setCategories=(categories)=>{
         this.selectedCategories=categories;
+        let filters=[]
+        for(const f in categories){
+            filters.push({filter:'category',type:categories[f],value:`Cateogory ${categories[f]}`})
+        }
+        this.setState({['removeCat']:null});
+        this.setState({['categoryFilters']:filters});
         this.loadCount=0;
         this.setState({['loadMore']:true});
         this.load()
@@ -106,6 +120,12 @@ class Search extends React.Component{
 
     setSubcategories=(subcategories)=>{
         this.selectedSubcategories=subcategories;
+        let filters=[]
+        for(const f in subcategories){
+            filters.push({filter:'subcategory',type:subcategories[f],value:`Subcategory ${subcategories[f]}`})
+        }
+        this.setState({['removeSub']:null});
+        this.setState({['subcategoryFilters']:filters});
         this.loadCount=0;
         this.setState({['loadMore']:true});
         this.load()
@@ -113,22 +133,60 @@ class Search extends React.Component{
     
     rangeSet=(min,max)=>{
         this.minPrice=min;
+        if(min==null){
+            this.setState({['resetMin']:false});
+        }else{
+            const filter={filter:"price",type:'minPrice',value:`Min. price: $${min}`}
+            this.setState({['priceFilters']:[...this.state.priceFilters,...[filter]]});
+        }
         this.maxPrice=max;
+        if(max==null){
+            this.setState({['resetMax']:false});
+        }else{
+            const filter={filter:"price",type:'maxPrice',value:`Max. price: $${max}`}
+            this.setState({['priceFilters']:[...this.state.priceFilters,...[filter]]});
+        }
         this.loadCount=0;
         this.setState({['loadMore']:true});
         this.load()
+    }
+
+    removePriceFilter=(type)=>{
+        if(type=="minPrice"){
+            this.setState({resetMin:true})
+        }
+        if(type=="maxPrice"){
+            this.setState({resetMax:true})
+        }
+    }
+
+    removeCategory=(category)=>{
+        this.setState({['removeCat']:category});
+    }
+
+    removeSubcategory=(subcategory)=>{
+        this.setState({['removeSub']:subcategory});
     }
 
     render(){
         return(
         <div className="centeredVerticalFlex">
             <div className="activeFiltersContainer">
-                <FilterItem name="filter" disable={()=>{}}/>
+                {this.state.priceFilters.map(filter=>(
+                    <FilterItem filter={filter} disable={this.removePriceFilter}/>
+                ))}
+                {this.state.categoryFilters.map(filter=>(
+                    <FilterItem filter={filter} disable={this.removeCategory}/>
+                ))}
+                {this.state.subcategoryFilters.map(filter=>(
+                    <FilterItem filter={filter} disable={this.removeSubcategory}/>
+                ))}
             </div>
         <div className="shopContainer">
             <div>
-                <CategorySubcategoryMenu preset={this.category} setCategories={this.setCategories} setSubcategories={this.setSubcategories} />
-                <PriceFilter rangeSet={this.rangeSet}/>
+                <CategorySubcategoryMenu preset={this.category} setCategories={this.setCategories} setSubcategories={this.setSubcategories}
+                                         removeCategory={this.state.removeCat} removeSubcategory={this.state.removeSub}/>
+                <PriceFilter rangeSet={this.rangeSet} resetMin={this.state.resetMin} resetMax={this.state.resetMax}/>
             </div>
             <div className="shopItemWrapper">
                 <div className="sortDisplayBar">
