@@ -20,8 +20,6 @@ class AddItemStep3 extends React.Component{
             countriesAutocomplete:Object.keys(citiesAndCountries).map(x=>({id:x,label:x})),
             citiesAutocomplete:[]
         }
-        console.log(props);
-        console.log(this.state);
     }
         
     componentDidMount=()=>{

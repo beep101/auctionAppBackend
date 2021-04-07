@@ -64,8 +64,6 @@ function AddItemStep2(props){
     };
 
     const onNext=()=>{
-        console.log(startDate);
-        console.log(endDate);
         let valid=true;
         let msg={}
         if(!startingPrice||startingPrice<0.01){

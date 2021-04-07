@@ -18,8 +18,6 @@ class AddItem extends React.Component{
                 success:true
             }
             this.data=JSON.parse(localStorage.getItem('addItemData'));
-            console.log(this.state);
-            console.log(this.data)
         }else{
             this.state={
                 step:1,
@@ -36,7 +34,6 @@ class AddItem extends React.Component{
                 images:[]
             }
         }
-        console.log(this.data)
     }
 
     next=(data)=>{
@@ -61,7 +58,6 @@ class AddItem extends React.Component{
     sendRequest=()=>{
         localStorage.removeItem('addItemStep');
         localStorage.removeItem('addItemData');
-        console.log(this.data)
         let imgFiles=[];
         for(const img in this.data.images){
             let imgSplit=this.data.images[img].data.split(",");
@@ -82,7 +78,6 @@ class AddItem extends React.Component{
             address: this.data.address,
             imageFiles:imgFiles
         }
-        console.log(data)
         addItem(data,this.context.jwt,(success,data)=>{
             if(success){
                 this.setState({['requestStatusStyle']:"successMessage"});
