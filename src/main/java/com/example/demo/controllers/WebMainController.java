@@ -9,7 +9,8 @@ import io.swagger.annotations.Api;
 @Controller
 public class WebMainController {
 	@GetMapping(value={"/","/login","/register","/about","/termsandconditions","/privacypolicy",
-					   "/shop","/account","/item","/search","/forgotPassword","/newPassword","/allCategories" })
+					   "/shop","/account","/item","/search","/forgotPassword","/newPassword","/allCategories",
+					   "/addItem"})
 	public String index() {
 		return "index";
 	}

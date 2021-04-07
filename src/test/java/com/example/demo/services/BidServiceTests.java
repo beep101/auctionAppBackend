@@ -27,6 +27,7 @@ import org.easymock.EasyMock;
 import com.example.demo.entities.Bid;
 import com.example.demo.entities.Item;
 import com.example.demo.entities.User;
+import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.BidAmountLowException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
@@ -47,7 +48,7 @@ public class BidServiceTests extends EasyMockSupport{
 	BidService bidService=new BidService(bidsRepo,itemsRepo);
 	
 	@Test(expected = InvalidDataException.class)
-	public void testAddBidUserBidMismatchShouldThrowException() throws InvalidDataException, BidAmountLowException, NotFoundException {
+	public void testAddBidUserBidMismatchShouldThrowException() throws AuctionAppException {
 		int idUser=13;
 		int idBidder=11;
 		User user=new User();
@@ -61,7 +62,7 @@ public class BidServiceTests extends EasyMockSupport{
 	}
 	
 	@Test(expected = BidAmountLowException.class)
-	public void testAddBidBidLowerThanCurrentMaxShouldThrowException() throws InvalidDataException, BidAmountLowException, NotFoundException {
+	public void testAddBidBidLowerThanCurrentMaxShouldThrowException() throws AuctionAppException {
 		User user=new User();
 		user.setId(13);
 		BidModel model=new BidModel();
@@ -91,7 +92,7 @@ public class BidServiceTests extends EasyMockSupport{
 	}
 	
 	@Test(expected = BidAmountLowException.class)
-	public void testAddBidBidLowerThanBasePriceShouldThrowException() throws InvalidDataException, BidAmountLowException, NotFoundException {
+	public void testAddBidBidLowerThanBasePriceShouldThrowException() throws AuctionAppException{
 		User user=new User();
 		user.setId(13);
 		BidModel model=new BidModel();
@@ -117,7 +118,7 @@ public class BidServiceTests extends EasyMockSupport{
 	}
 	
 	@Test(expected = NotFoundException.class)
-	public void testAddBidBidItemNotPresentShouldThrowException() throws InvalidDataException, BidAmountLowException, NotFoundException {
+	public void testAddBidBidItemNotPresentShouldThrowException() throws AuctionAppException{
 		User user=new User();
 		user.setId(13);
 		BidModel model=new BidModel();

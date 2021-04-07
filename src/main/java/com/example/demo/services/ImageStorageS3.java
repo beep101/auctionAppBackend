@@ -12,43 +12,34 @@ import java.util.stream.Collectors;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.ImageDeleteException;
 import com.example.demo.exceptions.ImageFetchException;
 import com.example.demo.exceptions.ImageHashException;
 import com.example.demo.exceptions.ImageUploadException;
 import com.example.demo.models.ItemModel;
 import com.example.demo.services.interfaces.IImageStorageService;
+import com.example.demo.utils.IAwsS3Adapter;
 
 public class ImageStorageS3 implements IImageStorageService{
-	private AmazonS3 s3;
+	private IAwsS3Adapter s3;	
 	private String bucketName="auction.purple.item.pics";
-	
 	private String baseUrl;
-	
-	//aws keys for s3bucket
-	public ImageStorageS3(String id, String key,String baseUrl) {
-		s3=AmazonS3ClientBuilder.standard()
-				.withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(id,key)))
-				.withRegion(Regions.EU_CENTRAL_1)
-				.build();
+
+	public ImageStorageS3(String baseUrl,IAwsS3Adapter s3) {
+		this.s3=s3;
 		this.baseUrl=baseUrl;
 	}
 
 	@Override
-	public String addImage(String itemId,byte[] imageJpg) throws ImageUploadException, ImageHashException{
+	public String addImage(String itemId,byte[] imageJpg) throws AuctionAppException{
 		String imageHash=md5(imageJpg);
 		String key=itemId+"/"+imageHash+".jpg";
 		
@@ -58,7 +49,7 @@ public class ImageStorageS3 implements IImageStorageService{
 		metadata.setContentLength(imageJpg.length);
 		metadata.setContentType("image/jpg");
 		try {
-			s3.putObject(new PutObjectRequest(bucketName, key, input, metadata));
+			s3.putObject(new PutObjectRequest(bucketName, key, input, metadata).withCannedAcl(CannedAccessControlList.PublicRead));
 		}catch(AmazonServiceException ex) {
 			throw new ImageUploadException();
 		}
@@ -66,20 +57,15 @@ public class ImageStorageS3 implements IImageStorageService{
 	}
 	
 	@Override
-	public byte[] getImage(String itemId,String imageHash) throws ImageFetchException{
-		String key=itemId+"/"+imageHash+".jpg";
-		S3Object object=s3.getObject(bucketName, key);
-		byte[] img=null;
-		try {
-			img=object.getObjectContent().readAllBytes();
-		} catch (IOException e) {
-			throw new ImageFetchException();
-		}
-		return img;
+	public List<String> addImages(String itemId,List<byte[]> imagesJpgs) throws AuctionAppException{
+		List<String> hashes=new ArrayList<>();
+		for(byte[] img:imagesJpgs)
+			hashes.add(addImage(itemId, img));
+		return hashes;
 	}
 
 	@Override
-	public String deleteImage(String itemId,String imageHash) throws ImageDeleteException{
+	public String deleteImage(String itemId,String imageHash) throws AuctionAppException{
 		String key=itemId+"/"+imageHash+".jpg";
 		try {
 			s3.deleteObject(bucketName, key);

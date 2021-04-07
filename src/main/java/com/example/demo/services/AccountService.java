@@ -18,6 +18,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entities.User;
+import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.BadCredentialsException;
 import com.example.demo.exceptions.ExistingUserException;
 import com.example.demo.exceptions.InvalidDataException;
@@ -55,11 +56,14 @@ public class AccountService implements IAccountService{
 	}
 
 	@Override
-	public UserModel login(UserModel login) throws BadCredentialsException {
+	public UserModel login(UserModel login) throws AuctionAppException {
 		Optional<User> users=usersRepo.findByEmail(login.getEmail());
 		if(users.isPresent()) {
 			if(hashUtil.checkPassword(login.getPassword(), users.get().getPasswd())) {
-				String jwt=jwtUtil.generateToken(users.get(), new HashMap<String, Object>());
+				Map<String,Object> data= new HashMap<String, Object>();
+				if(users.get().getAddress()!=null)
+					data.put("address", users.get().getAddress().toModel());
+				String jwt=jwtUtil.generateToken(users.get(),data);
 				login.setId(users.get().getId());
 				login.setFirstName(users.get().getName());
 				login.setLastName(users.get().getSurname());
@@ -78,7 +82,7 @@ public class AccountService implements IAccountService{
 	}
 
 	@Override
-	public UserModel signUp(UserModel signup)throws InvalidDataException,ExistingUserException,NonExistentUserException {
+	public UserModel signUp(UserModel signup)throws AuctionAppException {
 		Map<String,String> problems=(new UserRequest(signup)).validate();
 		if(!problems.isEmpty()) {
 			throw new InvalidDataException(problems);
@@ -106,7 +110,7 @@ public class AccountService implements IAccountService{
 
 	
 	@Override
-	public UserModel forgotPassword(UserModel forgotPassword) throws NonExistentUserException {
+	public UserModel forgotPassword(UserModel forgotPassword) throws AuctionAppException {
 		Map<String,String> problems=(new UserRequest(forgotPassword)).validate();
 		if(problems.containsKey("email")) {
 			String msg=problems.get("email");
@@ -132,7 +136,7 @@ public class AccountService implements IAccountService{
 	}
 	
 	@Override
-	public UserModel newPassword(UserModel newPassword) throws InvalidTokenException,InvalidDataException {
+	public UserModel newPassword(UserModel newPassword) throws AuctionAppException {
 		Map<String,String> problems=(new UserRequest(newPassword)).validate();
 		if(problems.containsKey("password")) {
 			String msg=problems.get("password");

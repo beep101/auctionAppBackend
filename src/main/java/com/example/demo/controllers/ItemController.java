@@ -7,23 +7,32 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.entities.User;
+import com.example.demo.exceptions.AuctionAppException;
+import com.example.demo.exceptions.InsertFailedException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.exceptions.UnauthenticatedException;
 import com.example.demo.models.ItemModel;
 import com.example.demo.models.UserModel;
+import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.repositories.ItemsRepository;
+import com.example.demo.repositories.SubcategoriesRepository;
 import com.example.demo.services.ImageStorageS3;
 import com.example.demo.services.ItemService;
 import com.example.demo.services.interfaces.IImageStorageService;
 import com.example.demo.services.interfaces.IItemService;
+import com.example.demo.utils.AwsS3Adapter;
 import com.example.demo.utils.ItemSorting;
 import com.example.demo.utils.PaginationParams;
 import com.example.demo.utils.SortingPaginationParams;
@@ -46,25 +55,29 @@ public class ItemController {
 	private ItemsRepository itemsRepo;
 	@Autowired
 	private CategoriesRepository categoriesRepo;
+	@Autowired
+	private SubcategoriesRepository subcategoriesRepo;
+	@Autowired
+	private AddressesRepository addressesRepo;
 	
 	private IItemService itemService;
 	private IImageStorageService imageService;
 	
 	@PostConstruct
 	public void init() {
-		itemService=new ItemService(itemsRepo,categoriesRepo);
-		imageService=new ImageStorageS3(id, key, imageBucketBaseUrl);
+		imageService=new ImageStorageS3(imageBucketBaseUrl,new AwsS3Adapter(id, key));
+		itemService=new ItemService(imageService,itemsRepo,categoriesRepo,subcategoriesRepo,addressesRepo);
 	}
 	
 	@ApiOperation(value = "Returns item specified by ID", notes = "Public access")
 	@GetMapping("/api/items/{itemId}")
-	public ItemModel getItemById(@PathVariable(name="itemId")int itemId) throws NotFoundException{
+	public ItemModel getItemById(@PathVariable(name="itemId")int itemId) throws AuctionAppException{
 		return imageService.loadImagesForItem(itemService.getItem(itemId));
 	}
 	
 	@ApiOperation(value = "Returns random item", notes = "Public access")
 	@GetMapping("/api/items/featured")
-	public ItemModel getItemFeatured() throws NotFoundException{
+	public ItemModel getItemFeatured() throws AuctionAppException{
 		return imageService.loadImagesForItem(itemService.getItemFeatured());
 	}
 	
@@ -96,7 +109,20 @@ public class ItemController {
 	@ApiOperation(value = "Enables searching items by name and filtering by different parameters", notes = "Public access")
 	@GetMapping("/api/items/search")
 	public Collection<ItemModel> findItem(@RequestParam String term,@RequestParam List<Integer> categories,
-										  @RequestParam int page,@RequestParam int count,@RequestParam(required = false, defaultValue = "default") ItemSorting sort)throws InvalidDataException{
+										  @RequestParam int page,@RequestParam int count,@RequestParam(required = false, defaultValue = "default") ItemSorting sort)
+										  throws AuctionAppException{
 		return imageService.loadImagesForItems(itemService.findItemsValidFilterCategories(term,categories,new SortingPaginationParams(page,count,sort)));
+	}
+	
+	@ApiOperation(value = "Creating new item for sale", notes = "Only authenticated users")
+	@PostMapping("/api/items")
+	public ItemModel addItem(@RequestBody ItemModel model)  throws AuctionAppException{
+		User principal=null;
+		try {
+			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		}catch(ClassCastException ex) {
+			throw new UnauthenticatedException();
+		}
+		return imageService.loadImagesForItem(itemService.addItem(model,principal));
 	}
 }

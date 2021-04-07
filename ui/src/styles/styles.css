@@ -22,6 +22,18 @@
     margin-bottom: 12px;
 }
 
+.categorySelectsInline{
+    display:flex;
+    align-content: center;
+    align-items: center;
+}
+
+.categorySelectContainer{
+    width: 50%;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 .inputFieldWide{
     width: 300px;
     font-family: 'Lato', sans-serif;
@@ -35,6 +47,10 @@
     border-width: 1px;
     border-style: solid;
     margin: 4px;
+}
+
+.narrowed{
+    width: 140px;
 }
 
 .buttonWide{
@@ -685,6 +701,15 @@ td.bidTable{
     color: #40c046;
 }
 
+.neutralMessage{
+    font-size: large;
+    font-family: 'Lato', sans-serif;
+    margin: 20px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    color: #5a5a5a;
+}
+
 .sortDisplayBar{
     width: 95%;
     display: flex;
@@ -1029,7 +1054,6 @@ hr.solidVerticalLine{
 
 .feturedItemDescriptionText{
     color:#5a5a5a;
-    font-family: 'Lato', sans-serif;
     padding-top: .6vw;
     padding-bottom: 1vw;
 }
@@ -1051,5 +1075,186 @@ hr.solidVerticalLine{
     width: 8vw;
 }
 
-.catsAndFtdBackground{
+.DayPicker-Day--disabled {
+    color: red;
+    cursor:default
+}
+
+.dropImagesZone{
+    width: 100%;
+    min-height: 5vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    border-color: #d8d8d8;
+    border-width: 2px;
+    border-style: dashed;
+
+    cursor: pointer;
+}
+
+.simpleText{
+    color:#5a5a5a;
+    font-family: 'Lato', sans-serif;
+    font-size: medium;
+}
+
+.paddingSimpleText{
+    padding: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.textEditorContainer{
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+
+    z-index: 0;
+    position: relative;
+    margin-top: 15px;
+
+    color: #5a5a5a;
+
+    width:43vw;
+}
+
+.flexToRight{
+    justify-content: flex-end;
+}
+
+
+.css-lrsgeo-menu{
+    z-index: 1;
+}
+
+.DayPickerInput {
+    display: inline-block;
+
+    color:#5a5a5a;
+    font-family: 'Lato', sans-serif;
+    font-size: large;
+
+    background-color: white;
+  }
+
+  .dateInputField{ 
+    color:#5a5a5a;
+    font-family: 'Lato', sans-serif;
+    font-size: large;
+        
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+
+    text-align: center;
+    margin-right: 10px;
+  }
+
+.verticalFlex{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.dateInputContainer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.auctionDatesMessageContainer{
+    text-align: left;
+    width: 25vw;
+    margin: .5vw;
+    padding-bottom: 6vw;
+    
+    color:#5a5a5a;
+    font-family: 'Lato', sans-serif;
+    font-size: small;
+}
+
+.lightGrayBorder{
+    border-color: #d8d8d8;
+}
+
+.fullSize{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.autocompleteItem{
+    color:#5a5a5a;
+    font-family: 'Lato', sans-serif;  
+    font-size: medium;  
+    background-color: white;
+    cursor: pointer;
+}
+
+.autocompleteWrapper{
+    position: relative; 
+}
+
+.highlightBackgound{
+    background-color: #8367D8;
+}
+
+.wysiwygWrapper{
+    display: flex;
+    height: 15vw;
+    flex-direction: column;
+}
+
+.wysiwygEditor{
+    height: unset!important;
+    flex-grow: 1;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.wysiwygToolbar{
+    border-bottom-color: #d8d8d8;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    display: flex;
+}
+
+.thumbsNewImages{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.thumbNewImageContainer{
+    position: relative;
+
+    width: 5vw;
+    height: 5vw;
+    margin:10px;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.thumbNewImage{
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.thumbNewImageContainer:hover .gridItemOverlay{
+    opacity: 1;
+}
+
+.thumbNewImageClose{
+    width: 3vw;
+    height: 3vw;
+    cursor: pointer;
 }

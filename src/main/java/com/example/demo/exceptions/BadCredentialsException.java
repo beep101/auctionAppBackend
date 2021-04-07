@@ -3,7 +3,7 @@ package com.example.demo.exceptions;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BadCredentialsException extends Exception {
+public class BadCredentialsException extends AuctionAppException {
 	
 	private Map<String,String> errors;
 	

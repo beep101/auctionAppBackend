@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import com.example.demo.entities.Bid;
 import com.example.demo.entities.Item;
 import com.example.demo.entities.User;
+import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.BidAmountLowException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
@@ -36,7 +37,7 @@ public class BidService implements IBidService{
 	}
 	
 	@Override
-	public synchronized BidModel addBid(BidModel bidModel, User user) throws InvalidDataException,BidAmountLowException,NotFoundException {
+	public synchronized BidModel addBid(BidModel bidModel, User user) throws AuctionAppException{
 		if(bidModel.getBidder().getId()!=user.getId()) {
 			throw new InvalidDataException();
 		}
