@@ -1,18 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import {ONE_DAY_MILIS} from '../utils/constants';
 import "react-day-picker/lib/style.css";
 import "../styles/styles.css";
 
 function AddItemStep2(props){
-    let [disabledStart,setDisabledStart]=useState(new Date());
-    useEffect(()=>{
-        let ds=new Date();
-        ds.setHours(12,0,0,0)
-        setDisabledStart(ds);
-    },[]);
+    const [disabledStart,setDisabledStart]=useState(new Date());
+    const [disabledEnd,setDisabledEnd]=useState(new Date());
+    const [startDate,setStartDate]=useState(new Date());
+    const [endDate,setEndDate]=useState(new Date());
+    const [startingPrice,setStartingPrice]=useState(props.data.startingPrice?props.data.startingPrice:0.01)
+    const [msg,setMsg]=useState({})
 
-    let [disabledEnd,setDisabledEnd]=useState(new Date());
     useEffect(()=>{
         let de=new Date();
         de.setTime(de+ONE_DAY_MILIS);
@@ -20,8 +19,12 @@ function AddItemStep2(props){
         setDisabledEnd(de)
     },[]);
 
+    useEffect(()=>{
+        let ds=new Date();
+        ds.setHours(12,0,0,0)
+        setDisabledStart(ds);
+    },[]);
 
-    const [startDate,setStartDate]=useState(new Date());
     useEffect(()=>{
         if(props.data.startDate)
             if(typeof props.data.startDate === 'string' || props.data.startDate instanceof String)
@@ -35,7 +38,6 @@ function AddItemStep2(props){
         }
     },[]);
 
-    const [endDate,setEndDate]=useState(new Date());
     useEffect(()=>{
         if(props.data.endDate){
             if(typeof props.data.endDate === 'string' || props.data.endDate instanceof String)
@@ -50,9 +52,6 @@ function AddItemStep2(props){
         }
     },[]);
 
-    const [startingPrice,setStartingPrice]=useState(props.data.startingPrice?props.data.startingPrice:0.01)
-    const [msg,setMsg]=useState({})
-
     const onChange=(e)=>{
         if(e.target.name=="startingPrice")
             setStartingPrice(e.target.value);
@@ -62,7 +61,7 @@ function AddItemStep2(props){
             endDate:msg.endDate
         };
         setMsg(newMsg);
-    }
+    };
 
     const onNext=()=>{
         let valid=true;
@@ -87,7 +86,8 @@ function AddItemStep2(props){
         setMsg(msg);
         if(valid)
             props.next(data);
-    }
+    };
+
     const onBack=()=>{
         let data={
             startDate:startDate,
@@ -95,7 +95,7 @@ function AddItemStep2(props){
             startingPrice:startingPrice
         }
         props.back(data);   
-    }
+    };
 
     const startDateChange=(date)=>{
         let newMsg={
@@ -106,7 +106,7 @@ function AddItemStep2(props){
 
         setStartDate(date);
         let de=new Date();
-        de.setTime(date.getTime()+ONE_DAY_MILIS);
+        de.setTime(date.getTime()+ONE_DAY_MILIS-100);
         setDisabledEnd(de);
 
         if(date.getTime()>=endDate.getTime()){
@@ -120,7 +120,7 @@ function AddItemStep2(props){
             newMsg.startDate="Invalid start date, date must be today or later";
         }
         setMsg(newMsg);
-    }
+    };
 
     const endDateChange=(date)=>{
         setEndDate(date);
@@ -133,7 +133,7 @@ function AddItemStep2(props){
             newMsg.endDate="Invalid end date, must be after start day";
         }
         setMsg(newMsg);
-    }
+    };
 
     return(
         <div className="formContainer">

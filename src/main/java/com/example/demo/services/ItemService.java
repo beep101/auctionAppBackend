@@ -33,6 +33,7 @@ import com.example.demo.entities.Item;
 import com.example.demo.entities.PriceCountAggregateResult;
 import com.example.demo.entities.Subcategory;
 import com.example.demo.entities.User;
+import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.ImageHashException;
 import com.example.demo.exceptions.ImageUploadException;
 import com.example.demo.exceptions.InsertFailedException;
@@ -70,7 +71,7 @@ public class ItemService implements IItemService {
 	}
 
 	@Override
-	public ItemModel getItem(int id) throws NotFoundException{
+	public ItemModel getItem(int id) throws AuctionAppException{
 		try {
 			return itemsRepo.getOne(id).toModel();
 		}catch(EntityNotFoundException ex) {
@@ -79,7 +80,7 @@ public class ItemService implements IItemService {
 	}
 
 	@Override
-	public ItemModel addItem(ItemModel itemModel,User user) throws InvalidDataException, InsertFailedException {
+	public ItemModel addItem(ItemModel itemModel,User user) throws AuctionAppException {
 		Map<String,String> problems=(new ItemRequest(itemModel)).validate();
 		if(!problems.isEmpty()) {
 			throw new InvalidDataException(problems);
@@ -159,7 +160,7 @@ public class ItemService implements IItemService {
 	}
 	
 	@Override
-	public ItemModel getItemFeatured() throws NotFoundException {
+	public ItemModel getItemFeatured() throws AuctionAppException {
 		Optional<Item> itemOpt=itemsRepo.findBySoldFalseAndEndtimeAfterRandom(new Timestamp(System.currentTimeMillis()));
 		if(itemOpt.isPresent()) {
 			return itemOpt.get().toModel();
@@ -209,7 +210,7 @@ public class ItemService implements IItemService {
 	}
 
 	@Override
-	public Collection<ItemModel> findItemsValidFilterCategories(String term, List<Integer> categories, PaginationParams pgbl)throws InvalidDataException{
+	public Collection<ItemModel> findItemsValidFilterCategories(String term,List<Integer> categories, PaginationParams pgbl) throws AuctionAppException{
 		Timestamp crr=new Timestamp(System.currentTimeMillis());
 
 		List<Category> categoriesList=null;

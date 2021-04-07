@@ -31,6 +31,7 @@ import com.example.demo.entities.Bid;
 import com.example.demo.entities.Category;
 import com.example.demo.entities.Item;
 import com.example.demo.entities.User;
+import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.ItemModel;
@@ -61,7 +62,7 @@ public class ItemServiceTests extends EasyMockSupport{
 	ItemService itemService=new ItemService(imageService,itemsRepoMock, categoriesRepo,subcategoriesRepo,addressesRepo);
 	
 	@Test
-	public void testPagebleCreationShouldCreateValidPageableAllMethods() throws InvalidDataException {
+	public void testPagebleCreationShouldCreateValidPageableAllMethods() throws AuctionAppException {
 
 		int page=7;
 		int count=17;
@@ -188,7 +189,7 @@ public class ItemServiceTests extends EasyMockSupport{
 	}
 	
 	@Test
-	public void testEntityToModelShouldCreateValidModelAllMethods() throws NotFoundException, InvalidDataException {
+	public void testEntityToModelShouldCreateValidModelAllMethods() throws AuctionAppException{
 
 		Item item=new Item();
 		
@@ -347,7 +348,7 @@ public class ItemServiceTests extends EasyMockSupport{
 	}
 	
 	@Test(expected = NotFoundException.class)
-	public void getItemNonExistentShouldThrowException() throws NotFoundException {
+	public void getItemNonExistentShouldThrowException() throws AuctionAppException {
 		expect(itemsRepoMock.getOne(anyInt())).andThrow(new EntityNotFoundException());
 		replayAll();
 		
@@ -357,7 +358,7 @@ public class ItemServiceTests extends EasyMockSupport{
 	}
 	
 	@Test(expected = NotFoundException.class)
-	public void getItemFeaturedNoItemShouldThrowException() throws NotFoundException{
+	public void getItemFeaturedNoItemShouldThrowException() throws AuctionAppException{
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterRandom(anyObject())).andReturn(Optional.empty());
 		replayAll();
 		

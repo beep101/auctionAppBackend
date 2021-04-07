@@ -1108,7 +1108,7 @@ hr.solidVerticalLine{
     display: flex;
     flex-direction: column;
     align-items: center;
-    align-content: center;
+    justify-content: center;
 
     border-color: #d8d8d8;
     border-width: 2px;
@@ -1130,8 +1130,6 @@ hr.solidVerticalLine{
 }
 
 .textEditorContainer{
-    padding: 5px;
-    
     border-color: #d8d8d8;
     border-width: 1px;
     border-style: solid;
@@ -1140,7 +1138,9 @@ hr.solidVerticalLine{
     position: relative;
     margin-top: 15px;
 
-    color: #5a5a5a
+    color: #5a5a5a;
+
+    width:43vw;
 }
 
 .flexToRight{
@@ -1227,8 +1227,9 @@ hr.solidVerticalLine{
 }
 
 .wysiwygWrapper{
-    display: block;
-    height: 25vw;
+    display: flex;
+    height: 15vw;
+    flex-direction: column;
 }
 
 .wysiwygEditor{
@@ -1286,5 +1287,50 @@ hr.solidVerticalLine{
 .filterButtonIcon{
     height: 10px;
     width: 10px;
+    height: unset!important;
+    flex-grow: 1;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.wysiwygToolbar{
+    border-bottom-color: #d8d8d8;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    display: flex;
+}
+
+.thumbsNewImages{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.thumbNewImageContainer{
+    position: relative;
+
+    width: 5vw;
+    height: 5vw;
+    margin:10px;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.thumbNewImage{
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.thumbNewImageContainer:hover .gridItemOverlay{
+    opacity: 1;
+}
+
+.thumbNewImageClose{
+    width: 3vw;
+    height: 3vw;
     cursor: pointer;
 }

@@ -21,7 +21,9 @@ import org.junit.runner.*;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import com.example.demo.entities.Address;
 import com.example.demo.entities.User;
+import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.BadCredentialsException;
 import com.example.demo.exceptions.ExistingUserException;
 import com.example.demo.exceptions.NonExistentUserException;
@@ -50,7 +52,7 @@ public class AccountServiceTests extends EasyMockSupport {
 	
 	
 	@TestSubject
-	AccountService accountControler=new AccountService(hashUtilMock,jwtUtilMock,usersRepoMock,mailSenderMock,subject,content,link);
+	AccountService accountService=new AccountService(hashUtilMock,jwtUtilMock,usersRepoMock,mailSenderMock,subject,content,link);
 	
 	//login tests
 	@Test
@@ -70,7 +72,7 @@ public class AccountServiceTests extends EasyMockSupport {
 		expect(jwtUtilMock.generateToken(userEntity,new HashMap<String, Object>())).andReturn("fakeJWT");
 		replayAll();
 		
-		UserModel result=accountControler.login(loginModel);
+		UserModel result=accountService.login(loginModel);
 		
 		assertEquals("fakeJWT", result.getJwt());
 		
@@ -94,7 +96,7 @@ public class AccountServiceTests extends EasyMockSupport {
 		expect(jwtUtilMock.generateToken(userEntity,new HashMap<String, Object>())).andReturn("fakeJWT");
 		replayAll();
 		
-		accountControler.login(loginModel);	
+		accountService.login(loginModel);	
 		verifyAll();
 	}
 	
@@ -115,7 +117,7 @@ public class AccountServiceTests extends EasyMockSupport {
 		expect(jwtUtilMock.generateToken(userEntity,new HashMap<String, Object>())).andReturn("fakeJWT");
 		replayAll();
 		
-		accountControler.login(loginModel);	
+		accountService.login(loginModel);	
 		verifyAll();
 	}
 	
@@ -137,7 +139,7 @@ public class AccountServiceTests extends EasyMockSupport {
 		expect(jwtUtilMock.generateToken(user,new HashMap<String, Object>())).andReturn("fakeJWT");
 		replayAll();
 		
-		UserModel result=accountControler.signUp(signupModel);	
+		UserModel result=accountService.signUp(signupModel);	
 		
 		assertEquals("fakeJWT", result.getJwt());
 		verifyAll();
@@ -156,7 +158,7 @@ public class AccountServiceTests extends EasyMockSupport {
 		expect(usersRepoMock.findByEmail(signupModel.getEmail())).andReturn(users);
 		replayAll();
 		
-		accountControler.signUp(signupModel);	
+		accountService.signUp(signupModel);	
 		verifyAll();
 	}
 	
@@ -173,7 +175,7 @@ public class AccountServiceTests extends EasyMockSupport {
 		expect(hashUtilMock.hashPassword(signupModel.getPassword())).andReturn("qwerty");
 		replayAll();
 		
-		accountControler.signUp(signupModel);	
+		accountService.signUp(signupModel);	
 		verifyAll();
 	}
 	
@@ -186,41 +188,41 @@ public class AccountServiceTests extends EasyMockSupport {
 		signupModel.setLastName("");
 		replayAll();
 		
-		accountControler.signUp(signupModel);	
+		accountService.signUp(signupModel);	
 		verifyAll();		
 	}
 	
 	@Test(expected=NonExistentUserException.class)
-	public void forgotPasswordEmailIsNullShouldThrowException() throws NonExistentUserException {
+	public void forgotPasswordEmailIsNullShouldThrowException() throws AuctionAppException {
 		UserModel model=new UserModel();
 		model.setEmail(null);
 		
-		accountControler.forgotPassword(model);
+		accountService.forgotPassword(model);
 	}
 	
 	@Test(expected=NonExistentUserException.class)
-	public void forgotPasswordEmailIsEmptyStringShouldThrowException() throws NonExistentUserException {
+	public void forgotPasswordEmailIsEmptyStringShouldThrowException() throws AuctionAppException {
 		UserModel model=new UserModel();
 		model.setEmail("");
 		
-		accountControler.forgotPassword(model);
+		accountService.forgotPassword(model);
 	}
 	
 	@Test(expected=NonExistentUserException.class)
-	public void forgotPasswordNoUserInDbShouldThrowException() throws NonExistentUserException {
+	public void forgotPasswordNoUserInDbShouldThrowException() throws AuctionAppException {
 		UserModel model=new UserModel();
 		model.setEmail("user@mail.com");
 		
 		expect(usersRepoMock.findByEmail(anyString())).andReturn(Optional.empty()).anyTimes();
 		replayAll();
 		
-		accountControler.forgotPassword(model);
+		accountService.forgotPassword(model);
 		
 		verifyAll();
 	}
 	
 	@Test
-	public void forgotPasswordShouldSetTokenData() throws NonExistentUserException {
+	public void forgotPasswordShouldSetTokenData() throws AuctionAppException {
 		UserModel model=new UserModel();
 		model.setEmail("user@mail.com");
 		
@@ -237,7 +239,7 @@ public class AccountServiceTests extends EasyMockSupport {
 		expectLastCall();
 		replayAll();
 		
-		accountControler.forgotPassword(model);
+		accountService.forgotPassword(model);
 		
 		assertNotNull(userCapture.getValue().getForgotPasswordToken());
 		assertNotNull(userCapture.getValue().getForgotPasswordTokenEndTime());
@@ -246,79 +248,79 @@ public class AccountServiceTests extends EasyMockSupport {
 	}
 	
 	@Test(expected = InvalidTokenException.class)
-	public void newPasswordTokenIsNullShouldThrowException() throws InvalidTokenException, InvalidDataException {
+	public void newPasswordTokenIsNullShouldThrowException() throws AuctionAppException {
 		UserModel model=new UserModel();
 		model.setForgotPasswordToken(null);
 		model.setPassword("123123");
 		replayAll();
 		
-		accountControler.newPassword(model);
+		accountService.newPassword(model);
 		
 		verifyAll();
 	}
 	
 	@Test(expected = InvalidTokenException.class)
-	public void newPasswordTokenIsEmptyStringShouldThrowException() throws InvalidTokenException, InvalidDataException {
+	public void newPasswordTokenIsEmptyStringShouldThrowException() throws AuctionAppException {
 		UserModel model=new UserModel();
 		model.setForgotPasswordToken("");
 		model.setPassword("123123");
 		replayAll();
 		
-		accountControler.newPassword(model);
+		accountService.newPassword(model);
 		
 		verifyAll();
 	}
 	
 	@Test(expected = InvalidDataException.class)
-	public void newPasswordPasswordIsNullShouldThrowException() throws InvalidTokenException, InvalidDataException {
+	public void newPasswordPasswordIsNullShouldThrowException() throws AuctionAppException {
 		UserModel model=new UserModel();
 		model.setForgotPasswordToken("a100d2");
 		model.setPassword(null);
 		replayAll();
 		
-		accountControler.newPassword(model);
+		accountService.newPassword(model);
 		
 		verifyAll();
 	}
 	
 	@Test(expected = InvalidDataException.class)
-	public void newPasswordPasswordEmptyShouldThrowException() throws InvalidTokenException, InvalidDataException {
+	public void newPasswordPasswordEmptyShouldThrowException() throws AuctionAppException {
 		UserModel model=new UserModel();
 		model.setForgotPasswordToken("a100d2");
 		model.setPassword("");
 		replayAll();
 		
-		accountControler.newPassword(model);
+		accountService.newPassword(model);
 		
 		verifyAll();
 	}
 	
 	@Test(expected = InvalidDataException.class)
-	public void newPasswordPasswordShortShouldThrowException() throws InvalidTokenException, InvalidDataException {
+	public void newPasswordPasswordShortShouldThrowException() throws AuctionAppException {
 		UserModel model=new UserModel();
 		model.setForgotPasswordToken("a100d2");
 		model.setPassword("abc");
 		replayAll();
 		
-		accountControler.newPassword(model);
+		accountService.newPassword(model);
 		
 		verifyAll();
 	}
 	
 	@Test(expected = InvalidDataException.class)
-	public void newPasswordPasswordIsEmptyStringShouldThrowException() throws InvalidTokenException, InvalidDataException {
+	public void newPasswordPasswordIsEmptyStringShouldThrowException() throws AuctionAppException {
 		UserModel model=new UserModel();
 		model.setForgotPasswordToken("a100d2");
 		model.setPassword("");
 		replayAll();
 		
-		accountControler.newPassword(model);
+		accountService.newPassword(model);
 		
 		verifyAll();
 	}
 	
 	@Test(expected = InvalidTokenException.class)
-	public void newPasswordNoValidRecordInDbShouldThrowException() throws InvalidTokenException, InvalidDataException {
+	public void newPasswordNoValidRecordInDbShouldThrowException() throws AuctionAppException {
 		UserModel model=new UserModel();
 		model.setForgotPasswordToken("a100d2");
 		model.setPassword("qwerty");
@@ -326,13 +328,13 @@ public class AccountServiceTests extends EasyMockSupport {
 		expect(usersRepoMock.findByForgotPasswordTokenAndForgotPasswordTokenEndTimeAfter(anyString(),anyObject())).andReturn(Optional.empty()).anyTimes();
 		replayAll();
 		
-		accountControler.newPassword(model);
+		accountService.newPassword(model);
 		
 		verifyAll();
 	}
 	
 	@Test
-	public void newPasswordShouldSetPasswordAndFpTokenEndtime() throws InvalidTokenException, InvalidDataException {
+	public void newPasswordShouldSetPasswordAndFpTokenEndtime() throws AuctionAppException {
 		UserModel model=new UserModel();
 		String hash="abcdefg";
 		model.setForgotPasswordToken("a100d2");
@@ -350,7 +352,7 @@ public class AccountServiceTests extends EasyMockSupport {
 		expect(hashUtilMock.hashPassword(model.getPassword())).andReturn(hash);
 		replayAll();
 		
-		accountControler.newPassword(model);
+		accountService.newPassword(model);
 		
 		assertEquals(userCapture.getValue().getPasswd(),hash);
 		assertNotNull(userCapture.getValue().getForgotPasswordTokenEndTime());

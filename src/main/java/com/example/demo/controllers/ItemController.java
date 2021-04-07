@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entities.User;
+import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.InsertFailedException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
@@ -72,13 +73,13 @@ public class ItemController {
 	
 	@ApiOperation(value = "Returns item specified by ID", notes = "Public access")
 	@GetMapping("/api/items/{itemId}")
-	public ItemModel getItemById(@PathVariable(name="itemId")int itemId) throws NotFoundException{
+	public ItemModel getItemById(@PathVariable(name="itemId")int itemId) throws AuctionAppException{
 		return imageService.loadImagesForItem(itemService.getItem(itemId));
 	}
 	
 	@ApiOperation(value = "Returns random item", notes = "Public access")
 	@GetMapping("/api/items/featured")
-	public ItemModel getItemFeatured() throws NotFoundException{
+	public ItemModel getItemFeatured() throws AuctionAppException{
 		return imageService.loadImagesForItem(itemService.getItemFeatured());
 	}
 	
@@ -119,7 +120,7 @@ public class ItemController {
 	
 	@ApiOperation(value = "Creating new item for sale", notes = "Only authenticated users")
 	@PostMapping("/api/items")
-	public ItemModel addItem(@RequestBody ItemModel model)  throws InvalidDataException, InsertFailedException,UnauthenticatedException{
+	public ItemModel addItem(@RequestBody ItemModel model)  throws AuctionAppException{
 		User principal=null;
 		try {
 			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();

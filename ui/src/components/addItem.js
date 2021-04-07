@@ -18,8 +18,6 @@ class AddItem extends React.Component{
                 success:true
             }
             this.data=JSON.parse(localStorage.getItem('addItemData'));
-            console.log(this.state);
-            console.log(this.data)
         }else{
             this.state={
                 step:1,
@@ -33,11 +31,9 @@ class AddItem extends React.Component{
                 endDate:null,
                 subcategory:null,
                 address:context.user.address?context.user.address:null,
-                imageFiles:[],
                 images:[]
             }
         }
-        console.log(this.data)
     }
 
     next=(data)=>{
@@ -63,8 +59,8 @@ class AddItem extends React.Component{
         localStorage.removeItem('addItemStep');
         localStorage.removeItem('addItemData');
         let imgFiles=[];
-        for(const img in this.data.imageFiles){
-            let imgSplit=this.data.imageFiles[img].split(",");
+        for(const img in this.data.images){
+            let imgSplit=this.data.images[img].data.split(",");
             imgFiles.push(imgSplit[imgSplit.length-1])
         }
         let startDate=new Date();
@@ -82,7 +78,6 @@ class AddItem extends React.Component{
             address: this.data.address,
             imageFiles:imgFiles
         }
-        console.log(data)
         addItem(data,this.context.jwt,(success,data)=>{
             if(success){
                 this.setState({['requestStatusStyle']:"successMessage"});

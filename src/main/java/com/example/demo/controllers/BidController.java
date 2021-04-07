@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entities.User;
+import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.BidAmountLowException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
@@ -46,7 +47,7 @@ public class BidController {
 	
 	@ApiOperation(value = "Adds bid to item", notes = "Only authenticated users")
 	@PostMapping("/api/bids")
-	public BidModel addBid( @RequestBody BidModel bid) throws InvalidDataException, BidAmountLowException, NotFoundException, UnauthenticatedException{
+	public BidModel addBid( @RequestBody BidModel bid) throws AuctionAppException{
 		User principal=null;
 		try {
 			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();

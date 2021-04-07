@@ -21,6 +21,7 @@ import com.example.demo.entities.Address;
 import com.example.demo.entities.Item;
 import com.example.demo.entities.Subcategory;
 import com.example.demo.entities.User;
+import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.ImageHashException;
 import com.example.demo.exceptions.ImageUploadException;
 import com.example.demo.exceptions.InsertFailedException;
@@ -96,7 +97,7 @@ public class ItemServiceAddItemTests extends EasyMockSupport{
 	
 	
 	@Test
-	public void addItemInvalidSubcategoryShouldThrowException() throws  InsertFailedException {
+	public void addItemInvalidSubcategoryShouldThrowException() throws  AuctionAppException {
 		expect(subcategoriesRepoMock.findById(anyInt())).andReturn(Optional.empty()).anyTimes();
 		replayAll();
 		
@@ -110,7 +111,7 @@ public class ItemServiceAddItemTests extends EasyMockSupport{
 	}
 	
 	@Test
-	public void addItemInvalidModelShouldThrowException() throws  InsertFailedException {
+	public void addItemInvalidModelShouldThrowException() throws  AuctionAppException {
 		replayAll();
 		
 		try {
@@ -123,7 +124,7 @@ public class ItemServiceAddItemTests extends EasyMockSupport{
 	}
 	
 	@Test
-	public void addItemNoneAddres() throws  InsertFailedException {
+	public void addItemNoneAddres() throws  AuctionAppException {
 		expect(subcategoriesRepoMock.findById(anyInt())).andReturn(Optional.of(new Subcategory())).anyTimes();
 		replayAll();
 		
@@ -140,7 +141,7 @@ public class ItemServiceAddItemTests extends EasyMockSupport{
 	}
 	
 	@Test
-	public void addItemNonexistentAddress()throws  InsertFailedException {
+	public void addItemNonexistentAddress()throws  AuctionAppException {
 		expect(subcategoriesRepoMock.findById(anyInt())).andReturn(Optional.of(new Subcategory())).anyTimes();
 		expect(addressesRepoMock.findById(anyInt())).andReturn(Optional.empty()).anyTimes();
 		replayAll();
@@ -156,7 +157,7 @@ public class ItemServiceAddItemTests extends EasyMockSupport{
 	}
 	
 	@Test
-	public void addItemItemWriteError() throws InsertFailedException {
+	public void addItemItemWriteError() throws AuctionAppException {
 		ItemModel itemModel=validItemModel(validAddressModel());
 		expect(subcategoriesRepoMock.findById(anyInt())).andReturn(Optional.of(new Subcategory())).anyTimes();
 		expect(addressesRepoMock.save(anyObject())).andReturn(new Address()).anyTimes();
@@ -175,7 +176,7 @@ public class ItemServiceAddItemTests extends EasyMockSupport{
 	}
 	
 	@Test(expected = InsertFailedException.class)
-	public void addItemImagePutError() throws InsertFailedException, ImageUploadException, ImageHashException, InvalidDataException {
+	public void addItemImagePutError() throws AuctionAppException {
 		ItemModel itemModel=validItemModel(validAddressModel());
 		expect(subcategoriesRepoMock.findById(anyInt())).andReturn(Optional.of(new Subcategory())).anyTimes();
 		expect(addressesRepoMock.save(anyObject())).andReturn(new Address()).anyTimes();
@@ -195,7 +196,7 @@ public class ItemServiceAddItemTests extends EasyMockSupport{
 	}
 	
 	@Test
-	public void addItemHappyFlowNewAddress() throws InsertFailedException, ImageUploadException, ImageHashException, InvalidDataException {
+	public void addItemHappyFlowNewAddress() throws AuctionAppException {
 		Item item=new Item();
 		item.setId(1);
 		item.setAddress(new Address());
@@ -217,7 +218,7 @@ public class ItemServiceAddItemTests extends EasyMockSupport{
 	}
 	
 	@Test
-	public void addItemHappyFlowUsersAddress() throws InsertFailedException, ImageUploadException, ImageHashException, InvalidDataException {
+	public void addItemHappyFlowUsersAddress() throws AuctionAppException {
 		Item item=new Item();
 		item.setId(1);
 		item.setAddress(new Address());

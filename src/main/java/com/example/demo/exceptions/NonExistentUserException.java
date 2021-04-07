@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class NonExistentUserException extends Exception{
+public class NonExistentUserException extends AuctionAppException{
 	
 	private Map<String,String> errors;
 	
