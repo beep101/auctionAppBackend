@@ -51,7 +51,7 @@ public class ItemController {
 	@Value("${s3.key}")
 	private String key;
 	@Value("${s3.itemImageBucketUrl}")
-	private String imageBucketBaseUrl;;
+	private String imageBucketBaseUrl;
 	@Value("${s3.bucketName}")
 	private String bucketName;
 	
