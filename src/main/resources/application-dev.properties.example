@@ -8,6 +8,8 @@ jwt.validTime=86400//time in seconds
 
 s3.id=***//s3Id
 s3.key=***//s3Key
+s3.bucketName=auction.purple.item.picsProd//replace with used bucket
+s3.itemImageBucketUrl=***//url to used bucket
 
 email.name=***//email for password reset
 email.passwd=***//email's password

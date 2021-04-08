@@ -51,7 +51,9 @@ public class ItemController {
 	@Value("${s3.key}")
 	private String key;
 	@Value("${s3.itemImageBucketUrl}")
-	private String imageBucketBaseUrl;
+	private String imageBucketBaseUrl;;
+	@Value("${s3.bucketName}")
+	private String bucketName;
 	
 	@Autowired
 	private ItemsRepository itemsRepo;
@@ -67,7 +69,7 @@ public class ItemController {
 	
 	@PostConstruct
 	public void init() {
-		imageService=new ImageStorageS3(imageBucketBaseUrl,new AwsS3Adapter(id, key));
+		imageService=new ImageStorageS3(bucketName,imageBucketBaseUrl,new AwsS3Adapter(id, key));
 		itemService=new ItemService(imageService,itemsRepo,categoriesRepo,subcategoriesRepo,addressesRepo);
 	}
 	

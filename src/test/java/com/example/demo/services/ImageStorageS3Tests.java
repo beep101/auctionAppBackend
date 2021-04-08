@@ -41,7 +41,7 @@ public class ImageStorageS3Tests extends EasyMockSupport{
 	IAwsS3Adapter s3Adapter;
 	
 	@TestSubject
-	ImageStorageS3 imageStorage=new ImageStorageS3("", s3Adapter);
+	ImageStorageS3 imageStorage=new ImageStorageS3("","", s3Adapter);
 	
 	@Test
 	public void addImageShouldCreateValidPutRequest() throws AuctionAppException, IOException {

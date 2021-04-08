@@ -30,12 +30,13 @@ import com.example.demo.utils.IAwsS3Adapter;
 
 public class ImageStorageS3 implements IImageStorageService{
 	private IAwsS3Adapter s3;	
-	private String bucketName="auction.purple.item.pics";
+	private String bucketName;
 	private String baseUrl;
 
-	public ImageStorageS3(String baseUrl,IAwsS3Adapter s3) {
+	public ImageStorageS3(String bucketName,String baseUrl,IAwsS3Adapter s3) {
 		this.s3=s3;
 		this.baseUrl=baseUrl;
+		this.bucketName=bucketName;
 	}
 
 	@Override
