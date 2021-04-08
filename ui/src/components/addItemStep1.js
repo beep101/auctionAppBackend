@@ -18,8 +18,6 @@ function AddItemStep1(props){
     
     const selectInputRef = useRef();
 
-    let dropzone=useRef();
-
     const [categories,setCategories]=useState([]);
     const [subcategories,setSubcateogories]=useState(props.data.subcategory?
         props.data.subcategory.sub.cat.subs.map(element=>
@@ -27,15 +25,6 @@ function AddItemStep1(props){
     ):[]);
     const [msg,setMsg]=useState({});
     const [images,setImages]=useState(props.data.images);
-    useEffect(()=>{
-        console.log(dropzone.current)
-        new Dropzone(dropzone.current,{init:function(){
-            let drop=this;
-            let mockFile={ name: "Filename 2", size: 12345 };
-            console.log(drop)
-            drop.displayExistingFile(mockFile, "https://i.picsum.photos/id/959/600/600.jpg");
-        }});
-    },[]);
     const [editorState,setEditorState]=useState(()=>data.current.description?
     EditorState.createWithContent(convertFromRaw(data.current.description)):EditorState.createEmpty());
     
@@ -170,7 +159,7 @@ function AddItemStep1(props){
             </div>
             <div className="inputFieldContainer">
                 <label className="inputLabel">Images</label><br/>
-                <Dropzone onDrop={onDrop} accept="image/jpg,image/jpeg" ref={dropzone}>
+                <Dropzone onDrop={onDrop} accept="image/jpg,image/jpeg">
                     {({getRootProps, getInputProps}) => (
                         <section>
                         <div {...getRootProps()} className="dropImagesZone">

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Slider, Handles, Tracks } from 'react-compound-slider';
 import { getPriceHistogram } from '../apiConsumer/itemFetchConsumer';
+import {PRICE_FILTER_SLIDER_STYLE,PRICE_FILTER_RAIL_STYLE,PRICE_FILTER_TRACK_STYLE,PRICE_FILTER_HANDLE_STYLE,PRICE_FILTER_HANDLE_CENTER_STYLE} from '../styles/priceFilterStyleConstants'
 
 function PriceFilter(props){
 
@@ -67,42 +68,9 @@ function PriceFilter(props){
         props.rangeSet(data[0],data[1])
     };
 
-    const sliderStyle = {
-        position: 'relative',
-        width: '12vw'
-      }
-      
-      const railStyle = {
-        position: 'absolute',
-        width: '100%',
-        height: 3,
-        marginTop: 6,
-        backgroundColor: '#d8d8d8',
-      }
-
-      const trackStyle={
-        position: 'absolute',
-        height: 3,
-        zIndex: 1,
-        marginTop: 6,
-        backgroundColor: '#8367D8',
-      }
-      
-      const handleStyle={
-        position: 'absolute',
-        marginLeft: -8,
-        marginTop: 0,
-        zIndex: 2,
-        width: 16,
-        height: 16,
-        cursor: 'pointer',
-        borderRadius: '50%',
-        backgroundColor: '#8367D8'
-      }
-
     return(
         <div className="priceFilterContainer">
-            <div className="filterTittle">Price Filter</div>
+            <div className="filterTittle">FILTER BY PRICE</div>
             <div className="priceSliderFilterContainer">
                 <div className="histogramContainer">
                     {histogram.map(bar=>
@@ -110,22 +78,25 @@ function PriceFilter(props){
                     )}
                 </div>
                 <Slider
-                    rootStyle={sliderStyle}
+                    rootStyle={PRICE_FILTER_SLIDER_STYLE}
                     domain={[0.0,upperBound]}
                     step={0.01}
                     mode={2}
                     values={[minRange,maxRange]}
                     onChange={onChange}
                 >
-                    <div style={railStyle}></div>
+                    <div style={PRICE_FILTER_RAIL_STYLE}></div>
                     <Handles>
                     {({handles, getHandleProps}) => (
                         <div className="slider-handles">
                             {handles.map(handle=>(
                                 <div
-                                    style={{...handleStyle,...{left:`${handle.percent}%`}}}
+                                    style={{...PRICE_FILTER_HANDLE_STYLE,...{left:`${handle.percent}%`}}}
                                     {...getHandleProps(handle.id)}
-                                ></div>
+                                >
+                                    <div style={PRICE_FILTER_HANDLE_CENTER_STYLE}>
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     )}
@@ -135,7 +106,7 @@ function PriceFilter(props){
                             <div className="slider-tracks">
                                 {tracks.map((track) => (
                                     <div
-                                        style={{...trackStyle,...{
+                                        style={{...PRICE_FILTER_TRACK_STYLE,...{
                                             left: `${track.source.percent}%`,
                                             width: `${track.target.percent - track.source.percent}%`,
                                         }}}
@@ -146,8 +117,10 @@ function PriceFilter(props){
                     </Tracks>
                 </Slider>
             </div>
-            <div className="priceFilterText">{selectedMin?`$${selectedMin}`:'Min'} - {selectedMax?`$${selectedMax}`:'Max'}</div>
-            <div className="priceFilterText">The average price is ${avgPrice}</div>
+            <div className="priceFilterTextContainer">
+                <div className="priceFilterText">{selectedMin?`$${selectedMin}`:'Min'} - {selectedMax?`$${selectedMax}`:'Max'}</div>
+                <div className="priceFilterText">The average price is ${avgPrice}</div>
+            </div>
         </div>
     )
 }
