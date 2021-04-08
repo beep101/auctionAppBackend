@@ -34,23 +34,26 @@ function PriceFilter(props){
     },[])
 
     useEffect(()=>{
-        if(props.resetMin){
-            if(maxRange!=upperBound)
-                props.rangeSet(null,maxRange.toFixed(2));
-            else
-                props.rangeSet(null,null);
+        if(!props.resetMin)
+            return;
+        if(maxRange!=upperBound)
+            props.rangeSet(null,maxRange.toFixed(2));
+        else
+            props.rangeSet(null,null);
             setSelectedMin(null);
             setMinRange(0.0);
-        }
-        if(props.resetMax){
-            if(minRange!=0.0)
-                props.rangeSet(minRange.toFixed(2),null);
-            else
-                props.rangeSet(null,null);
+    },[props.resetMin])
+
+    useEffect(()=>{
+        if(!props.resetMax)
+            return;
+        if(minRange!=0.0)
+            props.rangeSet(minRange.toFixed(2),null);
+        else
+            props.rangeSet(null,null);
             setSelectedMax(null);
             setMaxRange(upperBound);
-        }
-    },[props.resetMin,props.resetMax])
+    },[props.resetMax])
 
     const onChange=(data)=>{
         setMinRange(data[0]);
