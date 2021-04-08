@@ -2,9 +2,6 @@ package com.example.demo.models;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
-
-import com.example.demo.entities.PriceCountAggregateResult;
 
 public class HistogramResponseModel {
 	private BigDecimal min;

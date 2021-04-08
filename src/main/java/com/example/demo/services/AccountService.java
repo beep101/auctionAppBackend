@@ -2,20 +2,12 @@ package com.example.demo.services;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Path.Node;
-import javax.validation.Validation;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
 
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;

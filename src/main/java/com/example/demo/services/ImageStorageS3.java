@@ -1,7 +1,6 @@
 package com.example.demo.services;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -18,10 +17,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
 import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.ImageDeleteException;
-import com.example.demo.exceptions.ImageFetchException;
 import com.example.demo.exceptions.ImageHashException;
 import com.example.demo.exceptions.ImageUploadException;
 import com.example.demo.models.ItemModel;

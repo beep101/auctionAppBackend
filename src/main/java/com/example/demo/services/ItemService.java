@@ -2,30 +2,19 @@ package com.example.demo.services;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.provider.HibernateUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.entities.Address;
 import com.example.demo.entities.Category;
@@ -48,6 +37,7 @@ import com.example.demo.repositories.SubcategoriesRepository;
 import com.example.demo.services.interfaces.IImageStorageService;
 import com.example.demo.services.interfaces.IItemService;
 import com.example.demo.utils.PaginationParams;
+import com.example.demo.validations.FilterItemsRequest;
 import com.example.demo.validations.ItemRequest;
 
 public class ItemService implements IItemService {
@@ -234,27 +224,27 @@ public class ItemService implements IItemService {
 	}
 	
 	@Override
-	public Collection<ItemModel> findItemsValidFilterCategoriesSubcaetgoriesPrice(String term,List<Integer> categories, List<Integer> subcategories, BigDecimal minPrice, BigDecimal maxPrice, PaginationParams pgbl) throws AuctionAppException{
+	public Collection<ItemModel> findItemsValidFilterCategoriesSubcaetgoriesPrice(FilterItemsRequest request, PaginationParams pgbl) throws AuctionAppException{
 		Timestamp crr=new Timestamp(System.currentTimeMillis());
 		
 		List<Category> categoriesList=null;
 		List<Subcategory> subcategoriesList=null;
 		
-		if(categories.size()==0&&subcategories.size()==0) {
+		if(request.getCategories().size()==0&&request.getSubcategories().size()==0) {
 			categoriesList=categoriesRepo.findAll();
 			subcategoriesList=subcateogriesRepo.findAll();
 		}else {
-			categoriesList=categoriesRepo.findAllById(categories);
-			subcategoriesList=subcateogriesRepo.findAllById(subcategories);
+			categoriesList=categoriesRepo.findAllById(request.getCategories());
+			subcategoriesList=subcateogriesRepo.findAllById(request.getSubcategories());
 		}
 		
-		if(minPrice==null)
-			minPrice=new BigDecimal(0);
-		if(maxPrice!=null) {
-			return itemsRepo.searchActiveByCatsAndSubsFilterMinAndMaxPrice(crr, term,categoriesList, subcategoriesList,minPrice,maxPrice, pgbl.getPageable())
+		if(request.getMinPrice()==null)
+			request.setMinPrice(new BigDecimal(0));
+		if(request.getMaxPrice()!=null) {
+			return itemsRepo.searchActiveByCatsAndSubsFilterMinAndMaxPrice(crr, request.getTerm(),categoriesList, subcategoriesList,request.getMinPrice(),request.getMaxPrice(), pgbl.getPageable())
 					.stream().map(x->x.toModel()).collect(Collectors.toList());			
 		}else {
-			return itemsRepo.searchActiveByCatsAndSubsFilterMinPrice(crr, term,categoriesList, subcategoriesList,minPrice, pgbl.getPageable())
+			return itemsRepo.searchActiveByCatsAndSubsFilterMinPrice(crr, request.getTerm(),categoriesList, subcategoriesList,request.getMinPrice(), pgbl.getPageable())
 					.stream().map(x->x.toModel()).collect(Collectors.toList());			
 		}			
 	}

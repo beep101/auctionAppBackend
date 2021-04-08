@@ -149,7 +149,7 @@ public class BidServiceTests extends EasyMockSupport{
 		
 		pageableCapture.reset();
 		
-		Integer len=new Integer(13);
+		Integer len=13;
 		bidService.getBids(1, len);
 		assertEquals(0, pageableCapture.getValue().getPageNumber());
 		assertEquals(len.intValue(), pageableCapture.getValue().getPageSize());

@@ -34,7 +34,6 @@ import com.example.demo.entities.PriceCountAggregateResult;
 import com.example.demo.entities.Subcategory;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
-import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.HistogramResponseModel;
 import com.example.demo.models.ItemModel;
@@ -46,6 +45,7 @@ import com.example.demo.services.interfaces.IImageStorageService;
 import com.example.demo.utils.ItemSorting;
 import com.example.demo.utils.PaginationParams;
 import com.example.demo.utils.SortingPaginationParams;
+import com.example.demo.validations.FilterItemsRequest;
 
 @RunWith(EasyMockRunner.class)
 public class ItemServiceTests extends EasyMockSupport{
@@ -171,7 +171,8 @@ public class ItemServiceTests extends EasyMockSupport{
 		
 		pageableCapture.reset();
 		
-		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice("",new ArrayList<Integer>(),new ArrayList<Integer>(), null, null, new SortingPaginationParams(page,count,ItemSorting.PRICEASC));
+		FilterItemsRequest filter=new FilterItemsRequest("",new ArrayList<Integer>(),new ArrayList<Integer>(), null, null);
+		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(filter, new SortingPaginationParams(page,count,ItemSorting.PRICEASC));
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
@@ -180,7 +181,8 @@ public class ItemServiceTests extends EasyMockSupport{
 		
 		pageableCapture.reset();
 		
-		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice("",new ArrayList<Integer>(),new ArrayList<Integer>(), null, new BigDecimal("77.7"),new SortingPaginationParams(page,count,ItemSorting.PRICEASC));
+		filter=new FilterItemsRequest("",new ArrayList<Integer>(),new ArrayList<Integer>(), null, new BigDecimal("77.7"));
+		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(filter,new SortingPaginationParams(page,count,ItemSorting.PRICEASC));
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
@@ -191,7 +193,8 @@ public class ItemServiceTests extends EasyMockSupport{
 		
 		List<Integer> ids=new ArrayList<>();
 		ids.add(1);ids.add(2);ids.add(3);
-		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice("",ids,ids, null, new BigDecimal("77.7"),new SortingPaginationParams(page,count,ItemSorting.PRICEASC));
+		filter=new FilterItemsRequest("",ids,ids, null, new BigDecimal("77.7"));
+		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(filter,new SortingPaginationParams(page,count,ItemSorting.PRICEASC));
 		captured=pageableCapture.getValue();
 		assertEquals(captured.getPageNumber(), page);
 		assertEquals(captured.getPageSize(), count);
@@ -385,7 +388,8 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
-		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice("",new ArrayList<Integer>(),new ArrayList<Integer>(), null, null,new SortingPaginationParams(0,1,ItemSorting.DEFAULT));
+		FilterItemsRequest filter=new FilterItemsRequest("",new ArrayList<Integer>(),new ArrayList<Integer>(), null, null);
+		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(filter,new SortingPaginationParams(0,1,ItemSorting.DEFAULT));
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());
@@ -396,7 +400,8 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
-		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice("",new ArrayList<Integer>(),new ArrayList<Integer>(), null, new BigDecimal("77.7"),new SortingPaginationParams(0,1,ItemSorting.DEFAULT));
+		filter=new FilterItemsRequest("",new ArrayList<Integer>(),new ArrayList<Integer>(), null, new BigDecimal("77.7"));
+		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(filter,new SortingPaginationParams(0,1,ItemSorting.DEFAULT));
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());
@@ -407,7 +412,8 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
-		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice("",new ArrayList<Integer>(),new ArrayList<Integer>(), null, null,new SortingPaginationParams(0,1,ItemSorting.DEFAULT));
+		filter=new FilterItemsRequest("",new ArrayList<Integer>(),new ArrayList<Integer>(), null, null);
+		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(filter,new SortingPaginationParams(0,1,ItemSorting.DEFAULT));
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());
@@ -420,7 +426,8 @@ public class ItemServiceTests extends EasyMockSupport{
 		
 		List<Integer> ids=new ArrayList<>();
 		ids.add(1);ids.add(2);ids.add(3);
-		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice("",ids,ids, null, new BigDecimal("77.7"),new SortingPaginationParams(0,1,ItemSorting.DEFAULT));
+		filter=new FilterItemsRequest("",ids,ids, null, new BigDecimal("77.7"));
+		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(filter,new SortingPaginationParams(0,1,ItemSorting.DEFAULT));
 		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());

@@ -3,13 +3,6 @@ package com.example.demo.models;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-import com.example.demo.entities.Item;
-import com.example.demo.entities.User;
-
 public class BidModel {
 	private int id;
 	private BigDecimal amount;

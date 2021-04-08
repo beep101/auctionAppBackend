@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.easymock.Capture;
@@ -22,15 +21,11 @@ import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.data.domain.PageImpl;
 
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.example.demo.entities.Item;
 import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.ImageDeleteException;
-import com.example.demo.exceptions.ImageHashException;
 import com.example.demo.exceptions.ImageUploadException;
 import com.example.demo.utils.IAwsS3Adapter;
 
