@@ -234,22 +234,19 @@ public class ItemService implements IItemService {
 	}
 	
 	@Override
-	public Collection<ItemModel> findItemsValidFilterCategoriesSubcaetgoriesPrice(String term,List<Integer> categories, List<Integer> subcategories, BigDecimal minPrice, BigDecimal maxPrice, PaginationParams pgbl) throws InvalidDataException{
+	public Collection<ItemModel> findItemsValidFilterCategoriesSubcaetgoriesPrice(String term,List<Integer> categories, List<Integer> subcategories, BigDecimal minPrice, BigDecimal maxPrice, PaginationParams pgbl) throws AuctionAppException{
 		Timestamp crr=new Timestamp(System.currentTimeMillis());
 		
 		List<Category> categoriesList=null;
 		List<Subcategory> subcategoriesList=null;
-		try {
-			if(categories.size()==0&&subcategories.size()==0) {
-				categoriesList=categoriesRepo.findAll();
-				subcategoriesList=subcateogriesRepo.findAll();
-			}else {
-				categoriesList=categoriesRepo.findAllById(categories);
-				subcategoriesList=subcateogriesRepo.findAllById(subcategories);
-			}
-		}catch(NumberFormatException ex) {
-			throw new InvalidDataException();
-		}	
+		
+		if(categories.size()==0&&subcategories.size()==0) {
+			categoriesList=categoriesRepo.findAll();
+			subcategoriesList=subcateogriesRepo.findAll();
+		}else {
+			categoriesList=categoriesRepo.findAllById(categories);
+			subcategoriesList=subcateogriesRepo.findAllById(subcategories);
+		}
 		
 		if(minPrice==null)
 			minPrice=new BigDecimal(0);
@@ -263,8 +260,10 @@ public class ItemService implements IItemService {
 	}
 	
 	@Override
-	public HistogramResponseModel pricesHistogramForItems() throws NotFoundException {
+	public HistogramResponseModel pricesHistogramForItems()throws AuctionAppException{
 		List<PriceCountAggregateResult> data=itemsRepo.groupByPricesOrdered(new Timestamp(System.currentTimeMillis()));
+		if(data.isEmpty())
+			throw new NotFoundException();
 		
 		HistogramResponseModel histogramModel=new HistogramResponseModel();
 		histogramModel.setMin(data.get(0).getStartingprice());

@@ -34,5 +34,5 @@ public interface IItemService {
 
 	
 	ItemModel getItemFeatured() throws AuctionAppException;
-	HistogramResponseModel pricesHistogramForItems() throws AuctionAppException;
+	HistogramResponseModel pricesHistogramForItems()throws AuctionAppException;
 }
