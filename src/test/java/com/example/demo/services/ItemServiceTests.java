@@ -30,10 +30,12 @@ import org.springframework.data.domain.Pageable;
 import com.example.demo.entities.Bid;
 import com.example.demo.entities.Category;
 import com.example.demo.entities.Item;
+import com.example.demo.entities.PriceCountAggregateResult;
+import com.example.demo.entities.Subcategory;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
-import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.models.HistogramResponseModel;
 import com.example.demo.models.ItemModel;
 import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.CategoriesRepository;
@@ -43,6 +45,7 @@ import com.example.demo.services.interfaces.IImageStorageService;
 import com.example.demo.utils.ItemSorting;
 import com.example.demo.utils.PaginationParams;
 import com.example.demo.utils.SortingPaginationParams;
+import com.example.demo.validations.FilterItemsRequest;
 
 @RunWith(EasyMockRunner.class)
 public class ItemServiceTests extends EasyMockSupport{
@@ -80,6 +83,11 @@ public class ItemServiceTests extends EasyMockSupport{
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterOrderByStarttimeDesc(anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCaseAndSubcategoryCategoryIn(anyObject(),anyString(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(anyObject(),anyString(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
+		expect(categoriesRepo.findAll()).andReturn(new ArrayList<Category>()).anyTimes();
+		expect(subcategoriesRepo.findAll()).andReturn(new ArrayList<Subcategory>()).anyTimes();
+		expect(subcategoriesRepo.findAllById(anyObject())).andReturn(new ArrayList<Subcategory>()).anyTimes();
+		expect(itemsRepoMock.searchActiveByCatsAndSubsFilterMinAndMaxPrice(anyObject(),anyString(),anyObject(),anyObject(),anyObject(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
+		expect(itemsRepoMock.searchActiveByCatsAndSubsFilterMinPrice(anyObject(),anyString(),anyObject(),anyObject(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		replayAll();
 		
 		itemService.getItems(new PaginationParams(page,count));
@@ -161,6 +169,38 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(captured.getSort().get().collect(Collectors.toList()).get(0).getProperty(), "startingprice");
 		assertTrue(captured.getSort().get().collect(Collectors.toList()).get(0).isAscending());
 		
+		pageableCapture.reset();
+		
+		FilterItemsRequest filter=new FilterItemsRequest("",new ArrayList<Integer>(),new ArrayList<Integer>(), null, null);
+		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(filter, new SortingPaginationParams(page,count,ItemSorting.PRICEASC));
+		captured=pageableCapture.getValue();
+		assertEquals(captured.getPageNumber(), page);
+		assertEquals(captured.getPageSize(), count);
+		assertEquals(captured.getSort().get().collect(Collectors.toList()).get(0).getProperty(), "startingprice");
+		assertTrue(captured.getSort().get().collect(Collectors.toList()).get(0).isAscending());
+		
+		pageableCapture.reset();
+		
+		filter=new FilterItemsRequest("",new ArrayList<Integer>(),new ArrayList<Integer>(), null, new BigDecimal("77.7"));
+		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(filter,new SortingPaginationParams(page,count,ItemSorting.PRICEASC));
+		captured=pageableCapture.getValue();
+		assertEquals(captured.getPageNumber(), page);
+		assertEquals(captured.getPageSize(), count);
+		assertEquals(captured.getSort().get().collect(Collectors.toList()).get(0).getProperty(), "startingprice");
+		assertTrue(captured.getSort().get().collect(Collectors.toList()).get(0).isAscending());
+
+		pageableCapture.reset();
+		
+		List<Integer> ids=new ArrayList<>();
+		ids.add(1);ids.add(2);ids.add(3);
+		filter=new FilterItemsRequest("",ids,ids, null, new BigDecimal("77.7"));
+		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(filter,new SortingPaginationParams(page,count,ItemSorting.PRICEASC));
+		captured=pageableCapture.getValue();
+		assertEquals(captured.getPageNumber(), page);
+		assertEquals(captured.getPageSize(), count);
+		assertEquals(captured.getSort().get().collect(Collectors.toList()).get(0).getProperty(), "startingprice");
+		assertTrue(captured.getSort().get().collect(Collectors.toList()).get(0).isAscending());
+		
 		verifyAll();
 	}
 	
@@ -232,6 +272,11 @@ public class ItemServiceTests extends EasyMockSupport{
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCaseAndSubcategoryCategoryIn(anyObject(),anyString(),anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(anyObject(),anyString(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterRandom(anyObject())).andReturn(itemOpt).anyTimes();
+		expect(categoriesRepo.findAll()).andReturn(new ArrayList<Category>()).anyTimes();
+		expect(subcategoriesRepo.findAll()).andReturn(new ArrayList<Subcategory>()).anyTimes();
+		expect(subcategoriesRepo.findAllById(anyObject())).andReturn(new ArrayList<Subcategory>()).anyTimes();
+		expect(itemsRepoMock.searchActiveByCatsAndSubsFilterMinAndMaxPrice(anyObject(),anyString(),anyObject(),anyObject(),anyObject(),anyObject(),anyObject())).andReturn(items).anyTimes();
+		expect(itemsRepoMock.searchActiveByCatsAndSubsFilterMinPrice(anyObject(),anyString(),anyObject(),anyObject(),anyObject(),anyObject())).andReturn(items).anyTimes();
 		replayAll();
 		
 		models=itemService.getItems(new PaginationParams(0,1));
@@ -333,8 +378,57 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
-		
 		model=itemService.getItemFeatured();
+		assertEquals(model.getId(), item.getId());
+		assertEquals(model.getName(), item.getName());
+		assertEquals(model.getDescription(), item.getDescription());
+		assertEquals(model.getStartingprice(), item.getStartingprice());
+		assertEquals(model.getSold(), item.getSold());
+		assertEquals(model.getStarttime(), item.getStarttime());
+		assertEquals(model.getEndtime(), item.getEndtime());
+		assertEquals(model.getSeller().getId(), item.getSeller().getId());
+		
+		FilterItemsRequest filter=new FilterItemsRequest("",new ArrayList<Integer>(),new ArrayList<Integer>(), null, null);
+		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(filter,new SortingPaginationParams(0,1,ItemSorting.DEFAULT));
+		model=(ItemModel)models.toArray()[0];
+		assertEquals(model.getId(), item.getId());
+		assertEquals(model.getName(), item.getName());
+		assertEquals(model.getDescription(), item.getDescription());
+		assertEquals(model.getStartingprice(), item.getStartingprice());
+		assertEquals(model.getSold(), item.getSold());
+		assertEquals(model.getStarttime(), item.getStarttime());
+		assertEquals(model.getEndtime(), item.getEndtime());
+		assertEquals(model.getSeller().getId(), item.getSeller().getId());
+		
+		filter=new FilterItemsRequest("",new ArrayList<Integer>(),new ArrayList<Integer>(), null, new BigDecimal("77.7"));
+		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(filter,new SortingPaginationParams(0,1,ItemSorting.DEFAULT));
+		model=(ItemModel)models.toArray()[0];
+		assertEquals(model.getId(), item.getId());
+		assertEquals(model.getName(), item.getName());
+		assertEquals(model.getDescription(), item.getDescription());
+		assertEquals(model.getStartingprice(), item.getStartingprice());
+		assertEquals(model.getSold(), item.getSold());
+		assertEquals(model.getStarttime(), item.getStarttime());
+		assertEquals(model.getEndtime(), item.getEndtime());
+		assertEquals(model.getSeller().getId(), item.getSeller().getId());
+		
+		filter=new FilterItemsRequest("",new ArrayList<Integer>(),new ArrayList<Integer>(), null, null);
+		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(filter,new SortingPaginationParams(0,1,ItemSorting.DEFAULT));
+		model=(ItemModel)models.toArray()[0];
+		assertEquals(model.getId(), item.getId());
+		assertEquals(model.getName(), item.getName());
+		assertEquals(model.getDescription(), item.getDescription());
+		assertEquals(model.getStartingprice(), item.getStartingprice());
+		assertEquals(model.getSold(), item.getSold());
+		assertEquals(model.getStarttime(), item.getStarttime());
+		assertEquals(model.getEndtime(), item.getEndtime());
+		assertEquals(model.getSeller().getId(), item.getSeller().getId());
+		
+		List<Integer> ids=new ArrayList<>();
+		ids.add(1);ids.add(2);ids.add(3);
+		filter=new FilterItemsRequest("",ids,ids, null, new BigDecimal("77.7"));
+		itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(filter,new SortingPaginationParams(0,1,ItemSorting.DEFAULT));
+		model=(ItemModel)models.toArray()[0];
 		assertEquals(model.getId(), item.getId());
 		assertEquals(model.getName(), item.getName());
 		assertEquals(model.getDescription(), item.getDescription());
@@ -366,4 +460,36 @@ public class ItemServiceTests extends EasyMockSupport{
 		
 		verifyAll();
 	}
+
+	@Test(expected = NotFoundException.class)
+	public void pricesHistogramForItemsNoDataThrowsException() throws AuctionAppException{
+		expect(itemsRepoMock.groupByPricesOrdered(anyObject())).andReturn(new ArrayList<>()).once();
+		replayAll();
+		
+		itemService.pricesHistogramForItems();
+		
+		verifyAll();
+	}
+	
+	@Test
+	public void pricesHistogramForItemsCreateValidHistogram() throws AuctionAppException {
+		List<PriceCountAggregateResult> data=new ArrayList<>();
+		data.add(new PriceCountAggregateResult(new BigDecimal(2), 2));
+		data.add(new PriceCountAggregateResult(new BigDecimal(4), 4));
+		data.add(new PriceCountAggregateResult(new BigDecimal(6), 7));
+		data.add(new PriceCountAggregateResult(new BigDecimal(8), 5));
+		data.add(new PriceCountAggregateResult(new BigDecimal(10), 3));
+		data.add(new PriceCountAggregateResult(new BigDecimal(12), 2));
+		expect(itemsRepoMock.groupByPricesOrdered(anyObject())).andReturn(data).once();
+		replayAll();
+		
+		HistogramResponseModel hr=itemService.pricesHistogramForItems();
+		assertEquals(new BigDecimal(2), hr.getMin());
+		assertEquals(new BigDecimal(12), hr.getMax());
+		assertEquals(24, hr.getHistogram().size());
+		
+		verifyAll();
+	}
+	
+	
 }

@@ -10,11 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.exceptions.AuctionAppException;
-import com.example.demo.exceptions.BadCredentialsException;
-import com.example.demo.exceptions.ExistingUserException;
-import com.example.demo.exceptions.InvalidDataException;
-import com.example.demo.exceptions.InvalidTokenException;
-import com.example.demo.exceptions.NonExistentUserException;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.AccountService;

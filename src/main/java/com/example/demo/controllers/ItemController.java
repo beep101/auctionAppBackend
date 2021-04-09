@@ -1,15 +1,14 @@
 package com.example.demo.controllers;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,12 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
-import com.example.demo.exceptions.InsertFailedException;
-import com.example.demo.exceptions.InvalidDataException;
-import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.exceptions.UnauthenticatedException;
+import com.example.demo.models.HistogramResponseModel;
 import com.example.demo.models.ItemModel;
-import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.repositories.ItemsRepository;
@@ -36,6 +32,7 @@ import com.example.demo.utils.AwsS3Adapter;
 import com.example.demo.utils.ItemSorting;
 import com.example.demo.utils.PaginationParams;
 import com.example.demo.utils.SortingPaginationParams;
+import com.example.demo.validations.FilterItemsRequest;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -50,6 +47,8 @@ public class ItemController {
 	private String key;
 	@Value("${s3.itemImageBucketUrl}")
 	private String imageBucketBaseUrl;
+	@Value("${s3.bucketName}")
+	private String bucketName;
 	
 	@Autowired
 	private ItemsRepository itemsRepo;
@@ -65,7 +64,7 @@ public class ItemController {
 	
 	@PostConstruct
 	public void init() {
-		imageService=new ImageStorageS3(imageBucketBaseUrl,new AwsS3Adapter(id, key));
+		imageService=new ImageStorageS3(bucketName,imageBucketBaseUrl,new AwsS3Adapter(id, key));
 		itemService=new ItemService(imageService,itemsRepo,categoriesRepo,subcategoriesRepo,addressesRepo);
 	}
 	
@@ -108,10 +107,9 @@ public class ItemController {
 	
 	@ApiOperation(value = "Enables searching items by name and filtering by different parameters", notes = "Public access")
 	@GetMapping("/api/items/search")
-	public Collection<ItemModel> findItem(@RequestParam String term,@RequestParam List<Integer> categories,
-										  @RequestParam int page,@RequestParam int count,@RequestParam(required = false, defaultValue = "default") ItemSorting sort)
-										  throws AuctionAppException{
-		return imageService.loadImagesForItems(itemService.findItemsValidFilterCategories(term,categories,new SortingPaginationParams(page,count,sort)));
+	public Collection<ItemModel> findItem(@Valid  FilterItemsRequest request, @RequestParam int page,@RequestParam int count,
+										  @RequestParam(required = false, defaultValue = "default") ItemSorting sort)throws AuctionAppException{
+		return imageService.loadImagesForItems(itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(request,new SortingPaginationParams(page,count,sort)));
 	}
 	
 	@ApiOperation(value = "Creating new item for sale", notes = "Only authenticated users")
@@ -125,4 +123,11 @@ public class ItemController {
 		}
 		return imageService.loadImagesForItem(itemService.addItem(model,principal));
 	}
+	
+	@ApiOperation(value = "Returns prices histogram histogram", notes = "Pubic access")
+	@GetMapping("/api/items/priceHistogram")
+	public HistogramResponseModel getPriceHistogram() throws AuctionAppException{
+		return itemService.pricesHistogramForItems();
+	}
+	
 }

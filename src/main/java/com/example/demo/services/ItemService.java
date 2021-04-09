@@ -1,10 +1,11 @@
 package com.example.demo.services;
 
-import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,14 +13,13 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.web.multipart.MultipartFile;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.demo.entities.Address;
 import com.example.demo.entities.Category;
 import com.example.demo.entities.Item;
+import com.example.demo.entities.PriceCountAggregateResult;
 import com.example.demo.entities.Subcategory;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
@@ -28,6 +28,7 @@ import com.example.demo.exceptions.ImageUploadException;
 import com.example.demo.exceptions.InsertFailedException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.models.HistogramResponseModel;
 import com.example.demo.models.ItemModel;
 import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.CategoriesRepository;
@@ -36,6 +37,7 @@ import com.example.demo.repositories.SubcategoriesRepository;
 import com.example.demo.services.interfaces.IImageStorageService;
 import com.example.demo.services.interfaces.IItemService;
 import com.example.demo.utils.PaginationParams;
+import com.example.demo.validations.FilterItemsRequest;
 import com.example.demo.validations.ItemRequest;
 
 public class ItemService implements IItemService {
@@ -45,6 +47,9 @@ public class ItemService implements IItemService {
 	private IImageStorageService imageService;
 	private SubcategoriesRepository subcateogriesRepo;
 	private AddressesRepository addressesRepo;
+	
+	@Autowired
+	SessionFactory sessionFactory;
 	
 	public ItemService(IImageStorageService imageService,ItemsRepository itemsRepo, CategoriesRepository categoriesRepo,
 			           SubcategoriesRepository subcateogriesRepo,AddressesRepository addressesRepo) {
@@ -205,8 +210,7 @@ public class ItemService implements IItemService {
 			}
 		}catch(NumberFormatException ex) {
 			throw new InvalidDataException();
-		}
-		
+		}	
 		
 		Collection<ItemModel> items;
 		if(categoriesList!=null) {
@@ -217,5 +221,60 @@ public class ItemService implements IItemService {
 					.stream().map(x->x.toModel()).collect(Collectors.toList());
 		}
 		return items;
-	}	
+	}
+	
+	@Override
+	public Collection<ItemModel> findItemsValidFilterCategoriesSubcaetgoriesPrice(FilterItemsRequest request, PaginationParams pgbl) throws AuctionAppException{
+		Timestamp crr=new Timestamp(System.currentTimeMillis());
+		
+		List<Category> categoriesList=null;
+		List<Subcategory> subcategoriesList=null;
+		
+		if(request.getCategories().size()==0&&request.getSubcategories().size()==0) {
+			categoriesList=categoriesRepo.findAll();
+			subcategoriesList=subcateogriesRepo.findAll();
+		}else {
+			categoriesList=categoriesRepo.findAllById(request.getCategories());
+			subcategoriesList=subcateogriesRepo.findAllById(request.getSubcategories());
+		}
+		
+		if(request.getMinPrice()==null)
+			request.setMinPrice(new BigDecimal(0));
+		if(request.getMaxPrice()!=null) {
+			return itemsRepo.searchActiveByCatsAndSubsFilterMinAndMaxPrice(crr, request.getTerm(),categoriesList, subcategoriesList,request.getMinPrice(),request.getMaxPrice(), pgbl.getPageable())
+					.stream().map(x->x.toModel()).collect(Collectors.toList());			
+		}else {
+			return itemsRepo.searchActiveByCatsAndSubsFilterMinPrice(crr, request.getTerm(),categoriesList, subcategoriesList,request.getMinPrice(), pgbl.getPageable())
+					.stream().map(x->x.toModel()).collect(Collectors.toList());			
+		}			
+	}
+	
+	@Override
+	public HistogramResponseModel pricesHistogramForItems()throws AuctionAppException{
+		List<PriceCountAggregateResult> data=itemsRepo.groupByPricesOrdered(new Timestamp(System.currentTimeMillis()));
+		if(data.isEmpty())
+			throw new NotFoundException();
+		
+		HistogramResponseModel histogramModel=new HistogramResponseModel();
+		histogramModel.setMin(data.get(0).getStartingprice());
+		histogramModel.setMax(data.get(data.size()-1).getStartingprice());
+		
+		List<PriceCountAggregateResult> histogram=new ArrayList<>();
+		BigDecimal step=histogramModel.getMax().add(new BigDecimal("1")).divide(new BigDecimal("24"),RoundingMode.UP);
+		
+		Iterator<PriceCountAggregateResult> iterator=data.iterator();
+		PriceCountAggregateResult entry;
+		
+		for(int i=1;i<=24;i++)
+			histogram.add(new PriceCountAggregateResult(step.multiply(new BigDecimal(i)), 0));
+		
+		while(iterator.hasNext()) {
+			entry=iterator.next();
+			int index=entry.getStartingprice().divide(step,RoundingMode.UP).setScale(0, RoundingMode.FLOOR).intValue();
+			histogram.get(index).setCount(histogram.get(index).getCount()+entry.getCount());				
+		}
+		histogramModel.setHistogram(histogram.stream().map(x->x.toHistogramEntry()).collect(Collectors.toList()));
+		return histogramModel;
+	}
+
 }

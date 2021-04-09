@@ -417,28 +417,50 @@ hr.gridBreak{
     text-align: left;
 }
 
+.categoryButtonContainer{
+    padding: 3px;
+    padding-left: 8px;
+    padding-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .categoryButton{
+    color: #5a5a5a;;
+    font-size: large;
+    font-family: 'Lato', sans-serif;
+    cursor: pointer;
+}
+
+.categoryButtonSelected{
+    color: #8367D8;
+}
+
+.subcategoryButton{
+    padding: 3px;
+    padding-left: 12px;
+
     color: #5a5a5a;;
     font-size: medium;
     font-family: 'Lato', sans-serif;
     cursor: pointer;
-    padding: 3px;
-    padding-left: 8px;
 }
 
-.categoryButtonSelected{
-    color: #5a5a5a;
+.subcategoryButtonSelected{
+    padding: 3px;
+    padding-left: 12px;
+
+    color: #8367D8;;
     font-size: medium;
     font-family: 'Lato', sans-serif;
-    cursor: pointer;
-    padding: 3px;
-    padding-left: 8px;
+    cursor: pointer;   
 }
 
 .categoriesButtonIcon{
-    float: right;
     height: 12px;
     width: 12px;
+    cursor: pointer;
 }
 
 .loadEnabled{
@@ -1257,4 +1279,122 @@ hr.solidVerticalLine{
     width: 3vw;
     height: 3vw;
     cursor: pointer;
+}
+
+.centeredVerticalFlex{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.activeFiltersContainer{
+    margin-left: 20px;
+    margin-right: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    max-width: 60vw;
+    flex-wrap: wrap;
+}
+
+.activeFilter{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 20px;
+    border-radius: 20px;
+    line-height: 20px;
+
+    background-color: #8367D8;
+
+    padding: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+
+    cursor: pointer;
+}
+
+.activeFilterLabel{
+    font-family: 'Lato', sans-serif;  
+    font-size: medium;  
+    color: white;
+
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.filterButtonIcon{
+    height: 10px;
+    width: 10px;
+}
+
+.priceFilterContainer{
+    width: 15vw;
+    max-width: 15vw;
+    border-color: #d8d8d8;
+    border-style: solid;
+    border-width: 1px;
+
+    padding: 5px;
+    margin-top: 2vw;
+    margin-bottom: 2vw;
+
+    display: flex;
+    flex-direction: column;
+
+    position: relative;
+}
+.priceSliderFilterContainer{
+    position:relative;
+    width: 12vw;
+    height: 12vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    align-self: center;
+}
+
+.histogramContainer{
+    position: absolute;
+    width: 12vw;
+    bottom: 45%;
+    display: flex;
+    align-items: flex-end;
+}
+
+.histogramBar{
+    width: 0.5vw;
+    max-height: 4vw;
+    background-color: #E4E5EC;
+}
+
+.filterTittle{
+    color: #8367D8;
+    font-size: small;
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+    margin-left: 10px;
+    margin-top: 3px;
+}
+
+.priceFilterText{
+    color: #9b9b9b;
+    font-size: medium;
+    font-family: 'Lato', sans-serif;
+    padding: 2px;
+    margin-left: 10px;
+}
+
+.priceFilterTextContainer{
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 10px;
 }

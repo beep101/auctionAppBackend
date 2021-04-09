@@ -1,9 +1,5 @@
 package com.example.demo.models;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.Email;
-
 public class UserModel {
 	private int id;
 	private String firstName;

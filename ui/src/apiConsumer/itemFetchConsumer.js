@@ -45,8 +45,13 @@ export function getItems(page,count,handler){
     );
 }
 
-export function searchItems(term,categories,page,count,sort,handler){
-    get(`items/search?page=${page}&count=${count}&term=${term}&categories=${categories.join(',')}&sort=${sort}`).then(
+export function searchItems(term,categories,subcategories,minPrice,maxPrice,page,count,sort,handler){
+    let searchString=`items/search?page=${page}&count=${count}&term=${term}&categories=${categories.join(',')}&subcategories=${subcategories.join(',')}&sort=${sort}`
+    if(minPrice)
+        searchString=`${searchString}&minPrice=${minPrice}`;
+    if(maxPrice)
+        searchString=`${searchString}&maxPrice=${maxPrice}`;
+    get(searchString).then(
         (response)=>{
             handler(true,response.data);
         },
@@ -76,4 +81,15 @@ export function getFeaturedItem(handler){
             handler(false,"")
         }
     );
+}
+
+export function getPriceHistogram(handler){
+    get('items/priceHistogram').then(
+        (response)=>{
+            handler(true,response.data)
+        },
+        (error)=>{
+            handler(false,"")
+        }
+    )
 }

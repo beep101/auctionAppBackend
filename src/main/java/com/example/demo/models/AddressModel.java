@@ -1,7 +1,5 @@
 package com.example.demo.models;
 
-import javax.persistence.Column;
-
 public class AddressModel {
 	private int id;
 	private String address;

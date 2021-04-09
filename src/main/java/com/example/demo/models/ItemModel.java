@@ -4,17 +4,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-
-import org.springframework.web.multipart.MultipartFile;
-
-import com.example.demo.entities.Bid;
-import com.example.demo.entities.Item;
-
 public class ItemModel {
 	private int id;
 	private String name;

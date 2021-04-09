@@ -5,9 +5,6 @@ import java.util.Map;
 
 import com.example.demo.entities.User;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-
 public interface IJwtUtil {
 	
 	public String getIdFromToken(String token);

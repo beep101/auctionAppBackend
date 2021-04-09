@@ -4,9 +4,7 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 import org.easymock.Capture;
@@ -21,7 +19,6 @@ import org.junit.runner.*;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import com.example.demo.entities.Address;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.BadCredentialsException;

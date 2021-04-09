@@ -2,10 +2,6 @@ package com.example.demo.services;
 
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;

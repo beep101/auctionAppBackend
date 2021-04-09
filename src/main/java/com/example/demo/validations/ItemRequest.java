@@ -13,8 +13,6 @@ import javax.validation.Validation;
 import javax.validation.Path.Node;
 import javax.validation.constraints.*;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import com.example.demo.models.AddressModel;
 import com.example.demo.models.ItemModel;
 import com.example.demo.models.SubcategoryModel;
@@ -96,6 +94,7 @@ public class ItemRequest {
 		return problems;
 	}
 
+	@SuppressWarnings("unused")
 	private Map<String,String> validateImagesJpg(){
 		Map<String,String> problems=new HashMap<>();
 		//if byte data check needed	

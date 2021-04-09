@@ -4,9 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import com.example.demo.exceptions.AuctionAppException;
-import com.example.demo.exceptions.ImageDeleteException;
-import com.example.demo.exceptions.ImageHashException;
-import com.example.demo.exceptions.ImageUploadException;
 import com.example.demo.models.ItemModel;
 
 public interface IImageStorageService {

@@ -1,11 +1,6 @@
 package com.example.demo.services.interfaces;
 
 import com.example.demo.exceptions.AuctionAppException;
-import com.example.demo.exceptions.BadCredentialsException;
-import com.example.demo.exceptions.ExistingUserException;
-import com.example.demo.exceptions.InvalidDataException;
-import com.example.demo.exceptions.InvalidTokenException;
-import com.example.demo.exceptions.NonExistentUserException;
 import com.example.demo.models.UserModel;
 
 public interface IAccountService{

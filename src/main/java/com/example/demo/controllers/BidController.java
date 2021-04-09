@@ -1,6 +1,5 @@
 package com.example.demo.controllers;
 
-import java.security.Principal;
 import java.util.Collection;
 
 import javax.annotation.PostConstruct;
@@ -16,14 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
-import com.example.demo.exceptions.BidAmountLowException;
-import com.example.demo.exceptions.InvalidDataException;
-import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.exceptions.UnauthenticatedException;
 import com.example.demo.models.BidModel;
 import com.example.demo.repositories.BidsRepository;
 import com.example.demo.repositories.ItemsRepository;
-import com.example.demo.services.AccountService;
 import com.example.demo.services.BidService;
 import com.example.demo.services.interfaces.IBidService;
 
