@@ -49,8 +49,15 @@ class NavBar extends React.Component{
                         Shop
                     </span>
                     <Link to="/account">
-                        <span className="linkStyle">
-                            My Account
+                        <span className="navbarDropdownContainer">
+                            <div className="linkStyle">My Account</div>
+                            <div className="navbarDropdownItemsContainer">
+                                <Link className="navbarDropdownItem" to='/account?tab=profile'>Profile</Link>
+                                <Link className="navbarDropdownItem" to='/account?tab=seller'>Seller</Link>
+                                <Link className="navbarDropdownItem" to='/account?tab=bids'>Bids</Link>
+                                <Link className="navbarDropdownItem" to='/account?tab=watchlist'>Watchlist</Link>
+                                <Link className="navbarDropdownItem" to='/account?tab=settings'>Settings</Link>
+                            </div>
                         </span>
                     </Link>
                 </div>
