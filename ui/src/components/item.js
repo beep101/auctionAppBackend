@@ -52,6 +52,8 @@ class Item extends React.Component{
                 this.setState({['displayedImage']:data.images[0]});
                 this.setState({['isOwner']:data.seller.id==this.context.user.jti});
                 this.isExpired();
+                if(data.bids[0].bidder.id==this.context.user.jti)
+                    this.setBanner('You are the highest bidder','itemMsg successItemMsg');
             }else{
                 this.setState({['msg']:'Cannot load item',['msgType']:'itemMsg warningItemMsg'});
             }
@@ -144,7 +146,10 @@ class Item extends React.Component{
     setMsg=(msg,type)=>{
         this.setState({['msg']:msg,['msgType']:type});
         setTimeout(()=>{this.setState({['msg']:''});},ITEM_MSG_DELAY);
-        
+    }
+
+    setBanner=(msg,type)=>{
+        this.setState({['msg']:msg,['msgType']:type});
     }
 
     render(){
