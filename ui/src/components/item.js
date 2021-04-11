@@ -2,11 +2,13 @@ import React from 'react';
 import queryString from 'query-string';
 import {getItemById} from '../apiConsumer/itemFetchConsumer'
 import {getBidsLimited, addBid} from '../apiConsumer/bidConsumer'
-import BidLine from './bidLine';
 import AuthContext from '../context';
 import 'react-toastify/dist/ReactToastify.css';
 import {ITEM_MSG_DELAY} from '../utils/constants'
 import ReactMarkdown from 'react-markdown'
+import BidTable from './bidTable';
+import RelatedItems from './relatedItems';
+import ReactTooltip from 'react-tooltip';
 
 class Item extends React.Component{
 
@@ -20,7 +22,9 @@ class Item extends React.Component{
                 bids:[],
                 bidAmount:0,
                 msg:"",
-                msgType:"itemMsg"
+                msgType:"itemMsg",
+                isOwner:false,
+                expired:false
             }
         }else{
             this.state={
@@ -29,7 +33,9 @@ class Item extends React.Component{
                 bids:[],
                 bidAmount:0,
                 msg:"",
-                msgType:"itemMsg"
+                msgType:"itemMsg",
+                isOwner:false,
+                isExpired:false
             }
         }
     }
@@ -41,8 +47,11 @@ class Item extends React.Component{
     componentDidMount=()=>{
         getItemById(this.state.id,(success,data)=>{
             if(success){
+                console.log(data);
                 this.setState({['item']:data});
-                this.setState({['displayedImage']:data.images[0]})
+                this.setState({['displayedImage']:data.images[0]});
+                this.setState({['isOwner']:data.seller.id==this.context.user.jti});
+                this.isExpired();
             }else{
                 this.setState({['msg']:'Cannot load item',['msgType']:'itemMsg warningItemMsg'});
             }
@@ -64,7 +73,18 @@ class Item extends React.Component{
         this.setState({['displayedImage']:image})
     }
 
+    isExpired=()=>{
+        let t = this.state.item.endtime.split(/[-T:.]/);
+        let endtime = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
+        if(endtime.getTime()<=(new Date()).getTime()||this.state.item.sold)
+            this.setState({['isExpired']:true});
+        else
+            this.setState({['isExpired']:false});
+    }
+
     timeDiff=()=>{
+        if(this.state.isExpired)
+            return "Expired";
         let t = this.state.item.endtime.split(/[-T:.]/);
         let endtime = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
         let secs=(endtime.getTime()-Date.now())/1000;
@@ -91,6 +111,10 @@ class Item extends React.Component{
             this.setMsg('Have to be logged in to place bids','itemMsg warningItemMsg');
             return;
         }
+        if(this.state.isOwner){
+            this.setMsg('Cannot place bid on your own item','itemMsg warningItemMsg');
+            return;
+        }
         let bidAmount=parseFloat(this.state.bidAmount)
         if(!bidAmount){
             this.setMsg('Bid amount value not valid','itemMsg warningItemMsg');
@@ -106,7 +130,13 @@ class Item extends React.Component{
                 this.setMsg('Bid placed successefuly','itemMsg successItemMsg');
                 this.loadBids();
             }else{
-                this.setMsg('Bid failed, bid amount is too low','itemMsg errorItemMsg');
+                if(data.errors){
+                    console.log(data.errors)
+                    this.setMsg(data.errors['User'],'itemMsg errorItemMsg');
+                    this.loadBids();
+                }else{
+                    this.setMsg('Bid failed, bid amount is too low','itemMsg errorItemMsg');
+                }
             }
         })
     }
@@ -138,10 +168,18 @@ class Item extends React.Component{
                         <div className="itemDataContainer">
                             <div className="itemName">{this.state.item.name}</div>
                             <div className="itemStartPrice">Starts from - ${this.state.item.startingprice}</div>
-                            <div className="bidContainer">
-                                <input name="bidAmount" onChange={this.onChange} className="bidInput" disabled={this.context.jwt===""}/>
-                                <span onClick={this.context.jwt===""?()=>{}:this.placeBid}
-                                      className={this.context.jwt===""?"bidButtonDisabled":"bidButton"}>Place Bid</span>
+                            {(!this.context.jwt||this.state.isOwner||this.state.isExpired)&&
+                                <ReactTooltip place="top" type="dark" effect="float">
+                                    <span className="reactTooltipText">{!this.context.jwt?'Log in to place bid':
+                                        this.state.isOwner?'Cannot place bids on your own items':
+                                        'Cannot place bids on expired items'}
+                                    </span>
+                                </ReactTooltip>
+                            }
+                            <div className="bidContainer" data-tip="React-tooltip">
+                                <input name="bidAmount" onChange={this.onChange} className="bidInput" disabled={!this.context.jwt||this.state.isOwner||this.state.isExpired}/>
+                                <span onClick={!this.context.jwt||this.state.isOwner||this.state.isExpired?()=>{}:this.placeBid}
+                                    className={!this.context.jwt||this.state.isOwner||this.state.isExpired?"bidButtonDisabled":"bidButton"}>Place Bid</span>
                                 <div className="bidMinMessage">Enter ${this.state.bids.length===0?this.state.item.startingprice:this.state.bids[0].amount} or more</div>
                             </div>
                             <div className="width10vw">
@@ -172,18 +210,8 @@ class Item extends React.Component{
                     </div>
                     
                 </div>
-                <table className="bidTable">
-                    <col className="bidTableColumn1"/>
-	                <col className="bidTableColumn2"/>
-	                <col className="bidTableColumn3"/>
-	                <thead/>
-                    <tr className="bidTable">
-                        <th className="bidTable">Name</th>
-                        <th className="bidTable">Date</th>
-                        <th className="bidTable">Amount</th>
-                    </tr>
-                    {this.state.bids.map((bid)=><BidLine bid={bid}/>)}
-                </table>
+                {this.state.isOwner&&<BidTable bids={this.state.bids}/>}
+                {!this.state.isOwner&&<RelatedItems itemId={this.state.item.id} category={this.state.item.subcategory.category.id}/>}
             </div>
             )
         }else{

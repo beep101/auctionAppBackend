@@ -184,6 +184,7 @@ public class Item implements Serializable {
 		model.setEndtime(this.getEndtime());
 		model.setSold(this.getSold());
 		model.setSeller(this.seller.toModel());
+		model.setSubcategory(this.getSubcategory().toModel());
 		if(this.address!=null) {
 			model.setAddress(this.address.toModel());
 		}

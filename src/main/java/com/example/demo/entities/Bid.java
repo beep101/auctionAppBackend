@@ -6,6 +6,7 @@ import javax.persistence.*;
 import com.example.demo.models.BidModel;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.sql.Timestamp;
 
 
@@ -109,7 +110,7 @@ public class Bid implements Serializable {
 		Bid entity=new Bid();
 		
 		entity.setId(model.getId());
-		entity.setAmount(model.getAmount());
+		entity.setAmount(model.getAmount().round(new MathContext(3)));
 		User bidder=new User();
 		bidder.setId(model.getBidder().getId());
 		entity.setBidder(bidder);

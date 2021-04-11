@@ -1678,3 +1678,31 @@ img.accountSellerTable{
 
     margin: 2vw;
 }
+
+.reactTooltipText{
+    font-family: 'Lato', sans-serif;
+    font-size: medium;
+    color: #ececec;
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.relatedItemsTitle{
+    font-family: 'Lato', sans-serif;
+    font-size: x-large;
+    color: #5a5a5a;
+    padding: 10px;
+}
+
+.relatedItemsContainer{
+    display:flex;
+    width: 60vw;
+    justify-content: space-evenly;
+
+    border-top-style: solid;
+    border-top-color: #d8d8d8;
+    border-top-width: 3px;
+
+    padding-bottom: 5vw;
+}

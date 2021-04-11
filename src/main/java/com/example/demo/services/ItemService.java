@@ -195,7 +195,7 @@ public class ItemService implements IItemService {
 		Category category=new Category();
 		category.setId(categoryId);
 		Timestamp crr=new Timestamp(System.currentTimeMillis());
-		Collection<ItemModel> items=itemsRepo.findBySoldFalseAndEndtimeAfterAndCategoryEquals(crr,category,pgbl.getPageable()).stream().map(x->x.toModel()).collect(Collectors.toList());
+		Collection<ItemModel> items=itemsRepo.findBySoldFalseAndEndtimeAfterAndSubcategoryCategoryEquals(crr,category,pgbl.getPageable()).stream().map(x->x.toModel()).collect(Collectors.toList());
 		return items;
 	}
 

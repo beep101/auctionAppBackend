@@ -79,7 +79,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		expect(itemsRepoMock.findByCategory(anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfter(anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterOrderByEndtimeAsc(anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
-		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndCategoryEquals(anyObject(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndSubcategoryCategoryEquals(anyObject(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterOrderByStarttimeDesc(anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCaseAndSubcategoryCategoryIn(anyObject(),anyString(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(anyObject(),anyString(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
@@ -212,7 +212,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		
 		Capture<Category> categoryCapture=EasyMock.newCapture(CaptureType.ALL);
 		expect(itemsRepoMock.findByCategory(capture(categoryCapture),anyObject())).andReturn(new ArrayList<Item>()).anyTimes();
-		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndCategoryEquals(anyObject(),capture(categoryCapture),anyObject())).andReturn(new ArrayList<Item>()).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndSubcategoryCategoryEquals(anyObject(),capture(categoryCapture),anyObject())).andReturn(new ArrayList<Item>()).anyTimes();
 		replayAll();
 		
 		itemService.getItemsByCategory(categoryId,new PaginationParams(0,1));
@@ -267,7 +267,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		expect(itemsRepoMock.findByCategory(anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfter(anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterOrderByEndtimeAsc(anyObject(),anyObject())).andReturn(items).anyTimes();
-		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndCategoryEquals(anyObject(),anyObject(),anyObject())).andReturn(items).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndSubcategoryCategoryEquals(anyObject(),anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterOrderByStarttimeDesc(anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCaseAndSubcategoryCategoryIn(anyObject(),anyString(),anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(anyObject(),anyString(),anyObject())).andReturn(items).anyTimes();

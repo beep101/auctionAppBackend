@@ -22,7 +22,7 @@ public interface ItemsRepository extends JpaRepository<Item, Integer>{
 	//expired and sold filtering
 	List<Item> findBySoldFalseAndEndtimeAfterOrderByStarttimeDesc(Timestamp timestamp, Pageable pageable);
 	List<Item> findBySoldFalseAndEndtimeAfterOrderByEndtimeAsc(Timestamp timestamp, Pageable pageable);
-	List<Item> findBySoldFalseAndEndtimeAfterAndCategoryEquals(Timestamp timestamp,Category category,Pageable pageable);
+	List<Item> findBySoldFalseAndEndtimeAfterAndSubcategoryCategoryEquals(Timestamp timestamp,Category category,Pageable pageable);
 	List<Item> findBySoldFalseAndEndtimeAfter(Timestamp timestamp,Pageable pageable);
 	
 	List<Item> findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(Timestamp timestamp,String term,Pageable pageable);
