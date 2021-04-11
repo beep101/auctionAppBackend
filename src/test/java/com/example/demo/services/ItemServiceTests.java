@@ -251,6 +251,10 @@ public class ItemServiceTests extends EasyMockSupport{
 		item.setEndtime(new Timestamp(123456));
 		item.setBids(bids);
 		item.setSeller(seller);
+		Subcategory sub=new Subcategory();
+		Category cat=new Category();
+		sub.setCategory(cat);
+		item.setSubcategory(sub);
 		
 		List<Item> items=new ArrayList<>();
 		Collection<ItemModel> models;
