@@ -1,7 +1,9 @@
 package com.example.demo.services;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -9,6 +11,7 @@ import java.util.UUID;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import com.example.demo.entities.Address;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.BadCredentialsException;
@@ -16,15 +19,20 @@ import com.example.demo.exceptions.ExistingUserException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.InvalidTokenException;
 import com.example.demo.exceptions.NonExistentUserException;
+import com.example.demo.exceptions.UnallowedOperationException;
+import com.example.demo.models.AddressModel;
 import com.example.demo.models.UserModel;
+import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.interfaces.IAccountService;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
+import com.example.demo.validations.AddressRequest;
 import com.example.demo.validations.UserRequest;
 
 public class AccountService implements IAccountService{
 	private UsersRepository usersRepo;
+	private AddressesRepository addressRepo;
 	private IHashUtil hashUtil;
 	private IJwtUtil jwtUtil;
 	private JavaMailSender mailSender;
@@ -35,9 +43,10 @@ public class AccountService implements IAccountService{
 	private String mailContent;
 	private String mailLink;
 	
-	public AccountService(IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo, JavaMailSender mailSender,
+	public AccountService(IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo,AddressesRepository addressRepo, JavaMailSender mailSender,
 						  String subject,String content,String link) {
 		this.usersRepo=userRepo;
+		this.addressRepo=addressRepo;
 		this.hashUtil=hashUtil;
 		this.jwtUtil=jwtUtil;
 		this.mailSender=mailSender;
@@ -159,6 +168,63 @@ public class AccountService implements IAccountService{
 		message.setText(mailContent+"\n"+mailLink+token);
 		
 		mailSender.send(message);
+	}
+
+	@Override
+	public UserModel updateAccount(UserModel userData, User authUser) throws AuctionAppException {
+		UserRequest request=new UserRequest(userData);
+		Map<String,String> problems=request.validateIncludingGenderAndBirthday();
+		List<String> keys=new ArrayList<>();
+		keys.add("firstName");
+		keys.add("lastName");
+		keys.add("email");
+		keys.add("gender");
+		keys.add("birthday");
+		if(keys.stream().filter(key->problems.containsKey(key)).count()!=0)
+			throw new InvalidDataException(problems);
+		authUser.setEmail(userData.getEmail());
+		authUser.setName(userData.getFirstName());
+		authUser.setSurname(userData.getLastName());
+		authUser.setGender(userData.getGender());
+		authUser.setBirthday(userData.getBirthday());
+		return usersRepo.save(authUser).toModel();
+	}
+
+	@Override
+	public UserModel addAddress(AddressModel addressData, User authUser) throws AuctionAppException {
+		AddressRequest request=new AddressRequest(addressData);
+		Map<String,String> problems=request.validate();
+		if(!problems.isEmpty())
+			throw new InvalidDataException(problems);
+		Address address=new Address();
+		address.populate(addressData);
+		address=addressRepo.save(address);
+		authUser.setAddress(address);
+		authUser=usersRepo.save(authUser);
+		if(authUser.getAddress().getId()==address.getId())
+			return authUser.toModel();
+		else {
+			addressRepo.delete(address);
+			problems.clear();
+			problems.put("save", "Cannot save data");
+			throw new InvalidDataException(problems);
+		}
+	}
+
+	@Override
+	public UserModel modAddress(AddressModel addressData, User authUser) throws AuctionAppException {
+		AddressRequest request=new AddressRequest(addressData);
+		Map<String,String> problems=request.validate();
+		if(!problems.isEmpty())
+			throw new InvalidDataException(problems);
+		if(authUser.getAddress()==null) {
+			throw new UnallowedOperationException("Cannot update nonexistent address");
+		}
+		Address address=new Address();
+		address.populate(addressData);
+		address.setId(authUser.getAddress().getId());
+		authUser.setAddress(addressRepo.save(address));
+		return authUser.toModel();
 	}
 
 }

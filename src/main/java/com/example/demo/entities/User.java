@@ -1,6 +1,7 @@
 package com.example.demo.entities;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.persistence.*;
@@ -39,6 +40,12 @@ public class User implements Serializable {
 	
 	@Column(name="forgot_password_token")
 	private String forgotPasswordToken;
+	
+	@Column(name="gender")
+	private String gender;
+
+	@Column(name="birthday")
+	private Date birthday;
 	
 	@Column(name="forgot_password_token_end_time")
 	private Timestamp forgotPasswordTokenEndTime;
@@ -128,6 +135,22 @@ public class User implements Serializable {
 
 	public void setForgotPasswordTokenEndTime(Timestamp fpTokenEndtime) {
 		this.forgotPasswordTokenEndTime = fpTokenEndtime;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
 	}
 
 	public Bid addBid(Bid bid) {

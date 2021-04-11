@@ -27,6 +27,7 @@ import com.example.demo.exceptions.NonExistentUserException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.InvalidTokenException;
 import com.example.demo.models.UserModel;
+import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
@@ -41,6 +42,8 @@ public class AccountServiceTests extends EasyMockSupport {
 	@Mock
 	UsersRepository usersRepoMock;
 	@Mock
+	AddressesRepository addressRepoMock;
+	@Mock
 	JavaMailSender mailSenderMock;
 	
 	String subject="Subject";
@@ -49,7 +52,7 @@ public class AccountServiceTests extends EasyMockSupport {
 	
 	
 	@TestSubject
-	AccountService accountService=new AccountService(hashUtilMock,jwtUtilMock,usersRepoMock,mailSenderMock,subject,content,link);
+	AccountService accountService=new AccountService(hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,mailSenderMock,subject,content,link);
 	
 	//login tests
 	@Test

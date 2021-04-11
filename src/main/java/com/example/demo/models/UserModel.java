@@ -1,5 +1,7 @@
 package com.example.demo.models;
 
+import java.sql.Date;
+
 public class UserModel {
 	private int id;
 	private String firstName;
@@ -8,6 +10,8 @@ public class UserModel {
 	private String password;
 	private String jwt;
 	private String forgotPasswordToken;
+	private String gender;
+	private Date birthday;
 	
 	public UserModel() {
 		super();
@@ -20,6 +24,17 @@ public class UserModel {
 		this.email = email;
 		this.password = password;
 		this.jwt = jwt;
+	}
+	
+	public UserModel(String firstName, String lastName, String email, String password, String jwt,String gender, Date birthday) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.password = password;
+		this.jwt = jwt;
+		this.gender=gender;
+		this.birthday=birthday;
 	}
 	
 	public int getId(){
@@ -68,5 +83,22 @@ public class UserModel {
 	public void setForgotPasswordToken(String fpToken) {
 		this.forgotPasswordToken = fpToken;
 	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+	
 	
 }
