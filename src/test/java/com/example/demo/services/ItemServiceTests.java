@@ -277,6 +277,9 @@ public class ItemServiceTests extends EasyMockSupport{
 		expect(subcategoriesRepo.findAllById(anyObject())).andReturn(new ArrayList<Subcategory>()).anyTimes();
 		expect(itemsRepoMock.searchActiveByCatsAndSubsFilterMinAndMaxPrice(anyObject(),anyString(),anyObject(),anyObject(),anyObject(),anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.searchActiveByCatsAndSubsFilterMinPrice(anyObject(),anyString(),anyObject(),anyObject(),anyObject(),anyObject())).andReturn(items).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndSellerEquals(anyObject(),anyObject())).andReturn(items);
+		expect(itemsRepoMock.findBySoldTrueOrEndtimeBeforeAndSellerEquals(anyObject(),anyObject())).andReturn(items);
+		expect(itemsRepoMock.findAllBiddedItemsForUser(anyObject())).andReturn(items);
 		replayAll();
 		
 		models=itemService.getItems(new PaginationParams(0,1));
@@ -438,6 +441,38 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
+		models=itemService.getActiveItemsForUser(new User());
+		model=(ItemModel)models.toArray()[0];
+		assertEquals(model.getId(), item.getId());
+		assertEquals(model.getName(), item.getName());
+		assertEquals(model.getDescription(), item.getDescription());
+		assertEquals(model.getStartingprice(), item.getStartingprice());
+		assertEquals(model.getSold(), item.getSold());
+		assertEquals(model.getStarttime(), item.getStarttime());
+		assertEquals(model.getEndtime(), item.getEndtime());
+		assertEquals(model.getSeller().getId(), item.getSeller().getId());
+		
+		models=itemService.getInactiveItemsForUser(new User());
+		model=(ItemModel)models.toArray()[0];
+		assertEquals(model.getId(), item.getId());
+		assertEquals(model.getName(), item.getName());
+		assertEquals(model.getDescription(), item.getDescription());
+		assertEquals(model.getStartingprice(), item.getStartingprice());
+		assertEquals(model.getSold(), item.getSold());
+		assertEquals(model.getStarttime(), item.getStarttime());
+		assertEquals(model.getEndtime(), item.getEndtime());
+		assertEquals(model.getSeller().getId(), item.getSeller().getId());
+		
+		models=itemService.getBiddedItemsForUser(new User());
+		model=(ItemModel)models.toArray()[0];
+		assertEquals(model.getId(), item.getId());
+		assertEquals(model.getName(), item.getName());
+		assertEquals(model.getDescription(), item.getDescription());
+		assertEquals(model.getStartingprice(), item.getStartingprice());
+		assertEquals(model.getSold(), item.getSold());
+		assertEquals(model.getStarttime(), item.getStarttime());
+		assertEquals(model.getEndtime(), item.getEndtime());
+		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		verifyAll();
 	}
 	

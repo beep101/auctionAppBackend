@@ -93,3 +93,36 @@ export function getPriceHistogram(handler){
         }
     )
 }
+
+export function getActiveItems(token,handler){
+    get('items/active',{headers:{'Authorization' : 'Bearer '+token}}).then(
+        (response)=>{
+            handler(true,response.data)
+        },
+        (error)=>{
+            handler(false,"")
+        }
+    )
+}
+
+export function getInactiveItems(token,handler){
+    get('items/inactive',{headers:{'Authorization' : 'Bearer '+token}}).then(
+        (response)=>{
+            handler(true,response.data)
+        },
+        (error)=>{
+            handler(false,"")
+        }
+    )
+}
+
+export function getBiddedItems(token, handler){
+    get('items/bidded',{headers:{'Authorization' : 'Bearer '+token}}).then(
+        (response)=>{
+            handler(true,response.data)
+        },
+        (error)=>{
+            handler(false,"")
+        }
+    )
+}

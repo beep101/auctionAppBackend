@@ -277,4 +277,21 @@ public class ItemService implements IItemService {
 		return histogramModel;
 	}
 
+	@Override
+	public Collection<ItemModel> getActiveItemsForUser(User user) {
+		Timestamp crr=new Timestamp(System.currentTimeMillis());
+		return itemsRepo.findBySoldFalseAndEndtimeAfterAndSellerEquals(crr,user).stream().map(x->x.toModel()).collect(Collectors.toList());
+	}
+
+	@Override
+	public Collection<ItemModel> getInactiveItemsForUser(User user) {
+		Timestamp crr=new Timestamp(System.currentTimeMillis());
+		return itemsRepo.findBySoldTrueOrEndtimeBeforeAndSellerEquals(crr,user).stream().map(x->x.toModel()).collect(Collectors.toList());
+	}
+
+	@Override
+	public Collection<ItemModel> getBiddedItemsForUser(User user) {
+		return itemsRepo.findAllBiddedItemsForUser(user).stream().map(x->x.toModel()).collect(Collectors.toList());
+	}
+
 }

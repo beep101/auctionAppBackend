@@ -129,5 +129,40 @@ public class ItemController {
 	public HistogramResponseModel getPriceHistogram() throws AuctionAppException{
 		return itemService.pricesHistogramForItems();
 	}
-	
+
+	@ApiOperation(value = "Returns all active items of currently authenticated user", notes = "Only authenticated users")
+	@GetMapping("/api/items/active")
+	public Collection<ItemModel> getActiveItemsForUser() throws UnauthenticatedException{
+		User principal=null;
+		try {
+			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		}catch(ClassCastException ex) {
+			throw new UnauthenticatedException();
+		}
+		return imageService.loadImagesForItems(itemService.getActiveItemsForUser(principal));
+	}
+
+	@ApiOperation(value = "Returns all inactive items of currently authenticated user", notes = "Only authenticated users")
+	@GetMapping("/api/items/inactive")
+	public Collection<ItemModel> getInactiveItemsForUser() throws UnauthenticatedException{
+		User principal=null;
+		try {
+			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		}catch(ClassCastException ex) {
+			throw new UnauthenticatedException();
+		}
+		return imageService.loadImagesForItems(itemService.getInactiveItemsForUser(principal));
+	}
+
+	@ApiOperation(value = "Returns all bidded by currently authenticated user", notes = "Only authenticated users")
+	@GetMapping("/api/items/bidded")
+	public Collection<ItemModel> getBiddedItemsForUser() throws UnauthenticatedException{
+		User principal=null;
+		try {
+			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		}catch(ClassCastException ex) {
+			throw new UnauthenticatedException();
+		}
+		return imageService.loadImagesForItems(itemService.getBiddedItemsForUser(principal));
+	}	
 }

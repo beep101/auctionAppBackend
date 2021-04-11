@@ -28,4 +28,8 @@ public interface IItemService {
 	
 	ItemModel getItemFeatured() throws AuctionAppException;
 	HistogramResponseModel pricesHistogramForItems()throws AuctionAppException;
+	
+	Collection<ItemModel> getActiveItemsForUser(User user);
+	Collection<ItemModel> getInactiveItemsForUser(User user);
+	Collection<ItemModel> getBiddedItemsForUser(User user);
 }
