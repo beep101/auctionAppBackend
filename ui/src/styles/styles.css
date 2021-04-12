@@ -669,7 +669,7 @@ hr.gridBreak{
     align-items: center;
 }
 
-.bidTable table{
+table.bidTable{
     border-color: #d8d8d8;
     border-width: 1px;
     border-style: solid;
@@ -685,12 +685,12 @@ hr.gridBreak{
     margin-bottom: 2vw;
 }
 
-.bidTable tr{
+tr.bidTable{
     text-align: left;
     font-size: large;
 }
 
-.bidTable th{
+th.bidTable{
     font-weight: normal;
     padding-bottom: 5px;
     color: #8367D8;
@@ -699,7 +699,7 @@ hr.gridBreak{
     border-bottom-style: solid;
 }
 
-.bidTable td{
+td.bidTable{
     padding-top: 4px;
     padding-bottom: 4px;
 }
@@ -1492,7 +1492,7 @@ hr.solidVerticalLine{
     margin-right: 10px;
 }
 
-.accountSellerTable table{
+table.accountSellerTable{
     border-color: #d8d8d8;
     border-width: 1px;
     border-style: solid;
@@ -1506,15 +1506,15 @@ hr.solidVerticalLine{
     text-align: center;
 }
 
-.accountSellerTable tr{
+tr.accountSellerTable{
     font-size: large;
 }
 
-.accountSellerTableMedium tr{
+tr.accountSellerTableMedium{
     font-size: medium;
 }
 
-.accountSellerTable th{
+th.accountSellerTable{
     color: #252525;
     background-color: #ececec;
     padding: 10px;
@@ -1536,7 +1536,7 @@ hr.solidVerticalLine{
     justify-content: center;
 }
 
-.accountSellerTable img{
+img.accountSellerTable{
     max-width: 95%;
     max-height: 95%;
 }

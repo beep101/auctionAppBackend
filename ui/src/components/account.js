@@ -18,32 +18,33 @@ function Account(props){
     return(
         <div className='accountContainer'>
             <div className='accountNavbar'>
-                <Link className={tab=='profile'?"accountNavbarButtonSelected":"accountNavbarButton"} to='/account?tab=profile'>
-                    <img className="accountNavbarIcon" src={tab=='profile'?"images/profile_white.svg":"images/profile_darker.svg"}></img>
-                    <span>Profile</span>
-                </Link>
-                <Link className={tab=='seller'?"accountNavbarButtonSelected":"accountNavbarButton"} to='/account?tab=seller'>
-                    <img className="accountNavbarIcon" src={tab=='seller'?"images/list_icon_white.svg":"images/list_icon_darker.svg"}></img>
-                    <span>Seller</span>
-                </Link>
-                <Link className={tab=='bids'?"accountNavbarButtonSelected":"accountNavbarButton"} to='/account?tab=bids'>
-                    <img className="accountNavbarIcon" src={tab=='bids'?"images/bid_white.svg":"images/bid_darker.svg"}></img>
-                    <span>Bids</span>
-                </Link>
-                <Link className={tab=='watchlist'?"accountNavbarButtonSelected":"accountNavbarButton"} to='/account?tab=watchlist'>
-                    <img className="accountNavbarIcon" src={tab=='watchlist'?"images/wishlist_packet_white.svg":"images/wishlist_packet_darker.svg"}></img>
-                    <span>Watchlist</span>
-                </Link>
-                <Link className={tab=='settings'?"accountNavbarButtonSelected":"accountNavbarButton"} to='/account?tab=settings'>
-                    <img className="accountNavbarIcon" src={tab=='settings'?"images/cog_white.svg":"images/cog_darker.svg"}></img>
-                    <span>Settings</span>
-                </Link>
+                <AccountTabButton tab={tab} name='profile' img='profile' value='Profile'/>
+                <AccountTabButton tab={tab} name='seller' img='list_icon' value='Seller'/>
+                <AccountTabButton tab={tab} name='bids' img='bid' value='Bids'/>
+                <AccountTabButton tab={tab} name='watchlist' img='wishlist_packet' value='Watchlist'/>
+                <AccountTabButton tab={tab} name='settings' img='cog' value='Settings'/>
             </div>
             <div>
                 {tab=="seller"&&<AccountSeller/>}
                 {tab=="bids"&&<AccountBids/>}
             </div>
         </div>
+    )
+
+}
+
+function AccountTabButton(props){
+    const [tab,setTab]=useState(props.tab)
+    
+    useEffect(()=>{
+        setTab(props.tab);
+    },[props.tab]);
+
+    return(
+        <Link className={tab===props.name?'accountNavbarButtonSelected':'accountNavbarButton'} to={`/account?tab=${props.name}`}>
+            <img className="accountNavbarIcon" src={tab===props.name?`images/${props.img}_white.svg`:`images/${props.img}_darker.svg`}></img>
+            <span>{props.value}</span>
+        </Link>
     )
 
 }
