@@ -15,8 +15,10 @@ import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.UnauthenticatedException;
 import com.example.demo.models.AddressModel;
+import com.example.demo.models.PayMethodModel;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
+import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.AccountService;
 import com.example.demo.services.interfaces.IAccountService;
@@ -39,6 +41,8 @@ public class AccountController {
 	@Autowired
 	private AddressesRepository addressRepo;
 	@Autowired
+	private PayMethodRepository payMethodRepo;
+	@Autowired
 	private JavaMailSender mailSender;
 	
 	@Value("${mail.subject}")
@@ -52,7 +56,7 @@ public class AccountController {
 	
 	@PostConstruct
 	public void init() {
-		accountService=new AccountService(hashUtil, jwtUtil, usersRepo,addressRepo,mailSender,subject,content,link);
+		accountService=new AccountService(hashUtil, jwtUtil, usersRepo,addressRepo,payMethodRepo,mailSender,subject,content,link);
 	}
 	
 	@ApiOperation(value = "Requires valid email and password to return JWT", notes = "Public access")
@@ -113,5 +117,29 @@ public class AccountController {
 			throw new UnauthenticatedException();
 		}
 		return accountService.modAddress(data,principal);
+	}
+	
+	@ApiOperation(value = "Bind new pay method to account", notes = "Only authenticated users")
+	@PostMapping("api/account/payMethod")
+	public UserModel addPayMethod(@RequestBody PayMethodModel data) throws AuctionAppException{
+		User principal=null;
+		try {
+			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		}catch(ClassCastException ex) {
+			throw new UnauthenticatedException();
+		}
+		return accountService.addPayMethod(data,principal);
+	}
+	
+	@ApiOperation(value = "Modifies current pay method", notes = "Only authenticated users")
+	@PutMapping("api/account/payMethod")
+	public UserModel modPayMethod(@RequestBody PayMethodModel data) throws AuctionAppException{
+		User principal=null;
+		try {
+			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		}catch(ClassCastException ex) {
+			throw new UnauthenticatedException();
+		}
+		return accountService.modPayMethod(data,principal);
 	}
 }

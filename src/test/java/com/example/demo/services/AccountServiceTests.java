@@ -28,6 +28,7 @@ import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.InvalidTokenException;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
+import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
@@ -44,6 +45,8 @@ public class AccountServiceTests extends EasyMockSupport {
 	@Mock
 	AddressesRepository addressRepoMock;
 	@Mock
+	PayMethodRepository payMethodRepoMock;
+	@Mock
 	JavaMailSender mailSenderMock;
 	
 	String subject="Subject";
@@ -52,7 +55,7 @@ public class AccountServiceTests extends EasyMockSupport {
 	
 	
 	@TestSubject
-	AccountService accountService=new AccountService(hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,mailSenderMock,subject,content,link);
+	AccountService accountService=new AccountService(hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,payMethodRepoMock,mailSenderMock,subject,content,link);
 	
 	//login tests
 	@Test
@@ -67,9 +70,9 @@ public class AccountServiceTests extends EasyMockSupport {
 		
 		Optional<User> users=Optional.of(userEntity);
 		
-		expect(hashUtilMock.checkPassword(loginModel.getPassword(),userEntity.getPasswd())).andReturn(true);
-		expect(usersRepoMock.findByEmail(loginModel.getEmail())).andReturn(users);
-		expect(jwtUtilMock.generateToken(userEntity,new HashMap<String, Object>())).andReturn("fakeJWT");
+		expect(hashUtilMock.checkPassword(anyString(),anyString())).andReturn(true);
+		expect(usersRepoMock.findByEmail(anyString())).andReturn(users);
+		expect(jwtUtilMock.generateToken(anyObject(),anyObject())).andReturn("fakeJWT");
 		replayAll();
 		
 		UserModel result=accountService.login(loginModel);

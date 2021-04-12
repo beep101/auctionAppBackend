@@ -12,6 +12,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import com.example.demo.entities.Address;
+import com.example.demo.entities.PayMethod;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.BadCredentialsException;
@@ -21,18 +22,22 @@ import com.example.demo.exceptions.InvalidTokenException;
 import com.example.demo.exceptions.NonExistentUserException;
 import com.example.demo.exceptions.UnallowedOperationException;
 import com.example.demo.models.AddressModel;
+import com.example.demo.models.PayMethodModel;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
+import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.interfaces.IAccountService;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
 import com.example.demo.validations.AddressRequest;
+import com.example.demo.validations.PayMethodRequest;
 import com.example.demo.validations.UserRequest;
 
 public class AccountService implements IAccountService{
 	private UsersRepository usersRepo;
 	private AddressesRepository addressRepo;
+	private PayMethodRepository payMethodRepo;
 	private IHashUtil hashUtil;
 	private IJwtUtil jwtUtil;
 	private JavaMailSender mailSender;
@@ -43,10 +48,11 @@ public class AccountService implements IAccountService{
 	private String mailContent;
 	private String mailLink;
 	
-	public AccountService(IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo,AddressesRepository addressRepo, JavaMailSender mailSender,
+	public AccountService(IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo,AddressesRepository addressRepo,PayMethodRepository payMethodRepo, JavaMailSender mailSender,
 						  String subject,String content,String link) {
 		this.usersRepo=userRepo;
 		this.addressRepo=addressRepo;
+		this.payMethodRepo=payMethodRepo;
 		this.hashUtil=hashUtil;
 		this.jwtUtil=jwtUtil;
 		this.mailSender=mailSender;
@@ -64,10 +70,12 @@ public class AccountService implements IAccountService{
 				Map<String,Object> data= new HashMap<String, Object>();
 				if(users.get().getAddress()!=null)
 					data.put("address", users.get().getAddress().toModel());
+				data.put("user", users.get().toModelWithPayMethod());
 				String jwt=jwtUtil.generateToken(users.get(),data);
 				login.setId(users.get().getId());
 				login.setFirstName(users.get().getName());
 				login.setLastName(users.get().getSurname());
+				login.setPassword(null);
 				login.setJwt(jwt);
 				return login;
 			}else {
@@ -201,8 +209,8 @@ public class AccountService implements IAccountService{
 		address=addressRepo.save(address);
 		authUser.setAddress(address);
 		authUser=usersRepo.save(authUser);
-		if(authUser.getAddress().getId()==address.getId())
-			return authUser.toModel();
+		if(authUser.getAddress()!=null&&authUser.getAddress().getId()==address.getId())
+			return authUser.toModelWithPayMethod();
 		else {
 			addressRepo.delete(address);
 			problems.clear();
@@ -224,7 +232,44 @@ public class AccountService implements IAccountService{
 		address.populate(addressData);
 		address.setId(authUser.getAddress().getId());
 		authUser.setAddress(addressRepo.save(address));
-		return authUser.toModel();
+		return authUser.toModelWithPayMethod();
+	}
+
+	@Override
+	public UserModel addPayMethod(PayMethodModel payData, User authUser) throws AuctionAppException {
+		PayMethodRequest request=new PayMethodRequest(payData);
+		Map<String,String> problems=request.validate();
+		if(!problems.isEmpty())
+			throw new InvalidDataException(problems);
+		PayMethod payMethod=new PayMethod();
+		payMethod.populate(payData);
+		payMethod=payMethodRepo.save(payMethod);
+		authUser.setPayMethod(payMethod);
+		authUser=usersRepo.save(authUser);
+		if(authUser.getPayMethod()!=null&&authUser.getPayMethod().getId()==payMethod.getId())
+			return authUser.toModelWithPayMethod();
+		else {
+			payMethodRepo.delete(payMethod);
+			problems.clear();
+			problems.put("save", "Cannot save data");
+			throw new InvalidDataException(problems);
+		}
+	}
+
+	@Override
+	public UserModel modPayMethod(PayMethodModel payData, User authUser) throws AuctionAppException {
+		PayMethodRequest request=new PayMethodRequest(payData);
+		Map<String,String> problems=request.validate();
+		if(!problems.isEmpty())
+			throw new InvalidDataException(problems);
+		if(authUser.getPayMethod()==null) {
+			throw new UnallowedOperationException("Cannot update nonexistent pay method data");
+		}
+		PayMethod payMethod=new PayMethod();
+		payMethod.populate(payData);
+		payMethod.setId(authUser.getPayMethod().getId());
+		authUser.setPayMethod(payMethodRepo.save(payMethod));
+		return authUser.toModelWithPayMethod();
 	}
 
 }

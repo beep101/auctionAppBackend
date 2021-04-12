@@ -1,6 +1,7 @@
 package com.example.demo.validations;
 
-import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -14,9 +15,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.example.demo.models.UserModel;
+import com.example.demo.utils.Gender;
 
 public class UserRequest {
-	private static final long YEAR_MILIS=365*24*60*60*1000;
 
 	@NotBlank(message = "First name can't be blank")
 	private String firstName;
@@ -28,8 +29,9 @@ public class UserRequest {
 	@NotBlank(message = "Password can't be shorter than 6 characters")
 	@Size(min = 6, message = "Password can't be shorter than 6 characters")
 	private String password;
-	private String gender;
-	private Date birthday;
+	
+	private Gender gender;
+	private Timestamp birthday;
 	
 	public UserRequest(UserModel model) {
 		this.firstName=model.getFirstName();
@@ -55,11 +57,15 @@ public class UserRequest {
 	
 	public Map<String,String> validateIncludingGenderAndBirthday(){
 		Map<String,String> problems=validate();
-		if(this.gender !=null&&!gender.equals("m")&&!gender.equals("f"))
-			problems.put("gender", "Gender must be 'm' or 'f'");
+		Calendar lowerLimit=Calendar.getInstance();
+		lowerLimit.add(Calendar.YEAR, -100);
+		Calendar upperLimit=Calendar.getInstance();
+		upperLimit.add(Calendar.YEAR, -13);
 		if(birthday!=null)
-			if(birthday.before(new Date(System.currentTimeMillis()-100*YEAR_MILIS))||birthday.after(new Date(System.currentTimeMillis()-13*YEAR_MILIS)))
-				problems.put("birthday", "User cannot be older than 100 years and younger than 13 years");
+			if(birthday.before(lowerLimit.getTime()))
+				problems.put("birthday", "User cannot be older than 100 years");
+			else if(birthday.after(upperLimit.getTime()))
+				problems.put("birthday", "User cannot be younger than 13 years");
 		return problems;
 	}
 }

@@ -12,114 +12,64 @@ import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice
 public class ExceptionHandleControllerAdvice {
+
+	private ResponseEntity<Object> buildResponse(AuctionAppException exception, HttpStatus status){
+		Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", exception.getMessage());
+        if(exception instanceof AuctionAppExtendedException)
+        	if(!((AuctionAppExtendedException)exception).getErrors().isEmpty())
+        		body.put("errors", ((AuctionAppExtendedException)exception).getErrors());
+        return new ResponseEntity<>(body,status);
+	}
 	
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Object> handleBadCredentialException(BadCredentialsException ex, WebRequest request) {
-
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-        if(!ex.getErrors().isEmpty())
-        	body.put("errors", ex.getErrors());
-
-        return new ResponseEntity<>(body, HttpStatus.NOT_ACCEPTABLE);
+    	return buildResponse(ex, HttpStatus.NOT_ACCEPTABLE);
     }
     
     @ExceptionHandler(ExistingUserException.class)
     public ResponseEntity<Object> handleExistingUserException(ExistingUserException ex, WebRequest request) {
-
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-        if(!ex.getErrors().isEmpty())
-        	body.put("errors", ex.getErrors());
-
-        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    	return buildResponse(ex, HttpStatus.CONFLICT);
     }
     
     @ExceptionHandler(NonExistentUserException.class)
     public ResponseEntity<Object> handleNonExistentUserException(NonExistentUserException ex, WebRequest request) {
-
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-        if(!ex.getErrors().isEmpty())
-        	body.put("errors", ex.getErrors());
-
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    	return buildResponse(ex, HttpStatus.NOT_FOUND);
     }
     
     @ExceptionHandler(InvalidDataException.class)
     public ResponseEntity<Object> handleInvalidDataException(InvalidDataException ex, WebRequest request){
-    	
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-        if(!ex.getErrors().isEmpty())
-        	body.put("errors", ex.getErrors());
-
-    	return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    	return buildResponse(ex, HttpStatus.BAD_REQUEST);
     }
     
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request){
-    	
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-
-    	return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    	return buildResponse(ex, HttpStatus.NOT_FOUND);
     }
     
     @ExceptionHandler(BidAmountLowException.class)
     public ResponseEntity<Object> handleBidAmountLowException(BidAmountLowException ex, WebRequest request){
-    	
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-
-    	return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    	return buildResponse(ex, HttpStatus.BAD_REQUEST);
     }
     
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<Object> handleInvalidTokenException(InvalidTokenException ex, WebRequest request){
-    	
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-
-    	return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    	return buildResponse(ex, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InsertFailedException.class)
     public ResponseEntity<Object> handleInvalidTokenException(InsertFailedException ex, WebRequest request){
-    	
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-
-    	return new ResponseEntity<>(body, HttpStatus.I_AM_A_TEAPOT);
+    	return buildResponse(ex, HttpStatus.I_AM_A_TEAPOT);
     }
     
     @ExceptionHandler(UnauthenticatedException.class)
     public ResponseEntity<Object> handleUnauthenticatedException(UnauthenticatedException ex,WebRequest request){
-    	
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-
-    	return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);    	
+    	return buildResponse(ex, HttpStatus.UNAUTHORIZED);    	
     }
 
     @ExceptionHandler(UnallowedOperationException.class)
     public ResponseEntity<Object> handleUnallowedOperationException(UnallowedOperationException ex,WebRequest request){
-    	
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-        if(!ex.getErrors().isEmpty())
-        	body.put("errors", ex.getErrors());
-
-    	return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
+    	return buildResponse(ex, HttpStatus.FORBIDDEN);
     }
 }
