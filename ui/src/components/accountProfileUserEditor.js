@@ -79,42 +79,48 @@ function UserEditor(props){
 
     return(
         <div className="formContainer" >
+            <div>
             <div className="inputFieldContainer">
-                <label className="inputLabel">First name</label><br/>
+                <label className="inputLabel">First name</label>
                 <input className="inputFieldWide" id="firstName" name="firstName" onChange={onChange} defaultValue={data.current.firstName}/>
                 {msg.firstName&&<div className="warningMessageInputLabel">{msg.firstName}</div>}
             </div>
             <div className="inputFieldContainer">
-                <label className="inputLabel">Last name</label><br/>
+                <label className="inputLabel">Last name</label>
                 <input className="inputFieldWide" id="lastName" name="lastName" onChange={onChange} defaultValue={data.current.lastName}/>
                 {msg.lastName&&<div className="warningMessageInputLabel">{msg.lastName}</div>}
             </div>
             <div className="inputFieldContainer">
-                <label className="inputLabel">I am</label><br/>
-                <Select options={genders.current} isSearchable={false} name="categories" onChange={selectGender} placeholder="Gender"
-                styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} defaultValue={gender.current}/>
+                <label className="inputLabel">I am</label>
+                <span className='width200px'>
+                    <Select options={genders.current} isSearchable={false} name="categories" onChange={selectGender} placeholder="Gender"
+                        styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} defaultValue={gender.current}/>
+                </span>
                 {msg.gender&&<div className="warningMessageInputLabel">{msg.gender}</div>}
             </div>
-            <div className="inputFieldContainer categorySelectsInline">
-                <label className="inputLabel">Date of Birth</label><br/>
-                <span className="categorySelectContainer">
-                    <Select options={days} isSearchable={false} name="categories" onChange={selectDay} placeholder="Day"
-                        styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} value={bDay}/>
-                </span>
-                <span className="categorySelectContainer">
-                    <Select options={months} isSearchable={false} name="categories" onChange={selectMonth} placeholder="Month"
-                        styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} value={bMonth}/>
-                </span>
-                <span className="categorySelectContainer">
-                    <Select options={years} isSearchable={false} name="categories" onChange={selectYear} placeholder="Year"
-                        styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} value={bYear}/>
-                </span>
+            <div className="inputFieldContainer">
+                <label className="inputLabel">Date of Birth</label>
+                <div className="categorySelectsInline">
+                    <span className="categorySelectContainer width5vw">
+                        <Select options={days} isSearchable={false} name="categories" onChange={selectDay} placeholder="Day"
+                            styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} value={bDay}/>
+                    </span>
+                    <span className="categorySelectContainer width5vw">
+                        <Select options={months} isSearchable={false} name="categories" onChange={selectMonth} placeholder="Month"
+                            styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} value={bMonth}/>
+                    </span>
+                    <span className="categorySelectContainer">
+                        <Select options={years} isSearchable={false} name="categories" onChange={selectYear} placeholder="Year"
+                            styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} value={bYear}/>
+                    </span>
+                </div>
                 {msg.birthday&&<div className="warningMessageInputLabel">{msg.birthday}</div>}
             </div>
             <div className="inputFieldContainer">
                 <label className="inputLabel">Email address</label><br/>
                 <input className="inputFieldWide" id="email" name="email" onChange={onChange} defaultValue={data.current.email}/>
                 {msg.email&&<div className="warningMessageInputLabel">{msg.email}</div>}
+            </div>
             </div>
         </div>
     )

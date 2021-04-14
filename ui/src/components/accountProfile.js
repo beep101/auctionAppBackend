@@ -188,6 +188,8 @@ function AccountProfile(props){
                     }
                 })
             }
+        }else{
+            count+=1;
         }
         if(!payEmpty.current){
             if(context.user.user.payMethod){
@@ -224,10 +226,11 @@ function AccountProfile(props){
             <UserEditor data={userData.current} msg={userMsg} change={changeUserData}/>
             <AddressEditor data={addressData.current} msg={addressMsg} change={changeAddressData}/>
             <PayMethodEditor data={payMethodData.current} msg={payMethodMsg} change={changePayMethodData}/>
-            <div className="bidButton" onClick={save}>Save Info</div>
+            <div className="accountProfileButtonContainer">
+                <div className="bidButton width10vw" onClick={save}>Save Info</div>
+            </div>
         </div>
     )
 }
-
 
 export default AccountProfile

@@ -42,35 +42,46 @@ function PayMethodEditor(props){
 
     return(
         <div className="formContainer" >
-            <div className="inputFieldContainer categorySelectsInline">
-                <span className="categorySelectContainer">
-                    <label className="inputLabel">Name on card</label><br/>
-                    <input className="inputFieldWide" id="onCardName" name="onCardName" onChange={onChange} defaultValue={data.current.onCardName}/>
-                    {msg.onCardName&&<div className="warningMessageInputLabel">{msg.onCardName}</div>}
-                </span>
-                <span className="categorySelectContainer">
-                    <label className="inputLabel">Card number</label><br/>
-                    <input className="inputFieldWide" id="cardNumber" name="cardNumber" onChange={onChange} defaultValue={data.current.cardNumber}/>
-                    {msg.cardNumber&&<div className="warningMessageInputLabel">{msg.cardNumber}</div>}
-                </span>
+            <div>
+                <div className="inputFieldContainer">
+                    <div className="categorySelectsInline">
+                        <span className="inputFieldContainer">
+                            <label className="inputLabel">Name on card</label>
+                            <input className="inputFieldWide" id="onCardName" name="onCardName" onChange={onChange} defaultValue={data.current.onCardName}/>
+                            {msg.onCardName&&<div className="warningMessageInputLabel">{msg.onCardName}</div>}
+                        </span>
+                        <span className="inputFieldContainer">
+                            <label className="inputLabel">Card number</label>
+                            <input className="inputFieldWide" id="cardNumber" name="cardNumber" onChange={onChange} defaultValue={data.current.cardNumber}/>
+                            {msg.cardNumber&&<div className="warningMessageInputLabel">{msg.cardNumber}</div>}
+                        </span>
+                    </div>
+
+                </div>
+                    <div className="categorySelectsInline justfiySpaceBetween width100">
+                        <div className="inputFieldContainer">
+                            <label className="inputLabel">Expiration date</label><br/>
+                            <div className="categorySelectsInline">
+                                <span className="categorySelectContainer width5vw">
+                                    <Select options={months} isSearchable={false} name="categories" onChange={selectMonth} placeholder="Month"
+                                    styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} defaultValue={expMonth.current}/>
+                                </span>
+                                <span className="categorySelectContainer">
+                                    <Select options={years} isSearchable={false} name="categories" onChange={selectYear} placeholder="Year"
+                                    styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} defaultValue={expYear.current}/>
+                                </span>
+                            </div>
+                            {msg.expDate&&<div className="warningMessageInputLabel">{msg.expDate}</div>}
+                        </div>
+                        <span className="inputFieldContainer">
+                            <label className="inputLabel">CVC/CW</label><br/>
+                            <input className="inputFieldWide" id="cvccw" name="cvccw" onChange={onChange} defaultValue={data.current.cvccw}/>
+                            {msg.cvccw&&<div className="warningMessageInputLabel">{msg.cvccw}</div>}
+                        </span>
+                    </div>
             </div>
-            <div className="inputFieldContainer categorySelectsInline">
-                <span className="categorySelectContainer">
-                    <label className="inputLabel">Expiration date</label><br/>
-                    <Select options={months} isSearchable={false} name="categories" onChange={selectMonth} placeholder="Month"
-                    styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} defaultValue={expMonth.current}/>
-                </span>
-                <span className="categorySelectContainer">
-                    <Select options={years} isSearchable={false} name="categories" onChange={selectYear} placeholder="Year"
-                    styles={SORTING_SELECT_STYLES} theme={SORTING_SELECT_THEME} defaultValue={expYear.current}/>
-                    {msg.expDate&&<div className="warningMessageInputLabel">{msg.expDate}</div>}
-                </span>
-                <span className="categorySelectContainer">
-                    <label className="inputLabel">CV/CCW</label><br/>
-                    <input className="inputFieldWide" id="cvccw" name="cvccw" onChange={onChange} defaultValue={data.current.cvccw}/>
-                    {msg.cvccw&&<div className="warningMessageInputLabel">{msg.cvccw}</div>}
-                </span>
-            </div>
+
+            
         </div>
     )
 }
