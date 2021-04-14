@@ -115,7 +115,7 @@ public class ItemController {
 										  @RequestParam(required = false) BigDecimal maxPrice,
 										  @RequestParam int page,@RequestParam int count,
 										  @RequestParam(required = false, defaultValue = "default") ItemSorting sort)throws AuctionAppException{
-		FilterItemsRequest request=new FilterItemsRequest(term, categories, categories, minPrice, maxPrice);
+		FilterItemsRequest request=new FilterItemsRequest(term, categories, subcategories, minPrice, maxPrice);
 		return imageService.loadImagesForItems(itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(request,new SortingPaginationParams(page,count,sort)));
 	}
 	
