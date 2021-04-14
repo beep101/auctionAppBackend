@@ -42,6 +42,11 @@ function PayMethodEditor(props){
 
     return(
         <div className="formContainer" >
+            <div className="formContainerTitle">Card information</div>
+            <div className="cardLogosContainer">
+                <span className="cardLogosText">We accept the following credit cards</span>
+                <img className="cardLogosImg" src="images/card_logos.png"></img>
+            </div>
             <div>
                 <div className="inputFieldContainer">
                     <div className="categorySelectsInline">

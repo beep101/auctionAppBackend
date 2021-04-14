@@ -120,7 +120,15 @@ function AddItemStep1(props){
     };
     
     return(
+        <div className="verticalCenteredFlex">
+            <div className="progresBarContainer">
+                <div className="progressBar"></div>
+                <div className="progresBarDot progresBarDotDone"><div className="progresBarDotInner progresBarDotInnerDone"></div></div>
+                <div className="progresBarDot"><div className="progresBarDotInner"></div></div>
+                <div className="progresBarDot"><div className="progresBarDotInner"></div></div>
+            </div>
         <div className="formContainer" >
+        <div className="formContainerTitle">ADD ITEM</div>
             <div className="inputFieldContainer">
                 <label className="inputLabel">What do you sell?</label><br/>
                 <input className="inputFieldWide" id="name" name="name" onChange={onChange} defaultValue={data.current.name}/>
@@ -184,6 +192,7 @@ function AddItemStep1(props){
                     <div className="bidButton" onClick={onNext}>Next</div>
                 </span>
             </div>
+        </div>
         </div>
     );
 }

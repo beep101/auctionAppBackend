@@ -8,10 +8,12 @@ import PayMethodEditor from './accountProfilePayMethodEditor';
 import AddressEditor from './accountProfileAddressEditor'
 import { addUserAddress, addUserPayMethod, modUserAddress, modUserData, modUserPayMethod } from '../apiConsumer/accountEditor';
 import {refresh} from '../apiConsumer/accountConsumer'
+import { css } from "@emotion/core";
+import PulseLoader from "react-spinners/PulseLoader";
 
 function AccountProfile(props){
+    const [loading,setLoading]=useState(false);
     const context=useContext(AuthContext);
-
     const payEmpty=useRef(context.user.user.payMethod?false:true);
     const addressEmpty=useRef(context.user.user.address?false:true);
 
@@ -148,86 +150,73 @@ function AccountProfile(props){
         setPayMethodMsg(msg)
     }
 
+    const requestCounter=useRef(0);
+
+    function requestRefresh(){
+        requestCounter.current=requestCounter.current-1;
+        if(requestCounter.current==0)
+            refresh(context.jwt,(success,data)=>{
+                if(success){
+                    context.login(data.jwt);
+                    localStorage.removeItem('token');
+                    localStorage.setItem('token',data.jwt);
+                }
+                setLoading(false);
+            })
+    }
+
     const save=()=>{
+        if(Object.keys(userMsg).length||Object.keys(addressMsg).length||Object.keys(payMethodMsg).length){
+            console.log("Cannot save invalid data");
+        }
+        setLoading(true);
+        requestCounter.current=3;
         modUserData(userData.current,context.jwt,(success,data)=>{
-            if(success){
-                refresh(context.jwt,(success,data)=>{
-                    if(success){
-                        context.login(data);
-                        localStorage.removeItem('token');
-                        localStorage.setItem('token',data);
-                    }
-                })
-            }
+            requestRefresh();
         })
 
         if(!addressEmpty.current){
             if(context.user.user.address){
                 addressData.current.id=context.user.user.address.id;
                 modUserAddress(addressData.current,context.jwt,(success,data)=>{
-                    if(success){
-                        refresh(context.jwt,(success,data)=>{
-                            if(success){
-                                context.login(data);
-                                localStorage.removeItem('token');
-                                localStorage.setItem('token',data);
-                            }
-                        })
-                    }
+                    requestRefresh();
                 })
             }else{
                 addUserAddress(addressData.current,context.jwt,(success,data)=>{
-                    if(success){
-                        refresh(context.jwt,(success,data)=>{
-                            if(success){
-                                context.login(data);
-                                localStorage.removeItem('token');
-                                localStorage.setItem('token',data);
-                            }
-                        })
-                    }
+                    requestRefresh();
                 })
             }
         }else{
-            count+=1;
+            requestCounter.current=requestCounter.current-1;
         }
+
         if(!payEmpty.current){
             if(context.user.user.payMethod){
                 payMethodData.current.id=context.user.user.payMethod.id;
                 modUserPayMethod(payMethodData.current,context.jwt,(success,data)=>{
-                    if(success){
-                        refresh(context.jwt,(success,data)=>{
-                            if(success){
-                                context.login(data);
-                                localStorage.removeItem('token');
-                                localStorage.setItem('token',data);
-                            }
-                        })
-                    }
+                    requestRefresh();
                 })
             }else{
                 addUserPayMethod(payMethodData.current,context.jwt,(success,data)=>{
-                    if(success){
-                        refresh(context.jwt,(success,data)=>{
-                            if(success){
-                                context.login(data);
-                                localStorage.removeItem('token');
-                                localStorage.setItem('token',data);
-                            }
-                        })
-                    }
+                    requestRefresh();
                 })
             }
+        }else{
+            requestCounter.current=requestCounter.current-1;
         }
 
     }
-    return(
+    return (
         <div>
             <UserEditor data={userData.current} msg={userMsg} change={changeUserData}/>
-            <AddressEditor data={addressData.current} msg={addressMsg} change={changeAddressData}/>
             <PayMethodEditor data={payMethodData.current} msg={payMethodMsg} change={changePayMethodData}/>
+            <AddressEditor data={addressData.current} msg={addressMsg} change={changeAddressData}/>
             <div className="accountProfileButtonContainer">
-                <div className="bidButton width10vw" onClick={save}>Save Info</div>
+                {loading?
+                    <div className="bidButton width10vw" onClick={save}>
+                        <PulseLoader color="#8367D8" css={css} size={10}/>
+                    </div>:<div className="bidButton width10vw" onClick={save}>Save Info</div>
+                }
             </div>
         </div>
     )

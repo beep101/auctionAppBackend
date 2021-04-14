@@ -79,6 +79,7 @@ function UserEditor(props){
 
     return(
         <div className="formContainer" >
+            <div className="formContainerTitle">Personal</div>
             <div>
             <div className="inputFieldContainer">
                 <label className="inputLabel">First name</label>

@@ -112,6 +112,7 @@ function AddressEditor(props){
 
     return(
         <div className="formContainer" >
+            <div className="formContainerTitle">Address & Contact</div>
             <div className="inputFieldContainer">
                 <label className="inputLabel">Address</label><br/>
                 <input className="inputFieldWide" id="address" name="address" onChange={onChange} value={address}/>

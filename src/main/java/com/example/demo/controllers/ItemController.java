@@ -1,9 +1,10 @@
 package com.example.demo.controllers;
 
+import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -107,8 +108,14 @@ public class ItemController {
 	
 	@ApiOperation(value = "Enables searching items by name and filtering by different parameters", notes = "Public access")
 	@GetMapping("/api/items/search")
-	public Collection<ItemModel> findItem(@Valid  FilterItemsRequest request, @RequestParam int page,@RequestParam int count,
+	public Collection<ItemModel> findItem(@RequestParam String term,
+										  @RequestParam List<Integer> categories,
+										  @RequestParam List<Integer> subcategories,
+										  @RequestParam(required = false) BigDecimal minPrice,
+										  @RequestParam(required = false) BigDecimal maxPrice,
+										  @RequestParam int page,@RequestParam int count,
 										  @RequestParam(required = false, defaultValue = "default") ItemSorting sort)throws AuctionAppException{
+		FilterItemsRequest request=new FilterItemsRequest(term, categories, categories, minPrice, maxPrice);
 		return imageService.loadImagesForItems(itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(request,new SortingPaginationParams(page,count,sort)));
 	}
 	

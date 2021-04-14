@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import queryString from 'query-string';
 import { Link } from 'react-router-dom';
 import AccountSeller from './accountSeller';
 import AccountBids from './accountBids';
 import AccountProfile from './accountProfile';
+import AuthContext from '../context';
 
 function Account(props){
 
     const [tab,setTab]=useState('profile');
+    const context=useContext(AuthContext)
 
     useEffect(()=>{
         let tab=queryString.parse(props.location.search)['tab'];
@@ -16,22 +18,35 @@ function Account(props){
         setTab(tab);
     },[props.location]);
 
-    return(
-        <div className='accountContainer'>
-            <div className='accountNavbar'>
-                <AccountTabButton tab={tab} name='profile' img='profile' value='Profile'/>
-                <AccountTabButton tab={tab} name='seller' img='list_icon' value='Seller'/>
-                <AccountTabButton tab={tab} name='bids' img='bid' value='Bids'/>
-                <AccountTabButton tab={tab} name='watchlist' img='wishlist_packet' value='Watchlist'/>
-                <AccountTabButton tab={tab} name='settings' img='cog' value='Settings'/>
+    if(context.jwt)
+        return(
+            <div className='accountContainer'>
+                <div className='accountNavbar'>
+                    <AccountTabButton tab={tab} name='profile' img='profile' value='Profile'/>
+                    <AccountTabButton tab={tab} name='seller' img='list_icon' value='Seller'/>
+                    <AccountTabButton tab={tab} name='bids' img='bid' value='Bids'/>
+                    <AccountTabButton tab={tab} name='watchlist' img='wishlist_packet' value='Watchlist'/>
+                    <AccountTabButton tab={tab} name='settings' img='cog' value='Settings'/>
+                </div>
+                <div>
+                    {tab==='profile'&&<AccountProfile/>}
+                    {tab==='bids'&&<AccountBids/>}
+                    {tab==='seller'&&<AccountSeller/>}
+                </div>
             </div>
-            <div>
-                {tab==='profile'&&<AccountProfile/>}
-                {tab==='seller'&&<AccountSeller/>}
-                {tab==='bids'&&<AccountBids/>}
+        )
+    else
+        return(
+            <div className="contextNoAuthButtons">
+                <Link className="contextNoAuthButton" to="login">
+                    Login
+                </Link>
+                <span className="padding30px">or</span>
+                <Link className="contextNoAuthButton" to="register">
+                    Register
+                </Link>
             </div>
-        </div>
-    )
+        )
 
 }
 
