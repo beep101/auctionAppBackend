@@ -42,7 +42,7 @@ export const PHONE_REGEX_PATTERNS=["^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[-
                           "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$"];
 
 export const ONE_DAY_MILIS=24*60*60*1000;
-
+export const ONE_YEAR_MILIS=365*ONE_DAY_MILIS;
 export const AUTOCOMPLETE_MENU_STYLE={
   position: 'absolute',
   overflow: 'auto',

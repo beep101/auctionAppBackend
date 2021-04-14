@@ -142,4 +142,16 @@ public class AccountController {
 		}
 		return accountService.modPayMethod(data,principal);
 	}
+	
+	@ApiOperation(value = "Returns new extended JWT if old still valid", notes = "Only authenticated users")
+	@PostMapping("api/refresh")
+	public UserModel refreshToken() throws AuctionAppException{
+		User principal=null;
+		try {
+			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		}catch(ClassCastException ex) {
+			throw new UnauthenticatedException();
+		}
+		return accountService.refreshToken(principal);
+	}
 }

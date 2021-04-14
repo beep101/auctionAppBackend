@@ -28,6 +28,25 @@ export function login(credentials,handler){
     )
 }
 
+export function refresh(token,handler){
+    post("refresh",{},{headers:{'Authorization' : 'Bearer '+token}}).then(
+        (response)=>{
+            handler(true,response.data);
+        },
+        (error)=>{
+            if(error.response){
+                if(error.response.status<500){
+                    handler(false,error.response.data);
+                }else{
+                    handler(false,"Server error");
+                }
+            }else{
+                handler(false,"Something went wrong");
+            }
+        }
+    );
+}
+
 export function signup(userData,handler){
     post("signup",userData).then(
         (response)=>{

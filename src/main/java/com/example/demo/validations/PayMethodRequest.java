@@ -12,7 +12,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
-import com.example.demo.models.AddressModel;
 import com.example.demo.models.PayMethodModel;
 
 public class PayMethodRequest {

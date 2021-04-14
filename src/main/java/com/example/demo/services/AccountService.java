@@ -89,6 +89,17 @@ public class AccountService implements IAccountService{
 			throw new BadCredentialsException(problems);
 		}
 	}
+	
+
+	@Override
+	public UserModel refreshToken(User principal) throws AuctionAppException {
+		UserModel refresh=principal.toModel();
+		Map<String,Object> data= new HashMap<String, Object>();
+		data.put("user", principal.toModelWithPayMethod());
+		String jwt=jwtUtil.generateToken(principal,data);
+		refresh.setJwt(jwt);
+		return refresh;
+	}
 
 	@Override
 	public UserModel signUp(UserModel signup)throws AuctionAppException {

@@ -3,6 +3,7 @@ import queryString from 'query-string';
 import { Link } from 'react-router-dom';
 import AccountSeller from './accountSeller';
 import AccountBids from './accountBids';
+import AccountProfile from './accountProfile';
 
 function Account(props){
 
@@ -25,8 +26,9 @@ function Account(props){
                 <AccountTabButton tab={tab} name='settings' img='cog' value='Settings'/>
             </div>
             <div>
-                {tab=="seller"&&<AccountSeller/>}
-                {tab=="bids"&&<AccountBids/>}
+                {tab==='profile'&&<AccountProfile/>}
+                {tab==='seller'&&<AccountSeller/>}
+                {tab==='bids'&&<AccountBids/>}
             </div>
         </div>
     )
