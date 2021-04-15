@@ -83,8 +83,13 @@ class Search extends React.Component{
     }
 
     load=()=>{
-        searchItems(this.searchText,this.selectedCategories,this.selectedSubcategories,this.minPrice,this.maxPrice,this.loadCount,SHOP_LOAD_COUNT,this.sort,(success, data)=>{
+        searchItems(this.searchText,this.selectedCategories,this.selectedSubcategories,this.minPrice,this.maxPrice,this.loadCount,SHOP_LOAD_COUNT,this.sort,(success, data, suggestion)=>{
             if(success){
+                if(this.loadCount==0&&data.length==0){
+                    //set did you mean
+                    this.setState({['didYouMean']:true});
+                    this.setState({['didYouMeanText']:suggestion});
+                }
                 if(data.length<SHOP_LOAD_COUNT){
                     this.setState({['loadMore']:false});
                 }else if(data.length==SHOP_LOAD_COUNT){
@@ -171,9 +176,18 @@ class Search extends React.Component{
         }
     }
 
+    didYouMean=()=>{
+        this.setState({['didYouMean']:false});
+        this.context.search(this.state.didYouMeanText);
+    }
+
     render(){
         return(
         <div className="centeredVerticalFlex">
+            {this.state.didYouMean&&
+            <div className="didYouMeanContainer">
+                Did you mean?<span onClick={this.didYouMean} className="didYouMeanHighlight">{this.state.didYouMeanText}</span>
+            </div>}
             <div className="activeFiltersContainer">
                 {this.state.priceFilters.map(filter=>(
                     <FilterItem filter={filter} disable={this.removePriceFilter}/>

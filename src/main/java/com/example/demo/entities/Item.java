@@ -8,6 +8,7 @@ import com.example.demo.models.ItemModel;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -183,9 +184,12 @@ public class Item implements Serializable {
 		model.setEndtime(this.getEndtime());
 		model.setSold(this.getSold());
 		model.setSeller(this.seller.toModel());
+		model.setSubcategory(this.getSubcategory().toModel());
 		if(this.address!=null) {
 			model.setAddress(this.address.toModel());
 		}
+		if(this.bids!=null)
+			model.setBids(this.getBids().stream().map(x->x.toModel()).collect(Collectors.toList()));
 		return model;
 	}
 	

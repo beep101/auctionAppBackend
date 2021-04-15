@@ -1,0 +1,12 @@
+CREATE TABLE paymentData(
+	id SERIAL PRIMARY KEY,
+	onCardName VARCHAR NOT NULL,
+	cardNumber VARCHAR NOT NULL,
+	expMonth INT NOT NULL,
+	expYear INT NOT NULL,
+	cvccw VARCHAR NOT NULL
+);
+
+ALTER TABLE users ADD COLUMN payment INT DEFAULT NULL;
+
+ALTER TABLE users ADD FOREIGN KEY (payment) REFERENCES paymentData(id);

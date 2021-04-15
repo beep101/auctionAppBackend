@@ -139,7 +139,15 @@ class AddItemStep3 extends React.Component{
 
     render(){
         return(
+            <div className="verticalCenteredFlex">
+            <div className="progresBarContainer">
+                <div className="progressBarDone"></div>
+                <div className="progresBarDot progresBarDotDone"><div className="progresBarDotInner progresBarDotInnerDone"></div></div>
+                <div className="progresBarDot progresBarDotDone"><div className="progresBarDotInner progresBarDotInnerDone"></div></div>
+                <div className="progresBarDot progresBarDotDone"><div className="progresBarDotInner progresBarDotInnerDone"></div></div>
+            </div>
             <div className="formContainer" >
+                <div className="formContainerTitle">LOCATION & SHIPPING</div>
                 <div className="inputFieldContainer">
                     <label className="inputLabel">Address</label><br/>
                     <input className="inputFieldWide" id="address" name="address" onChange={this.onChange} value={this.state.address}/>
@@ -218,6 +226,7 @@ class AddItemStep3 extends React.Component{
                         </div>
                     </span>
                 </div>
+            </div>
             </div>
         );
     }

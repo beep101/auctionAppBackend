@@ -2,11 +2,32 @@
     text-align: center;
     margin: 30px;
     padding: 25px;
+    padding: 40px;
     border-color: #d8d8d8;
     border-width: 1px;
     border-style: solid;
-    border-radius: 10px;
-    box-shadow: 0 0 5px #d8d8d8;
+    box-shadow: 4px 4px #d8d8d8;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    position: relative;
+}
+
+.formContainerTitle{
+    position: absolute;
+    width: 100%;
+    top:0;
+
+    padding-top: 7px;
+    padding-bottom: 7px;
+
+    font-family: 'Lato', sans-serif;
+    font-size: medium;
+    color: #5a5a5a;
+    font-weight: bold;
+    background-color: #ececec;
 }
 
 .inputLabel{
@@ -20,18 +41,45 @@
 
 .inputFieldContainer{
     margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .categorySelectsInline{
     display:flex;
+    flex-direction: row;
     align-content: center;
     align-items: center;
 }
 
+.justfiySpaceBetween{
+    justify-content: space-between;
+}
+
 .categorySelectContainer{
-    width: 50%;
+    width: 10vw;
     margin-left: 10px;
     margin-right: 10px;
+}
+
+.width5vw{
+    width: 5vw;
+}
+
+.inputField{
+    width: 150px;
+    font-family: 'Lato', sans-serif;
+    font-size: 20px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-color: #d8d8d8;
+    color: #5a5a5a;
+    border-width: 1px;
+    border-style: solid;
+    margin: 4px;
 }
 
 .inputFieldWide{
@@ -169,7 +217,7 @@ h1,h2,h3,p{
     color: #5a5a5a;
     border-width: 1px;
     border-style: solid;
-    box-shadow: 0 0 5px #d8d8d8;
+    box-shadow: 4px 4px #d8d8d8;
 }
 
 .logoStyle{
@@ -503,7 +551,7 @@ hr.gridBreak{
     border-color: #d8d8d8;
     border-width: 1px;
     border-style: solid;
-    box-shadow: 0 0 5px #d8d8d8;
+    box-shadow: 4px 4px #d8d8d8;
     margin: 20px;
 }
 
@@ -521,6 +569,8 @@ hr.gridBreak{
 
     max-width: 100%;
     max-height: 100%;
+
+    box-shadow: 4px 4px #d8d8d8;
 }
 
 .flexEnd{
@@ -673,7 +723,7 @@ table.bidTable{
     border-color: #d8d8d8;
     border-width: 1px;
     border-style: solid;
-    box-shadow: 0 0 5px #d8d8d8;
+    box-shadow: 4px 4px #d8d8d8;
     width: 60vw;
 
     color:#5a5a5a;
@@ -1015,7 +1065,7 @@ hr.solidVerticalLine{
     border-color: #d8d8d8;
     border-width: 1px;
     border-style: solid;
-    box-shadow: 0 0 5px #d8d8d8;
+    box-shadow: 4px 4px #d8d8d8;
     background-color: white;
 }
 
@@ -1397,4 +1447,472 @@ hr.solidVerticalLine{
     position: absolute;
     bottom: 0;
     margin-bottom: 10px;
+}
+
+
+.navbarDropdownContainer{
+    display: inline-block;
+    position: relative;
+}
+
+.navbarDropdownItemsContainer{
+    display: none;
+    position: absolute;
+    flex-direction: column;
+
+
+    background-color: white;
+    border-color: #d8d8d8;
+    border-style: solid;
+    border-width: 1px;
+
+    z-index: 1;
+
+}
+.navbarDropdownContainer:hover .navbarDropdownItemsContainer{
+    display: flex;
+}
+
+.navbarDropdownItem{
+    color: #5a5a5a;
+    padding: 5px;
+    padding-left: 25px;
+    padding-right: 25px;
+    font-family: 'Lato', sans-serif;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.navbarDropdownItem:hover{
+    color: white;
+    background-color: #8367D8;
+}
+
+.accountContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.accountNavbar{
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.accountNavbarButton{
+    display: inline-flex;
+    align-items: center;
+
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    margin: 5px;
+    margin-bottom: 30px;
+
+    font-family: 'Lato', sans-serif;  
+    font-size: large;
+    font-weight: bold;  
+    
+    color: #252525;
+    background-color: #ececec;
+}
+
+.accountNavbarButtonSelected{
+    display: inline-flex;
+    align-items: center;
+
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    margin: 5px;
+    margin-bottom: 30px;
+
+    font-family: 'Lato', sans-serif;  
+    font-size: large;
+    font-weight: bold;  
+    
+    color: white;
+    background-color: #8367D8;
+}
+
+.accountNavbarIcon{
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+table.accountSellerTable{
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+    width: 80vw;
+
+    color:#5a5a5a;
+    font-family: 'Lato', sans-serif;
+    margin-bottom: 2vw;
+
+    border-collapse: collapse;
+    text-align: center;
+}
+
+tr.accountSellerTable{
+    font-size: large;
+}
+
+tr.accountSellerTableMedium{
+    font-size: medium;
+}
+
+th.accountSellerTable{
+    color: #252525;
+    background-color: #ececec;
+    padding: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.accountSellerTable td{
+    padding: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.accountSellerTableImgContainer{
+    width: 5vw;
+    height: 5vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+img.accountSellerTable{
+    max-width: 95%;
+    max-height: 95%;
+}
+
+.accountSellerButtonBar{
+    display:flex;
+    justify-content: space-between;
+}
+
+.accountSellerButton{
+    display: inline-flex;
+    align-items: center;
+
+    padding: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+
+    font-family: 'Lato', sans-serif;  
+    font-size: large;  
+    
+    color: #5a5a5a;
+    background-color: #ececec;
+
+    cursor: pointer;
+
+}
+.accountSellerButtonSelected{
+    display: inline-flex;
+    align-items: center;
+
+    padding: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+
+    font-family: 'Lato', sans-serif;  
+    font-size: large;  
+    
+    color: white;
+    background-color: #8367D8;
+
+    cursor: pointer;
+}
+
+.accountSellerTableLinkButton{
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    color:#5a5a5a;
+    font-family: 'Lato', sans-serif;  
+    font-size: medium;
+    font-weight: bold;
+    
+    border-width: 3px;
+    border-style: solid;
+    border-color: #9b9b9b;
+}
+
+.center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.left{
+    text-align: left;
+}
+
+.green{
+    color: #40c046;
+}
+
+.blue{
+    color: #0078af;
+}
+
+.accountSellerNoContent{
+    margin-bottom: 5vw;
+    padding-top: 2vw;
+    padding-bottom: 2vw;
+    width: 80vw;
+
+    font-family: 'Lato', sans-serif;
+    font-size: larger;
+    color: #5a5a5a;
+
+    text-align: center;
+}
+
+.notSellerContainer{
+    width: 30vw;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    border-style: solid;
+    border-color: #d8d8d8;
+    border-width: 1px;
+
+    margin-bottom: 8vw;
+}
+
+.notSellerTitle{
+    font-family: 'Lato', sans-serif;
+    font-size: medium;
+    font-weight: bold;
+    color: #252525;
+    background-color: #ececec;
+    padding: 8px;
+    text-align: center;
+    align-self: stretch;
+}
+
+.notSellerImg{
+    width: 15vw;
+}
+
+.notSellerLabel{
+    font-family: 'Lato', sans-serif;
+    font-size: medium;
+    color: #5a5a5a;
+}
+
+.notSellerButton{
+    color: #5a5a5a;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;
+    padding: 8px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: center;
+    cursor: pointer;
+
+    border-color: #8367D8;
+    border-width: 3px;
+    border-style: solid;
+
+    margin: 2vw;
+}
+
+.reactTooltipText{
+    font-family: 'Lato', sans-serif;
+    font-size: medium;
+    color: #ececec;
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.relatedItemsTitle{
+    font-family: 'Lato', sans-serif;
+    font-size: x-large;
+    color: #5a5a5a;
+    padding: 10px;
+}
+
+.relatedItemsContainer{
+    display:flex;
+    width: 60vw;
+    justify-content: space-evenly;
+
+    border-top-style: solid;
+    border-top-color: #d8d8d8;
+    border-top-width: 3px;
+
+    padding-bottom: 5vw;
+}
+.width100{
+    width: 100%;
+}
+
+.accountProfileButtonContainer{
+    margin: 10px;
+    margin-left: 30px;
+    margin-right: 30px;
+    display: flex;
+    justify-content: right;
+}
+
+.contextNoAuthButtons{
+    margin: 5vw;
+
+    font-family: 'Lato', sans-serif;
+    font-size: x-large;
+    color: #9b9b9b;
+
+    text-decoration: none!important;
+}
+
+.contextNoAuthButton{
+    text-decoration: none!important;
+
+    color: #8367D8;
+    background-color: white;
+
+    border-color: #8367D8;
+    border-width: 3px;
+    border-style: solid;
+
+    padding: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+    
+    box-shadow: 4px 4px #d8d8d8;
+}
+
+.padding30px{
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.cardLogosContainer{
+    padding-top: 20px;
+    padding-bottom: 40px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cardLogosText{
+    color: #5a5a5a;
+    font-size: small;
+    font-family: 'Lato', sans-serif;
+    padding-bottom: 10px;    
+}
+
+.cardLogosImg{
+    width: 20vw;
+}
+
+.flexGrow1{
+    flex-grow: 1;
+}
+
+.progresBarContainer{
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    width:25vw;
+}
+
+.progresBarDot{
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    border-width: 3px;
+    border-style: solid;
+    border-color: #d8d8d8;
+    background-color: white;
+
+    position: relative;
+    z-index: 4;
+}
+
+.progresBarDotDone{
+    border-color: #8367D8;
+}
+
+.progresBarDotInner{
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+    background-color: #d8d8d8;
+
+    position: absolute;
+    top: 4px;
+    left: 4px;
+
+    z-index: 5;
+}
+
+.progresBarDotInnerDone{
+    background-color: #8367D8;
+}
+
+.verticalCenteredFlex{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.progressBar{
+    height: 4px;
+    width: 25vw;
+    background-color: #d8d8d8;
+
+    position:absolute;
+    top: 11px;
+
+    z-index: 2;
+}
+
+.progressBarDone{
+    height: 4px;
+    width: 25vw;
+    background-color: #8367D8;
+
+    position:absolute;
+    top: 11px;
+
+    z-index: 3;
+}
+
+.progressBarHalfDone{
+    width: 12.5vw;
+}
+
+.didYouMeanContainer{
+    width: 99vw;
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+    color: #9b9b9b;
+    background-color: #ececec;
+
+    font-family: 'Lato', sans-serif;
+    font-size: large;
+
+    text-align: center;
+}
+
+.didYouMeanHighlight{
+    color: #8367D8;
+    cursor: pointer;
+    padding-left: 25px;
 }

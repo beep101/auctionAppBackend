@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React from 'react'
 import { addItem } from '../apiConsumer/itemPost';
 import AuthContext from '../context';
 import AddItemStep1 from './addItemStep1'
@@ -97,7 +97,7 @@ class AddItem extends React.Component{
         else if(this.state.step==3)
             return(<AddItemStep3 next={this.next} back={this.back} data={this.data}/>)
         else
-            return(this.state.success?<div className="fullSize"><PulseLoader color="#8367D8" css={css} size={50}/></div>
+            return(this.state.success?<div className="fullSize"><PulseLoader color="#8367D8" css={css} size={10}/></div>
                     :<div className="fullSize"><div className="warningMessage">Error on item post</div></div>)
 
     }

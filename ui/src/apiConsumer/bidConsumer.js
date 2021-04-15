@@ -6,8 +6,7 @@ export function getBids(itemId,handler){
             handler(true,response.data);
         },
         (error)=>{
-            console.log(error);
-            handler(false,null);
+            handler(false,error);
         }
     );
 }
@@ -18,8 +17,7 @@ export function getBidsLimited(itemId,limit,handler){
             handler(true,response.data);
         },
         (error)=>{
-            console.log(error);
-            handler(false,null);
+            handler(false,error);
         }
     );
 }
@@ -30,8 +28,15 @@ export function addBid(bid,token,handler){
             handler(true,response.data);
         },
         (error)=>{
-            console.log(error);
-            handler(false,null);
+            if(error.response){
+                if(error.response.status<500){
+                    handler(false,error.response.data);
+                }else{
+                    handler(false,"Server error");
+                }
+            }else{
+                handler(false,"Something went wrong");
+            }
         }
     );
 }

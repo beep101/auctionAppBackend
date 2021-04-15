@@ -6,6 +6,7 @@ import javax.persistence.*;
 import com.example.demo.models.BidModel;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.sql.Timestamp;
 
 
@@ -18,6 +19,7 @@ import java.sql.Timestamp;
 @NamedQuery(name="Bid.findAll", query="SELECT b FROM Bid b")
 public class Bid implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private static final MathContext roundiongContext=new MathContext(3);
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -109,7 +111,7 @@ public class Bid implements Serializable {
 		Bid entity=new Bid();
 		
 		entity.setId(model.getId());
-		entity.setAmount(model.getAmount());
+		entity.setAmount(model.getAmount().round(roundiongContext));
 		User bidder=new User();
 		bidder.setId(model.getBidder().getId());
 		entity.setBidder(bidder);

@@ -42,6 +42,7 @@ import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.SubcategoriesRepository;
 import com.example.demo.services.interfaces.IImageStorageService;
+import com.example.demo.services.interfaces.ISearchSuggestionService;
 import com.example.demo.utils.ItemSorting;
 import com.example.demo.utils.PaginationParams;
 import com.example.demo.utils.SortingPaginationParams;
@@ -60,9 +61,11 @@ public class ItemServiceTests extends EasyMockSupport{
 	SubcategoriesRepository subcategoriesRepo;
 	@Mock
 	AddressesRepository addressesRepo;
+	@Mock
+	ISearchSuggestionService searchServiceMock;
 	
 	@TestSubject
-	ItemService itemService=new ItemService(imageService,itemsRepoMock, categoriesRepo,subcategoriesRepo,addressesRepo);
+	ItemService itemService=new ItemService(imageService, searchServiceMock, itemsRepoMock, categoriesRepo, subcategoriesRepo, addressesRepo);
 	
 	@Test
 	public void testPagebleCreationShouldCreateValidPageableAllMethods() throws AuctionAppException {
@@ -79,7 +82,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		expect(itemsRepoMock.findByCategory(anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfter(anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterOrderByEndtimeAsc(anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
-		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndCategoryEquals(anyObject(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndSubcategoryCategoryEquals(anyObject(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterOrderByStarttimeDesc(anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCaseAndSubcategoryCategoryIn(anyObject(),anyString(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(anyObject(),anyString(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
@@ -88,6 +91,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		expect(subcategoriesRepo.findAllById(anyObject())).andReturn(new ArrayList<Subcategory>()).anyTimes();
 		expect(itemsRepoMock.searchActiveByCatsAndSubsFilterMinAndMaxPrice(anyObject(),anyString(),anyObject(),anyObject(),anyObject(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.searchActiveByCatsAndSubsFilterMinPrice(anyObject(),anyString(),anyObject(),anyObject(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
+		expect(searchServiceMock.getSuggestion(anyString())).andReturn("").anyTimes();
 		replayAll();
 		
 		itemService.getItems(new PaginationParams(page,count));
@@ -212,7 +216,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		
 		Capture<Category> categoryCapture=EasyMock.newCapture(CaptureType.ALL);
 		expect(itemsRepoMock.findByCategory(capture(categoryCapture),anyObject())).andReturn(new ArrayList<Item>()).anyTimes();
-		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndCategoryEquals(anyObject(),capture(categoryCapture),anyObject())).andReturn(new ArrayList<Item>()).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndSubcategoryCategoryEquals(anyObject(),capture(categoryCapture),anyObject())).andReturn(new ArrayList<Item>()).anyTimes();
 		replayAll();
 		
 		itemService.getItemsByCategory(categoryId,new PaginationParams(0,1));
@@ -251,6 +255,10 @@ public class ItemServiceTests extends EasyMockSupport{
 		item.setEndtime(new Timestamp(123456));
 		item.setBids(bids);
 		item.setSeller(seller);
+		Subcategory sub=new Subcategory();
+		Category cat=new Category();
+		sub.setCategory(cat);
+		item.setSubcategory(sub);
 		
 		List<Item> items=new ArrayList<>();
 		Collection<ItemModel> models;
@@ -267,7 +275,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		expect(itemsRepoMock.findByCategory(anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfter(anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterOrderByEndtimeAsc(anyObject(),anyObject())).andReturn(items).anyTimes();
-		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndCategoryEquals(anyObject(),anyObject(),anyObject())).andReturn(items).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndSubcategoryCategoryEquals(anyObject(),anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterOrderByStarttimeDesc(anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCaseAndSubcategoryCategoryIn(anyObject(),anyString(),anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndNameIsContainingIgnoreCase(anyObject(),anyString(),anyObject())).andReturn(items).anyTimes();
@@ -277,6 +285,9 @@ public class ItemServiceTests extends EasyMockSupport{
 		expect(subcategoriesRepo.findAllById(anyObject())).andReturn(new ArrayList<Subcategory>()).anyTimes();
 		expect(itemsRepoMock.searchActiveByCatsAndSubsFilterMinAndMaxPrice(anyObject(),anyString(),anyObject(),anyObject(),anyObject(),anyObject(),anyObject())).andReturn(items).anyTimes();
 		expect(itemsRepoMock.searchActiveByCatsAndSubsFilterMinPrice(anyObject(),anyString(),anyObject(),anyObject(),anyObject(),anyObject())).andReturn(items).anyTimes();
+		expect(itemsRepoMock.findBySoldFalseAndEndtimeAfterAndSellerEquals(anyObject(),anyObject())).andReturn(items);
+		expect(itemsRepoMock.findBySoldTrueOrEndtimeBeforeAndSellerEquals(anyObject(),anyObject())).andReturn(items);
+		expect(itemsRepoMock.findAllBiddedItemsForUser(anyObject())).andReturn(items);
 		replayAll();
 		
 		models=itemService.getItems(new PaginationParams(0,1));
@@ -438,6 +449,38 @@ public class ItemServiceTests extends EasyMockSupport{
 		assertEquals(model.getEndtime(), item.getEndtime());
 		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		
+		models=itemService.getActiveItemsForUser(new User());
+		model=(ItemModel)models.toArray()[0];
+		assertEquals(model.getId(), item.getId());
+		assertEquals(model.getName(), item.getName());
+		assertEquals(model.getDescription(), item.getDescription());
+		assertEquals(model.getStartingprice(), item.getStartingprice());
+		assertEquals(model.getSold(), item.getSold());
+		assertEquals(model.getStarttime(), item.getStarttime());
+		assertEquals(model.getEndtime(), item.getEndtime());
+		assertEquals(model.getSeller().getId(), item.getSeller().getId());
+		
+		models=itemService.getInactiveItemsForUser(new User());
+		model=(ItemModel)models.toArray()[0];
+		assertEquals(model.getId(), item.getId());
+		assertEquals(model.getName(), item.getName());
+		assertEquals(model.getDescription(), item.getDescription());
+		assertEquals(model.getStartingprice(), item.getStartingprice());
+		assertEquals(model.getSold(), item.getSold());
+		assertEquals(model.getStarttime(), item.getStarttime());
+		assertEquals(model.getEndtime(), item.getEndtime());
+		assertEquals(model.getSeller().getId(), item.getSeller().getId());
+		
+		models=itemService.getBiddedItemsForUser(new User());
+		model=(ItemModel)models.toArray()[0];
+		assertEquals(model.getId(), item.getId());
+		assertEquals(model.getName(), item.getName());
+		assertEquals(model.getDescription(), item.getDescription());
+		assertEquals(model.getStartingprice(), item.getStartingprice());
+		assertEquals(model.getSold(), item.getSold());
+		assertEquals(model.getStarttime(), item.getStarttime());
+		assertEquals(model.getEndtime(), item.getEndtime());
+		assertEquals(model.getSeller().getId(), item.getSeller().getId());
 		verifyAll();
 	}
 	

@@ -136,7 +136,16 @@ function AddItemStep2(props){
     };
 
     return(
+        <div className="verticalCenteredFlex">
+            <div className="progresBarContainer">
+                <div className="progressBar"></div>
+                <div className="progressBarDone progressBarHalfDone"></div>
+                <div className="progresBarDot progresBarDotDone"><div className="progresBarDotInner progresBarDotInnerDone"></div></div>
+                <div className="progresBarDot progresBarDotDone"><div className="progresBarDotInner progresBarDotInnerDone"></div></div>
+                <div className="progresBarDot"><div className="progresBarDotInner"></div></div>
+            </div>
         <div className="formContainer">
+            <div className="formContainerTitle">SET PRICES</div>
             <div className="inputFieldContainer verticalFlex">
                 <label className="inputLabel">Your start price</label><br/>
                 <input className="inputFieldWide" id="startingPrice" name="startingPrice" type="number" onChange={onChange} value={startingPrice}/>
@@ -159,18 +168,19 @@ function AddItemStep2(props){
             <div className="auctionDatesMessageContainer">
                 The auction will be automatically closed when the end time comes. The highest bid will win the auction.
             </div>
-            <div className="inputFieldContainer categorySelectsInline">
+            <div className="inputFieldContainer categorySelectsInline flexGrow1">
                 <span className="categorySelectContainer">
                     <div className="bidButton lightGrayBorder" onClick={onBack}>
                         Back
                     </div>
                 </span>
-                <span className="categorySelectContainer">
+                <span className="categorySelectContainer ">
                     <div className="bidButton" onClick={onNext}>
                         Next
                     </div>
                 </span>
             </div>
+        </div>
         </div>
     )
 }

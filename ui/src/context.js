@@ -54,12 +54,18 @@ export class AuthProvider extends React.Component{
         this.searchCallback=(text)=>{console.log('No callback set')};
     }
 
+    setUser=(user)=>{
+        let newUser={...this.state.user};
+        newUser.user=user;
+        this.setState({['user']:newUser});
+    }
+
 
     render(){
         const {jwt,user}=this.state;
-        const {login,logout,search,setSearchCallback,removeSearchCallback}=this;
+        const {login,logout,search,setSearchCallback,removeSearchCallback,setUser}=this;
         return(
-            <AuthContext.Provider value={{jwt,user,login,logout,search,setSearchCallback,removeSearchCallback}}>
+            <AuthContext.Provider value={{jwt,user,login,logout,search,setSearchCallback,removeSearchCallback,setUser}}>
                 {this.props.children}
             </AuthContext.Provider>
         )

@@ -1,5 +1,9 @@
 package com.example.demo.models;
 
+import java.sql.Timestamp;
+
+import com.example.demo.utils.Gender;
+
 public class UserModel {
 	private int id;
 	private String firstName;
@@ -8,18 +12,13 @@ public class UserModel {
 	private String password;
 	private String jwt;
 	private String forgotPasswordToken;
+	private Gender gender;
+	private Timestamp birthday;
+	private AddressModel address;
+	private PayMethodModel payMethod;
 	
 	public UserModel() {
 		super();
-	}
-	
-	public UserModel(String firstName, String lastName, String email, String password, String jwt) {
-		super();
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.password = password;
-		this.jwt = jwt;
 	}
 	
 	public int getId(){
@@ -68,5 +67,36 @@ public class UserModel {
 	public void setForgotPasswordToken(String fpToken) {
 		this.forgotPasswordToken = fpToken;
 	}
-	
+
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public Timestamp getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Timestamp birthday) {
+		this.birthday = birthday;
+	}
+
+	public AddressModel getAddress() {
+		return address;
+	}
+
+	public void setAddress(AddressModel address) {
+		this.address = address;
+	}
+
+	public PayMethodModel getPayMethod() {
+		return payMethod;
+	}
+
+	public void setPayMethod(PayMethodModel payMethod) {
+		this.payMethod = payMethod;
+	}
 }

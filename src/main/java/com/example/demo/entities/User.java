@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import javax.persistence.*;
 
 import com.example.demo.models.UserModel;
+import com.example.demo.utils.Gender;
 
 import java.util.List;
 
@@ -40,6 +41,13 @@ public class User implements Serializable {
 	@Column(name="forgot_password_token")
 	private String forgotPasswordToken;
 	
+	@Column(name="gender")
+	@Enumerated(EnumType.STRING)
+	private Gender gender;
+
+	@Column(name="birthday")
+	private Timestamp birthday;
+	
 	@Column(name="forgot_password_token_end_time")
 	private Timestamp forgotPasswordTokenEndTime;
 	
@@ -54,6 +62,10 @@ public class User implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="address")
 	private Address address;
+	
+	@ManyToOne
+	@JoinColumn(name="payment")
+	private PayMethod payMethod;
 
 	public User() {
 	}
@@ -130,6 +142,30 @@ public class User implements Serializable {
 		this.forgotPasswordTokenEndTime = fpTokenEndtime;
 	}
 
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public Timestamp getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Timestamp birthday) {
+		this.birthday = birthday;
+	}
+	
+	public PayMethod getPayMethod() {
+		return payMethod;
+	}
+
+	public void setPayMethod(PayMethod payMethod) {
+		this.payMethod = payMethod;
+	}
+
 	public Bid addBid(Bid bid) {
 		getBids().add(bid);
 		bid.setBidder(this);
@@ -172,6 +208,18 @@ public class User implements Serializable {
 		model.setFirstName(this.getName());;
 		model.setLastName(this.getSurname());
 		model.setEmail(this.getEmail());
+		model.setBirthday(this.getBirthday());
+		model.setGender(this.getGender());
+		if(this.getAddress()!=null)
+			model.setAddress(this.getAddress().toModel());
+		return model;
+	}
+	
+	public UserModel toModelWithPayMethod() {
+		UserModel model=toModel();
+		
+		if(this.getPayMethod()!=null)
+			model.setPayMethod(this.getPayMethod().toModel());
 		return model;
 	}
 

@@ -53,10 +53,10 @@ export function searchItems(term,categories,subcategories,minPrice,maxPrice,page
         searchString=`${searchString}&maxPrice=${maxPrice}`;
     get(searchString).then(
         (response)=>{
-            handler(true,response.data);
+            handler(true,response.data.items,response.data.alternative);
         },
         (error)=>{
-            handler(false,"");
+            handler(false,"","");
         }
     );
 }
@@ -85,6 +85,39 @@ export function getFeaturedItem(handler){
 
 export function getPriceHistogram(handler){
     get('items/priceHistogram').then(
+        (response)=>{
+            handler(true,response.data)
+        },
+        (error)=>{
+            handler(false,"")
+        }
+    )
+}
+
+export function getActiveItems(token,handler){
+    get('items/active',{headers:{'Authorization' : 'Bearer '+token}}).then(
+        (response)=>{
+            handler(true,response.data)
+        },
+        (error)=>{
+            handler(false,"")
+        }
+    )
+}
+
+export function getInactiveItems(token,handler){
+    get('items/inactive',{headers:{'Authorization' : 'Bearer '+token}}).then(
+        (response)=>{
+            handler(true,response.data)
+        },
+        (error)=>{
+            handler(false,"")
+        }
+    )
+}
+
+export function getBiddedItems(token, handler){
+    get('items/bidded',{headers:{'Authorization' : 'Bearer '+token}}).then(
         (response)=>{
             handler(true,response.data)
         },
