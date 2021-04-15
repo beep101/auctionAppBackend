@@ -53,10 +53,10 @@ export function searchItems(term,categories,subcategories,minPrice,maxPrice,page
         searchString=`${searchString}&maxPrice=${maxPrice}`;
     get(searchString).then(
         (response)=>{
-            handler(true,response.data);
+            handler(true,response.data.items,response.data.alternative);
         },
         (error)=>{
-            handler(false,"");
+            handler(false,"","");
         }
     );
 }

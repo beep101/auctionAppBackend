@@ -30,12 +30,14 @@ import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.models.HistogramResponseModel;
 import com.example.demo.models.ItemModel;
+import com.example.demo.models.SearchModel;
 import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.SubcategoriesRepository;
 import com.example.demo.services.interfaces.IImageStorageService;
 import com.example.demo.services.interfaces.IItemService;
+import com.example.demo.services.interfaces.ISearchSuggestionService;
 import com.example.demo.utils.PaginationParams;
 import com.example.demo.validations.FilterItemsRequest;
 import com.example.demo.validations.ItemRequest;
@@ -44,20 +46,24 @@ public class ItemService implements IItemService {
 	
 	private ItemsRepository itemsRepo;
 	private CategoriesRepository categoriesRepo;
-	private IImageStorageService imageService;
 	private SubcategoriesRepository subcateogriesRepo;
 	private AddressesRepository addressesRepo;
+	
+
+	private IImageStorageService imageService;
+	private ISearchSuggestionService searchService;
 	
 	@Autowired
 	SessionFactory sessionFactory;
 	
-	public ItemService(IImageStorageService imageService,ItemsRepository itemsRepo, CategoriesRepository categoriesRepo,
+	public ItemService(IImageStorageService imageService, ISearchSuggestionService searchService, ItemsRepository itemsRepo, CategoriesRepository categoriesRepo,
 			           SubcategoriesRepository subcateogriesRepo,AddressesRepository addressesRepo) {
 		this.itemsRepo=itemsRepo;
 		this.categoriesRepo=categoriesRepo;
 		this.imageService=imageService;
 		this.subcateogriesRepo=subcateogriesRepo;
 		this.addressesRepo=addressesRepo;
+		this.searchService=searchService;
 	}
 
 	@Override
@@ -224,7 +230,7 @@ public class ItemService implements IItemService {
 	}
 	
 	@Override
-	public Collection<ItemModel> findItemsValidFilterCategoriesSubcaetgoriesPrice(FilterItemsRequest request, PaginationParams pgbl) throws AuctionAppException{
+	public SearchModel findItemsValidFilterCategoriesSubcaetgoriesPrice(FilterItemsRequest request, PaginationParams pgbl) throws AuctionAppException{
 		Timestamp crr=new Timestamp(System.currentTimeMillis());
 		
 		List<Category> categoriesList=null;
@@ -237,16 +243,21 @@ public class ItemService implements IItemService {
 			categoriesList=categoriesRepo.findAllById(request.getCategories());
 			subcategoriesList=subcateogriesRepo.findAllById(request.getSubcategories());
 		}
-		
+		SearchModel model=new SearchModel();
 		if(request.getMinPrice()==null)
 			request.setMinPrice(new BigDecimal(0));
 		if(request.getMaxPrice()!=null) {
-			return itemsRepo.searchActiveByCatsAndSubsFilterMinAndMaxPrice(crr, request.getTerm(),categoriesList, subcategoriesList,request.getMinPrice(),request.getMaxPrice(), pgbl.getPageable())
-					.stream().map(x->x.toModel()).collect(Collectors.toList());			
+			model.setItems(itemsRepo.searchActiveByCatsAndSubsFilterMinAndMaxPrice(crr, request.getTerm(),categoriesList, subcategoriesList,request.getMinPrice(),request.getMaxPrice(), pgbl.getPageable())
+					.stream().map(x->x.toModel()).collect(Collectors.toList()));			
 		}else {
-			return itemsRepo.searchActiveByCatsAndSubsFilterMinPrice(crr, request.getTerm(),categoriesList, subcategoriesList,request.getMinPrice(), pgbl.getPageable())
-					.stream().map(x->x.toModel()).collect(Collectors.toList());			
-		}			
+			model.setItems(itemsRepo.searchActiveByCatsAndSubsFilterMinPrice(crr, request.getTerm(),categoriesList, subcategoriesList,request.getMinPrice(), pgbl.getPageable())
+					.stream().map(x->x.toModel()).collect(Collectors.toList()));			
+		}
+		if(model.getItems().size()==0) {
+			String alternative=searchService.getSuggestion(request.getTerm());
+			model.setAlternative(alternative);
+		}
+		return model;
 	}
 	
 	@Override

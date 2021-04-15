@@ -42,6 +42,7 @@ import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.SubcategoriesRepository;
 import com.example.demo.services.interfaces.IImageStorageService;
+import com.example.demo.services.interfaces.ISearchSuggestionService;
 import com.example.demo.utils.ItemSorting;
 import com.example.demo.utils.PaginationParams;
 import com.example.demo.utils.SortingPaginationParams;
@@ -60,9 +61,11 @@ public class ItemServiceTests extends EasyMockSupport{
 	SubcategoriesRepository subcategoriesRepo;
 	@Mock
 	AddressesRepository addressesRepo;
+	@Mock
+	ISearchSuggestionService searchServiceMock;
 	
 	@TestSubject
-	ItemService itemService=new ItemService(imageService,itemsRepoMock, categoriesRepo,subcategoriesRepo,addressesRepo);
+	ItemService itemService=new ItemService(imageService, searchServiceMock, itemsRepoMock, categoriesRepo, subcategoriesRepo, addressesRepo);
 	
 	@Test
 	public void testPagebleCreationShouldCreateValidPageableAllMethods() throws AuctionAppException {
@@ -88,6 +91,7 @@ public class ItemServiceTests extends EasyMockSupport{
 		expect(subcategoriesRepo.findAllById(anyObject())).andReturn(new ArrayList<Subcategory>()).anyTimes();
 		expect(itemsRepoMock.searchActiveByCatsAndSubsFilterMinAndMaxPrice(anyObject(),anyString(),anyObject(),anyObject(),anyObject(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
 		expect(itemsRepoMock.searchActiveByCatsAndSubsFilterMinPrice(anyObject(),anyString(),anyObject(),anyObject(),anyObject(),capture(pageableCapture))).andReturn(new ArrayList<Item>()).anyTimes();
+		expect(searchServiceMock.getSuggestion(anyString())).andReturn("").anyTimes();
 		replayAll();
 		
 		itemService.getItems(new PaginationParams(page,count));

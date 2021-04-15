@@ -34,6 +34,7 @@ import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.SubcategoriesRepository;
 import com.example.demo.services.interfaces.IImageStorageService;
+import com.example.demo.services.interfaces.ISearchSuggestionService;
 
 @RunWith(EasyMockRunner.class)
 public class ItemServiceAddItemTests extends EasyMockSupport{
@@ -49,9 +50,11 @@ public class ItemServiceAddItemTests extends EasyMockSupport{
 	SubcategoriesRepository subcategoriesRepoMock;
 	@Mock
 	AddressesRepository addressesRepoMock;
+	@Mock
+	ISearchSuggestionService searchServiceMock;
 	
 	@TestSubject
-	ItemService itemService=new ItemService(imageServiceMock,itemsRepoMock, categoriesRepoMock,subcategoriesRepoMock,addressesRepoMock);
+	ItemService itemService=new ItemService(imageServiceMock, searchServiceMock, itemsRepoMock, categoriesRepoMock, subcategoriesRepoMock, addressesRepoMock);
 	
 	private ItemModel validItemModel(AddressModel address) {
 		ItemModel model=new ItemModel();

@@ -1896,3 +1896,23 @@ img.accountSellerTable{
 .progressBarHalfDone{
     width: 12.5vw;
 }
+
+.didYouMeanContainer{
+    width: 99vw;
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+    color: #9b9b9b;
+    background-color: #ececec;
+
+    font-family: 'Lato', sans-serif;
+    font-size: large;
+
+    text-align: center;
+}
+
+.didYouMeanHighlight{
+    color: #8367D8;
+    cursor: pointer;
+    padding-left: 25px;
+}

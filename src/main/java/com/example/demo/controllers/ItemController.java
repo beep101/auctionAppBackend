@@ -21,14 +21,17 @@ import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.UnauthenticatedException;
 import com.example.demo.models.HistogramResponseModel;
 import com.example.demo.models.ItemModel;
+import com.example.demo.models.SearchModel;
 import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.SubcategoriesRepository;
 import com.example.demo.services.ImageStorageS3;
 import com.example.demo.services.ItemService;
+import com.example.demo.services.SearchSuggestionService;
 import com.example.demo.services.interfaces.IImageStorageService;
 import com.example.demo.services.interfaces.IItemService;
+import com.example.demo.services.interfaces.ISearchSuggestionService;
 import com.example.demo.utils.AwsS3Adapter;
 import com.example.demo.utils.ItemSorting;
 import com.example.demo.utils.PaginationParams;
@@ -62,11 +65,13 @@ public class ItemController {
 	
 	private IItemService itemService;
 	private IImageStorageService imageService;
+	private ISearchSuggestionService searchService;
 	
 	@PostConstruct
 	public void init() {
 		imageService=new ImageStorageS3(bucketName,imageBucketBaseUrl,new AwsS3Adapter(id, key));
-		itemService=new ItemService(imageService,itemsRepo,categoriesRepo,subcategoriesRepo,addressesRepo);
+		searchService=new SearchSuggestionService(itemsRepo);
+		itemService=new ItemService(imageService,searchService,itemsRepo,categoriesRepo,subcategoriesRepo,addressesRepo);
 	}
 	
 	@ApiOperation(value = "Returns item specified by ID", notes = "Public access")
@@ -108,7 +113,7 @@ public class ItemController {
 	
 	@ApiOperation(value = "Enables searching items by name and filtering by different parameters", notes = "Public access")
 	@GetMapping("/api/items/search")
-	public Collection<ItemModel> findItem(@RequestParam String term,
+	public SearchModel findItem(@RequestParam String term,
 										  @RequestParam List<Integer> categories,
 										  @RequestParam List<Integer> subcategories,
 										  @RequestParam(required = false) BigDecimal minPrice,
@@ -116,7 +121,9 @@ public class ItemController {
 										  @RequestParam int page,@RequestParam int count,
 										  @RequestParam(required = false, defaultValue = "default") ItemSorting sort)throws AuctionAppException{
 		FilterItemsRequest request=new FilterItemsRequest(term, categories, subcategories, minPrice, maxPrice);
-		return imageService.loadImagesForItems(itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(request,new SortingPaginationParams(page,count,sort)));
+		SearchModel model=itemService.findItemsValidFilterCategoriesSubcaetgoriesPrice(request,new SortingPaginationParams(page,count,sort));
+		model.setItems(imageService.loadImagesForItems(model.getItems()));
+		return model;
 	}
 	
 	@ApiOperation(value = "Creating new item for sale", notes = "Only authenticated users")
@@ -171,5 +178,5 @@ public class ItemController {
 			throw new UnauthenticatedException();
 		}
 		return imageService.loadImagesForItems(itemService.getBiddedItemsForUser(principal));
-	}	
+	}
 }

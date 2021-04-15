@@ -47,4 +47,7 @@ public interface ItemsRepository extends JpaRepository<Item, Integer>{
 	List<Item> findBySoldTrueOrEndtimeBeforeAndSellerEquals(Timestamp timestamp,User user);
 	@Query("SELECT distinct b.item FROM Bid b WHERE b.bidder=:user")
 	List<Item> findAllBiddedItemsForUser(User user);
+	
+	@Query("SELECT i.name FROM Item i WHERE i.sold=false AND i.endtime>:now AND i.starttime<:now")
+	List<String> getAllNamesForActiveItems(Timestamp now);
 }
