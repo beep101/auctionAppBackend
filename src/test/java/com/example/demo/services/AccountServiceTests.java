@@ -19,6 +19,8 @@ import org.junit.runner.*;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import com.example.demo.entities.Address;
+import com.example.demo.entities.PayMethod;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.BadCredentialsException;
@@ -67,6 +69,7 @@ public class AccountServiceTests extends EasyMockSupport {
 		User userEntity=new User();
 		userEntity.setEmail(loginModel.getEmail());
 		userEntity.setPasswd(loginModel.getPassword());
+		userEntity.setAddress(new Address());;
 		
 		Optional<User> users=Optional.of(userEntity);
 		
@@ -139,7 +142,7 @@ public class AccountServiceTests extends EasyMockSupport {
 		expect(usersRepoMock.findByEmail(signupModel.getEmail())).andReturn(users).once();
 		expect(usersRepoMock.save(anyObject())).andReturn(null);
 		expect(hashUtilMock.hashPassword(signupModel.getPassword())).andReturn("qwerty");
-		expect(jwtUtilMock.generateToken(user,new HashMap<String, Object>())).andReturn("fakeJWT");
+		expect(jwtUtilMock.generateToken(anyObject(),anyObject())).andReturn("fakeJWT");
 		replayAll();
 		
 		UserModel result=accountService.signUp(signupModel);	
@@ -360,6 +363,21 @@ public class AccountServiceTests extends EasyMockSupport {
 		assertEquals(userCapture.getValue().getPasswd(),hash);
 		assertNotNull(userCapture.getValue().getForgotPasswordTokenEndTime());
 		
+		verifyAll();
+	}
+	
+	@Test
+	public void testRefreshTokenShouldReturnValidToken() throws AuctionAppException {
+		String fakeJWT="FakeJWT";
+		
+		User user=new User();
+		user.setAddress(new Address());
+		user.setPayMethod(new PayMethod());
+		expect(jwtUtilMock.generateToken(anyObject(), anyObject())).andReturn(fakeJWT);
+		replayAll();
+		
+		UserModel token=accountService.refreshToken(user);
+		assertEquals(fakeJWT,token.getJwt());
 		verifyAll();
 	}
 }

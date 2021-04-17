@@ -25,6 +25,8 @@ public class SearchSuggestionService implements ISearchSuggestionService{
 
 	@Override
 	public String getSuggestion(String term) {
+		if(term.isBlank())
+			return null;
 		final String upperTerm=term.toLowerCase();
 		LevenshteinDistance distanceCalc=new LevenshteinDistance();
 		List<String> names=getNames();
@@ -37,6 +39,8 @@ public class SearchSuggestionService implements ISearchSuggestionService{
 		if(distances.get(0).getValue()==0) {
 			return null;
 		}else {
+			if(distances.get(0).getValue()>3&&term.length()/2<distances.get(0).getValue())
+				return null;
 			if(distances.get(0).getValue()!=distances.get(1).getValue()) {
 				return distances.get(0).getKey();
 			}else {
@@ -54,11 +58,11 @@ public class SearchSuggestionService implements ISearchSuggestionService{
 		}
 	}
 	
-	List<String> getNames(){
+	private List<String> getNames(){
 		return itemsRepo.getAllNamesForActiveItems(new Timestamp(System.currentTimeMillis())).stream().map(String::toLowerCase).collect(Collectors.toList());
 	}
 	
-	Map<String,Long> getDictionary(List<String> names){
+	private Map<String,Long> getDictionary(List<String> names){
 		return names.stream().map(x->x.split(" ")).flatMap(Arrays::stream).collect(Collectors.groupingBy(Function.identity(), 
 		         Collectors.counting()));
 	}

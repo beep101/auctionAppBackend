@@ -163,7 +163,7 @@ public class ItemServiceAddItemTests extends EasyMockSupport{
 		ItemModel itemModel=validItemModel(validAddressModel());
 		expect(subcategoriesRepoMock.findById(anyInt())).andReturn(Optional.of(new Subcategory())).anyTimes();
 		expect(addressesRepoMock.save(anyObject())).andReturn(new Address()).anyTimes();
-		expect(itemsRepoMock.save(anyObject())).andReturn(new Item()).anyTimes();
+		expect(itemsRepoMock.saveAndFlush(anyObject())).andReturn(new Item()).anyTimes();
 		addressesRepoMock.delete(anyObject());
 		expectLastCall().atLeastOnce();
 		replayAll();
@@ -184,8 +184,9 @@ public class ItemServiceAddItemTests extends EasyMockSupport{
 		expect(addressesRepoMock.save(anyObject())).andReturn(new Address()).anyTimes();
 		Item item=new Item();
 		item.setId(1);
-		expect(itemsRepoMock.save(anyObject())).andReturn(item).anyTimes();
+		expect(itemsRepoMock.saveAndFlush(anyObject())).andReturn(item).anyTimes();
 		expect(imageServiceMock.addImages(anyString(),anyObject())).andThrow(new ImageUploadException());
+		expect(itemsRepoMock.findById(anyInt())).andReturn(Optional.of(item));
 		itemsRepoMock.delete(anyObject());
 		expectLastCall().atLeastOnce();
 		addressesRepoMock.delete(anyObject());
@@ -209,10 +210,11 @@ public class ItemServiceAddItemTests extends EasyMockSupport{
 		item.setSubcategory(sub);
 		
 		ItemModel itemModel=validItemModel(validAddressModel());
-		expect(subcategoriesRepoMock.findById(anyInt())).andReturn(Optional.of(new Subcategory())).anyTimes();
+		expect(subcategoriesRepoMock.findById(anyInt())).andReturn(Optional.of(sub)).anyTimes();
 		expect(addressesRepoMock.save(anyObject())).andReturn(new Address()).anyTimes();
-		expect(itemsRepoMock.save(anyObject())).andReturn(item).anyTimes();
+		expect(itemsRepoMock.saveAndFlush(anyObject())).andReturn(item).anyTimes();
 		expect(imageServiceMock.addImages(anyString(),anyObject())).andReturn(new ArrayList<>());
+		expect(itemsRepoMock.findById(anyInt())).andReturn(Optional.of(item));
 		replayAll();
 		
 		ItemModel resItemModel=itemService.addItem(itemModel, validUser());
@@ -240,10 +242,11 @@ public class ItemServiceAddItemTests extends EasyMockSupport{
 		address.setId(1);
 		user.setAddress(address);
 		
-		expect(subcategoriesRepoMock.findById(anyInt())).andReturn(Optional.of(new Subcategory())).anyTimes();
+		expect(subcategoriesRepoMock.findById(anyInt())).andReturn(Optional.of(sub)).anyTimes();
 		expect(addressesRepoMock.save(anyObject())).andReturn(new Address()).anyTimes();
-		expect(itemsRepoMock.save(anyObject())).andReturn(item).anyTimes();
+		expect(itemsRepoMock.saveAndFlush(anyObject())).andReturn(item).anyTimes();
 		expect(imageServiceMock.addImages(anyString(),anyObject())).andReturn(new ArrayList<>());
+		expect(itemsRepoMock.findById(anyInt())).andReturn(Optional.of(item));
 		replayAll();
 		
 		ItemModel resItemModel=itemService.addItem(itemModel,user );

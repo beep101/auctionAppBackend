@@ -120,7 +120,9 @@ public class AccountService implements IAccountService{
 		usersRepo.save(newUser);
 		Optional<User> users=usersRepo.findByEmail(signup.getEmail());
 		if(users.isPresent()) {
-			String jwt=jwtUtil.generateToken(users.get(), new HashMap<String, Object>());
+			Map<String,Object> data= new HashMap<String, Object>();
+			data.put("user", users.get().toModelWithPayMethod());
+			String jwt=jwtUtil.generateToken(users.get(),data);
 			signup.setJwt(jwt);
 			return signup;
 		}else {

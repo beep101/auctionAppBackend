@@ -85,8 +85,7 @@ class Search extends React.Component{
     load=()=>{
         searchItems(this.searchText,this.selectedCategories,this.selectedSubcategories,this.minPrice,this.maxPrice,this.loadCount,SHOP_LOAD_COUNT,this.sort,(success, data, suggestion)=>{
             if(success){
-                if(this.loadCount==0&&data.length==0){
-                    //set did you mean
+                if(this.loadCount==0&&suggestion){
                     this.setState({['didYouMean']:true});
                     this.setState({['didYouMeanText']:suggestion});
                 }

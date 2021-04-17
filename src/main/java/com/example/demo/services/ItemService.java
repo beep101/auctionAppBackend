@@ -115,7 +115,7 @@ public class ItemService implements IItemService {
 			newAddress=true;
 		}
 		
-		item=itemsRepo.save(item);
+		item=itemsRepo.saveAndFlush(item);
 		if(item.getId()==0) {
 			problems.clear();
 			problems.put("save","Cannot save data");
@@ -124,6 +124,8 @@ public class ItemService implements IItemService {
 			}
 			throw new InvalidDataException(problems);
 		}
+		item=itemsRepo.findById(item.getId()).get();
+		item.setSubcategory(subcatOpt.get());
 		
 		try {
 			imageService.addImages(Integer.toString(item.getId()), itemModel.getImageFiles());
@@ -244,6 +246,7 @@ public class ItemService implements IItemService {
 			subcategoriesList=subcateogriesRepo.findAllById(request.getSubcategories());
 		}
 		SearchModel model=new SearchModel();
+		model.setAlternative(null);
 		if(request.getMinPrice()==null)
 			request.setMinPrice(new BigDecimal(0));
 		if(request.getMaxPrice()!=null) {
