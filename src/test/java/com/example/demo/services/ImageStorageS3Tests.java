@@ -27,6 +27,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.ImageDeleteException;
 import com.example.demo.exceptions.ImageUploadException;
+import com.example.demo.models.ModelWithImages;
 import com.example.demo.utils.IAwsS3Adapter;
 
 @RunWith(EasyMockRunner.class)
@@ -36,7 +37,7 @@ public class ImageStorageS3Tests extends EasyMockSupport{
 	IAwsS3Adapter s3Adapter;
 	
 	@TestSubject
-	ImageStorageS3 imageStorage=new ImageStorageS3("","", s3Adapter);
+	ImageStorageS3<ModelWithImages> imageStorage=new ImageStorageS3<>("","", s3Adapter);
 	
 	@Test
 	public void addImageShouldCreateValidPutRequest() throws AuctionAppException, IOException {

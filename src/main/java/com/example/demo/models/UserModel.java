@@ -1,10 +1,11 @@
 package com.example.demo.models;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.example.demo.utils.Gender;
 
-public class UserModel {
+public class UserModel implements ModelWithImages{
 	private int id;
 	private String firstName;
 	private String lastName;
@@ -16,6 +17,8 @@ public class UserModel {
 	private Timestamp birthday;
 	private AddressModel address;
 	private PayMethodModel payMethod;
+	private byte[] newImage;
+	private List<String> images;
 	
 	public UserModel() {
 		super();
@@ -98,5 +101,21 @@ public class UserModel {
 
 	public void setPayMethod(PayMethodModel payMethod) {
 		this.payMethod = payMethod;
+	}
+
+	public byte[] getNewImage() {
+		return newImage;
+	}
+
+	public void setNewImage(byte[] newImage) {
+		this.newImage = newImage;
+	}
+
+	public List<String> getImages() {
+		return images;
+	}
+
+	public void setImages(List<String> images) {
+		this.images = images;
 	}
 }

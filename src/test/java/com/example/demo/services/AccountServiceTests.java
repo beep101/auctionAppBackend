@@ -12,6 +12,7 @@ import org.easymock.CaptureType;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockRunner;
 import org.easymock.EasyMockSupport;
+import org.easymock.IAnswer;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.Test;
@@ -32,12 +33,14 @@ import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
+import com.example.demo.services.interfaces.IImageStorageService;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
 
 @RunWith(EasyMockRunner.class)
 public class AccountServiceTests extends EasyMockSupport {
-	
+	@Mock
+	IImageStorageService<UserModel> imageService;
 	@Mock
 	IJwtUtil jwtUtilMock;
 	@Mock
@@ -57,7 +60,7 @@ public class AccountServiceTests extends EasyMockSupport {
 	
 	
 	@TestSubject
-	AccountService accountService=new AccountService(hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,payMethodRepoMock,mailSenderMock,subject,content,link);
+	AccountService accountService=new AccountService(imageService,hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,payMethodRepoMock,mailSenderMock,subject,content,link);
 	
 	//login tests
 	@Test
@@ -76,6 +79,12 @@ public class AccountServiceTests extends EasyMockSupport {
 		expect(hashUtilMock.checkPassword(anyString(),anyString())).andReturn(true);
 		expect(usersRepoMock.findByEmail(anyString())).andReturn(users);
 		expect(jwtUtilMock.generateToken(anyObject(),anyObject())).andReturn("fakeJWT");
+		Capture<UserModel> imCapture=EasyMock.newCapture(CaptureType.ALL);
+		expect(imageService.loadImagesForItem(capture(imCapture))).andAnswer(new IAnswer<UserModel>(){
+		    public UserModel answer() throws Throwable {
+		        return imCapture.getValue();
+		    }
+		}).anyTimes();
 		replayAll();
 		
 		UserModel result=accountService.login(loginModel);
@@ -241,6 +250,12 @@ public class AccountServiceTests extends EasyMockSupport {
 		
 		expect(usersRepoMock.findByEmail(anyString())).andReturn(users).anyTimes();
 		expect(usersRepoMock.save(capture(userCapture))).andReturn(user).anyTimes();
+		Capture<UserModel> imCapture=EasyMock.newCapture(CaptureType.ALL);
+		expect(imageService.loadImagesForItem(capture(imCapture))).andAnswer(new IAnswer<UserModel>(){
+		    public UserModel answer() throws Throwable {
+		        return imCapture.getValue();
+		    }
+		}).anyTimes();
 		mailSenderMock.send(anyObject(SimpleMailMessage.class));
 		expectLastCall();
 		replayAll();
@@ -356,6 +371,12 @@ public class AccountServiceTests extends EasyMockSupport {
 		expect(usersRepoMock.findByForgotPasswordTokenAndForgotPasswordTokenEndTimeAfter(anyString(),anyObject())).andReturn(users).anyTimes();
 		expect(usersRepoMock.save(capture(userCapture))).andReturn(user).anyTimes();
 		expect(hashUtilMock.hashPassword(model.getPassword())).andReturn(hash);
+		Capture<UserModel> imCapture=EasyMock.newCapture(CaptureType.ALL);
+		expect(imageService.loadImagesForItem(capture(imCapture))).andAnswer(new IAnswer<UserModel>(){
+		    public UserModel answer() throws Throwable {
+		        return imCapture.getValue();
+		    }
+		}).anyTimes();
 		replayAll();
 		
 		accountService.newPassword(model);
@@ -374,6 +395,12 @@ public class AccountServiceTests extends EasyMockSupport {
 		user.setAddress(new Address());
 		user.setPayMethod(new PayMethod());
 		expect(jwtUtilMock.generateToken(anyObject(), anyObject())).andReturn(fakeJWT);
+		Capture<UserModel> imCapture=EasyMock.newCapture(CaptureType.ALL);
+		expect(imageService.loadImagesForItem(capture(imCapture))).andAnswer(new IAnswer<UserModel>(){
+		    public UserModel answer() throws Throwable {
+		        return imCapture.getValue();
+		    }
+		}).anyTimes();
 		replayAll();
 		
 		UserModel token=accountService.refreshToken(user);

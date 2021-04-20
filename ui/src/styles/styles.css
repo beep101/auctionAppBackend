@@ -1916,3 +1916,49 @@ img.accountSellerTable{
     cursor: pointer;
     padding-left: 25px;
 }
+
+.formContainerHorizontal{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.imageSetterContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profileImageLargeContainer{
+    width: 10vw;
+    height: 15vw;
+    padding: 2vw;
+    padding-top: 1vw;
+    padding-bottom: .5vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.profileImageLarge{
+    max-width: 95%;
+    max-height: 95%;
+}
+
+.dropProfileImageZone{
+    color: #9b9b9b;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    text-align: center;
+    cursor: pointer;
+
+    border-color: #9b9b9b;
+    border-width: 2px;
+    border-style: solid;   
+    
+    box-shadow: 4px 4px #d8d8d8;
+}

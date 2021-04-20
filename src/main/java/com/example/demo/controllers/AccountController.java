@@ -21,7 +21,10 @@ import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.AccountService;
+import com.example.demo.services.ImageStorageS3;
 import com.example.demo.services.interfaces.IAccountService;
+import com.example.demo.services.interfaces.IImageStorageService;
+import com.example.demo.utils.AwsS3Adapter;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
 
@@ -51,12 +54,23 @@ public class AccountController {
 	private String content;
 	@Value("${mail.link}")
 	private String link;
+	
+	@Value("${s3.id}")
+	private String id;
+	@Value("${s3.key}")
+	private String key;
+	@Value("${s3.userImageBucketUrl}")
+	private String imageBucketBaseUrl;
+	@Value("${s3.userBucketName}")
+	private String bucketName;
 
 	private IAccountService accountService;
+	private IImageStorageService<UserModel> imageService;
 	
 	@PostConstruct
 	public void init() {
-		accountService=new AccountService(hashUtil, jwtUtil, usersRepo,addressRepo,payMethodRepo,mailSender,subject,content,link);
+		imageService=new ImageStorageS3<UserModel>(bucketName,imageBucketBaseUrl,new AwsS3Adapter(id, key));
+		accountService=new AccountService(imageService,hashUtil, jwtUtil, usersRepo,addressRepo,payMethodRepo,mailSender,subject,content,link);
 	}
 	
 	@ApiOperation(value = "Requires valid email and password to return JWT", notes = "Public access")
@@ -141,6 +155,18 @@ public class AccountController {
 			throw new UnauthenticatedException();
 		}
 		return accountService.modPayMethod(data,principal);
+	}
+	
+	@ApiOperation(value = "Sets new profile image for user", notes = "Only authenticated users")
+	@PostMapping("api/account/image")
+	public UserModel addProfileImage(@RequestBody UserModel data) throws AuctionAppException{
+		User principal=null;
+		try {
+			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		}catch(ClassCastException ex) {
+			throw new UnauthenticatedException();
+		}
+		return accountService.setProfileImage(data,principal);
 	}
 	
 	@ApiOperation(value = "Returns new extended JWT if old still valid", notes = "Only authenticated users")

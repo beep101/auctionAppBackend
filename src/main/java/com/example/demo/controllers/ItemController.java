@@ -64,12 +64,12 @@ public class ItemController {
 	private AddressesRepository addressesRepo;
 	
 	private IItemService itemService;
-	private IImageStorageService imageService;
+	private IImageStorageService<ItemModel> imageService;
 	private ISearchSuggestionService searchService;
 	
 	@PostConstruct
 	public void init() {
-		imageService=new ImageStorageS3(bucketName,imageBucketBaseUrl,new AwsS3Adapter(id, key));
+		imageService=new ImageStorageS3<ItemModel>(bucketName,imageBucketBaseUrl,new AwsS3Adapter(id, key));
 		searchService=new SearchSuggestionService(itemsRepo);
 		itemService=new ItemService(imageService,searchService,itemsRepo,categoriesRepo,subcategoriesRepo,addressesRepo);
 	}
@@ -77,7 +77,7 @@ public class ItemController {
 	@ApiOperation(value = "Returns item specified by ID", notes = "Public access")
 	@GetMapping("/api/items/{itemId}")
 	public ItemModel getItemById(@PathVariable(name="itemId")int itemId) throws AuctionAppException{
-		return imageService.loadImagesForItem(itemService.getItem(itemId));
+		return (ItemModel)imageService.loadImagesForItem(itemService.getItem(itemId));
 	}
 	
 	@ApiOperation(value = "Returns random item", notes = "Public access")

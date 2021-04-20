@@ -21,11 +21,11 @@ import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.ImageDeleteException;
 import com.example.demo.exceptions.ImageHashException;
 import com.example.demo.exceptions.ImageUploadException;
-import com.example.demo.models.ItemModel;
+import com.example.demo.models.ModelWithImages;
 import com.example.demo.services.interfaces.IImageStorageService;
 import com.example.demo.utils.IAwsS3Adapter;
 
-public class ImageStorageS3 implements IImageStorageService{
+public class ImageStorageS3<T extends ModelWithImages> implements IImageStorageService<T>{
 	private IAwsS3Adapter s3;	
 	private String bucketName;
 	private String baseUrl;
@@ -74,16 +74,17 @@ public class ImageStorageS3 implements IImageStorageService{
 	}
 
 	@Override
-	public ItemModel loadImagesForItem(ItemModel itemModel) {
-		itemModel.setImages(getImageUrls(itemModel.getId()));
-		return itemModel;
+	public T loadImagesForItem(T model) {
+		model.setImages(getImageUrls(model.getId()));
+		return (T)model;
 	}
 
 	@Override
-	public Collection<ItemModel> loadImagesForItems(Collection<ItemModel> itemModels){
-		itemModels.stream().parallel().forEach(x->x.setImages(getImageUrls(x.getId())));
-		return itemModels;
+	public Collection<T> loadImagesForItems(Collection<T> models){
+		models.stream().parallel().forEach(x->x.setImages(getImageUrls(x.getId())));
+		return models;
 	}
+
 	
 	private List<String> getImageUrls(int id){
 		ObjectListing objects=null;
@@ -108,4 +109,5 @@ public class ImageStorageS3 implements IImageStorageService{
 	    return DatatypeConverter
 	      .printHexBinary(digest).toUpperCase();
 	}
+
 }

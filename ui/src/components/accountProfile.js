@@ -6,7 +6,7 @@ import {ONE_YEAR_MILIS} from '../utils/constants';
 import UserEditor from './accountProfileUserEditor';
 import PayMethodEditor from './accountProfilePayMethodEditor';
 import AddressEditor from './accountProfileAddressEditor'
-import { addUserAddress, addUserPayMethod, modUserAddress, modUserData, modUserPayMethod } from '../apiConsumer/accountEditor';
+import { addUserAddress, addUserPayMethod, modUserAddress, modUserData, modUserPayMethod,addUserImage } from '../apiConsumer/accountEditor';
 import {refresh} from '../apiConsumer/accountConsumer'
 import { css } from "@emotion/core";
 import PulseLoader from "react-spinners/PulseLoader";
@@ -25,6 +25,9 @@ function AccountProfile(props){
         gender:context.user.user.gender
     });
     const [userMsg,setUserMsg]=useState({});
+
+    const imageCurrent=useRef(context.user.user.images?context.user.user.images[context.user.user.images.length-1]:null)
+    const imageData=useRef(null)
 
     const addressData=useRef(context.user.user.address?context.user.user.address:{
         address:"",
@@ -67,6 +70,11 @@ function AccountProfile(props){
         if(userData.current.birthday.getTime()>upperBound.getTime())
             msg.birthday="User must be older than 13 years";
         setUserMsg(msg);
+    }
+
+    const changeImage=(data)=>{
+        console.log("image set...")
+        imageData.current=data;
     }
 
     const changeAddressData=(data)=>{
@@ -170,7 +178,7 @@ function AccountProfile(props){
             console.log("Cannot save invalid data");
         }
         setLoading(true);
-        requestCounter.current=3;
+        requestCounter.current=4;
         modUserData(userData.current,context.jwt,(success,data)=>{
             requestRefresh();
         })
@@ -205,10 +213,18 @@ function AccountProfile(props){
             requestCounter.current=requestCounter.current-1;
         }
 
+        if(imageData.current){
+            addUserImage({newImage:imageData.current},context.jwt,(success,data)=>{
+                requestRefresh();
+            })
+        }else{
+            requestCounter.current=requestCounter.current-1;
+        }
+
     }
     return (
         <div>
-            <UserEditor data={userData.current} msg={userMsg} change={changeUserData}/>
+            <UserEditor data={userData.current} msg={userMsg} change={changeUserData} image={imageCurrent.current} changeImage={changeImage}/>
             <PayMethodEditor data={payMethodData.current} msg={payMethodMsg} change={changePayMethodData}/>
             <AddressEditor data={addressData.current} msg={addressMsg} change={changeAddressData}/>
             <div className="accountProfileButtonContainer">

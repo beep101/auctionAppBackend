@@ -5,12 +5,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
+import org.easymock.Capture;
+import org.easymock.CaptureType;
+import org.easymock.EasyMock;
 import org.easymock.EasyMockRunner;
 import org.easymock.EasyMockSupport;
+import org.easymock.IAnswer;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import static org.easymock.EasyMock.*;
 
@@ -21,17 +26,21 @@ import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.UnallowedOperationException;
 import com.example.demo.models.AddressModel;
+import com.example.demo.models.ItemModel;
 import com.example.demo.models.PayMethodModel;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
+import com.example.demo.services.interfaces.IImageStorageService;
 import com.example.demo.utils.Gender;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
 
 @RunWith(EasyMockRunner.class)
 public class AccountServiceModifyMethodsTests  extends EasyMockSupport{
+	@Mock
+	IImageStorageService<UserModel> imageService;
 	@Mock
 	IJwtUtil jwtUtilMock;
 	@Mock
@@ -51,7 +60,7 @@ public class AccountServiceModifyMethodsTests  extends EasyMockSupport{
 	
 	
 	@TestSubject
-	AccountService accountService=new AccountService(hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,payMethodRepoMock,mailSenderMock,subject,content,link);
+	AccountService accountService=new AccountService(imageService,hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,payMethodRepoMock,mailSenderMock,subject,content,link);
 	
 
 	@Test
@@ -71,6 +80,12 @@ public class AccountServiceModifyMethodsTests  extends EasyMockSupport{
 		model.setBirthday(new Timestamp(birthday.getTimeInMillis()));
 		
 		expect(usersRepoMock.save(anyObject())).andReturn(entity);
+		Capture<UserModel> imCapture=EasyMock.newCapture(CaptureType.ALL);
+		expect(imageService.loadImagesForItem(capture(imCapture))).andAnswer(new IAnswer<UserModel>(){
+		    public UserModel answer() throws Throwable {
+		        return imCapture.getValue();
+		    }
+		}).anyTimes();
 		replayAll();
 		
 		UserModel result=accountService.updateAccount(model, entity);
@@ -131,6 +146,12 @@ public class AccountServiceModifyMethodsTests  extends EasyMockSupport{
 		
 		expect(addressRepoMock.save(anyObject())).andReturn(address).anyTimes();
 		expect(usersRepoMock.save(anyObject())).andReturn(user).anyTimes();
+		Capture<UserModel> imCapture=EasyMock.newCapture(CaptureType.ALL);
+		expect(imageService.loadImagesForItem(capture(imCapture))).andAnswer(new IAnswer<UserModel>(){
+		    public UserModel answer() throws Throwable {
+		        return imCapture.getValue();
+		    }
+		}).anyTimes();
 		replayAll();
 		
 		UserModel resultUser=accountService.addAddress(addressModel, user);
@@ -200,6 +221,12 @@ public class AccountServiceModifyMethodsTests  extends EasyMockSupport{
 		Address addressReturn=new Address();
 		addressReturn.populate(addressModel);
 		expect(addressRepoMock.save(anyObject())).andReturn(addressReturn).anyTimes();
+		Capture<UserModel> imCapture=EasyMock.newCapture(CaptureType.ALL);
+		expect(imageService.loadImagesForItem(capture(imCapture))).andAnswer(new IAnswer<UserModel>(){
+		    public UserModel answer() throws Throwable {
+		        return imCapture.getValue();
+		    }
+		}).anyTimes();
 		replayAll();
 		
 		UserModel resultUser=accountService.modAddress(addressModel, user);
@@ -263,8 +290,14 @@ public class AccountServiceModifyMethodsTests  extends EasyMockSupport{
 		User user=new User();
 		user.setPayMethod(payEntity);
 		
+		Capture<UserModel> imCapture=EasyMock.newCapture(CaptureType.ALL);
 		expect(payMethodRepoMock.save(anyObject())).andReturn(payEntity).anyTimes();
 		expect(usersRepoMock.save(anyObject())).andReturn(user).anyTimes();
+		expect(imageService.loadImagesForItem(capture(imCapture))).andAnswer(new IAnswer<UserModel>(){
+		    public UserModel answer() throws Throwable {
+		        return imCapture.getValue();
+		    }
+		}).anyTimes();
 		replayAll();
 		
 		UserModel resultUser=accountService.addPayMethod(payModel, user);
@@ -345,9 +378,16 @@ public class AccountServiceModifyMethodsTests  extends EasyMockSupport{
 		payReturn.populate(payModel);
 		
 		expect(payMethodRepoMock.save(anyObject())).andReturn(payReturn).anyTimes();
+		Capture<UserModel> imCapture=EasyMock.newCapture(CaptureType.ALL);
+		expect(imageService.loadImagesForItem(capture(imCapture))).andAnswer(new IAnswer<UserModel>(){
+		    public UserModel answer() throws Throwable {
+		        return imCapture.getValue();
+		    }
+		}).anyTimes();
 		replayAll();
 		
 		UserModel resultUser=accountService.modPayMethod(payModel, user);
+		
 		PayMethodModel result=resultUser.getPayMethod();
 		
 		assertEquals(payModel.getCardNumber(), result.getCardNumber());

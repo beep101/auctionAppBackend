@@ -57,7 +57,7 @@ public class ItemServiceTests extends EasyMockSupport{
 	@Mock
 	CategoriesRepository categoriesRepo;
 	@Mock
-	IImageStorageService imageService;
+	IImageStorageService<ItemModel> imageService;
 	@Mock
 	SubcategoriesRepository subcategoriesRepo;
 	@Mock
