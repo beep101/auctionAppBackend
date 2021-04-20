@@ -157,7 +157,7 @@ public class AccountController {
 		return accountService.modPayMethod(data,principal);
 	}
 	
-	@ApiOperation(value = "Returns new extended JWT if old still valid", notes = "Only authenticated users")
+	@ApiOperation(value = "Sets new profile image for user", notes = "Only authenticated users")
 	@PostMapping("api/account/image")
 	public UserModel addProfileImage(@RequestBody UserModel data) throws AuctionAppException{
 		User principal=null;
