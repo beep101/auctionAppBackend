@@ -1,11 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Select from 'react-select';
 import { SORTING_SELECT_STYLES, SORTING_SELECT_THEME } from '../utils/constants';
+import ImageSetter from './accountProfileImageSetter';
 
 
 function UserEditor(props){
     const [msg,setMsg]=useState(props.msg)
+    const [image,setImage]=useState(props.image)
     const data=useRef({...props.data,...{birthday:props.data.birthday?new Date(props.data.birthday):new Date()}});
+    
+    useEffect(()=>{
+        setImage(props.image);
+    },[props.image]);
 
     const [bDay,setbDay]=useState(null);
     const [bMonth,setbMonth]=useState(null);
@@ -80,6 +86,8 @@ function UserEditor(props){
     return(
         <div className="formContainer" >
             <div className="formContainerTitle">Personal</div>
+            <div className="formContainerHorizontal">
+            <ImageSetter image={image} changeImage={props.changeImage}/>
             <div>
             <div className="inputFieldContainer">
                 <label className="inputLabel">First name</label>
@@ -121,6 +129,7 @@ function UserEditor(props){
                 <label className="inputLabel">Email address</label><br/>
                 <input className="inputFieldWide" id="email" name="email" onChange={onChange} defaultValue={data.current.email}/>
                 {msg.email&&<div className="warningMessageInputLabel">{msg.email}</div>}
+            </div>
             </div>
             </div>
         </div>

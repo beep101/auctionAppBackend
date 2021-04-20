@@ -17,4 +17,5 @@ public interface IAccountService{
 	UserModel addPayMethod(PayMethodModel payData,User principal)throws AuctionAppException;
 	UserModel modPayMethod(PayMethodModel payData,User principal)throws AuctionAppException;
 	UserModel refreshToken(User principal) throws AuctionAppException;
+	UserModel setProfileImage(UserModel userData,User principal) throws AuctionAppException;
 }

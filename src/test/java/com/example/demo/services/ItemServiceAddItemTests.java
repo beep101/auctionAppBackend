@@ -27,6 +27,7 @@ import com.example.demo.exceptions.InsertFailedException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.models.AddressModel;
 import com.example.demo.models.ItemModel;
+import com.example.demo.models.ModelWithImages;
 import com.example.demo.models.SubcategoryModel;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
@@ -45,7 +46,7 @@ public class ItemServiceAddItemTests extends EasyMockSupport{
 	@Mock
 	CategoriesRepository categoriesRepoMock;
 	@Mock
-	IImageStorageService imageServiceMock;
+	IImageStorageService<ModelWithImages> imageServiceMock;
 	@Mock
 	SubcategoriesRepository subcategoriesRepoMock;
 	@Mock

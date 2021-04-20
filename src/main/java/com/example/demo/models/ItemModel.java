@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
-public class ItemModel {
+public class ItemModel implements ModelWithImages{
 	private int id;
 	private String name;
 	private String description;

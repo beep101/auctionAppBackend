@@ -99,3 +99,14 @@ export function modUserPayMethod(data,token,handler){
     );
 
 }
+
+export function addUserImage(data,token,handler){
+    post("account/image",data,{headers:{'Authorization' : 'Bearer '+token}}).then(
+        (response)=>{
+            handler(true,response.data);
+        },
+        (error)=>{
+            handler(false,null)
+        }
+    );
+}

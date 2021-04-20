@@ -17,6 +17,9 @@ import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.BadCredentialsException;
 import com.example.demo.exceptions.ExistingUserException;
+import com.example.demo.exceptions.ImageHashException;
+import com.example.demo.exceptions.ImageUploadException;
+import com.example.demo.exceptions.InsertFailedException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.InvalidTokenException;
 import com.example.demo.exceptions.NonExistentUserException;
@@ -28,6 +31,7 @@ import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.interfaces.IAccountService;
+import com.example.demo.services.interfaces.IImageStorageService;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
 import com.example.demo.validations.AddressRequest;
@@ -47,9 +51,13 @@ public class AccountService implements IAccountService{
 	private String mailSubject;
 	private String mailContent;
 	private String mailLink;
+
+	private IImageStorageService<UserModel> imageService;
 	
-	public AccountService(IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo,AddressesRepository addressRepo,PayMethodRepository payMethodRepo, JavaMailSender mailSender,
+	public AccountService(IImageStorageService<UserModel> imageService,IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo,AddressesRepository addressRepo,PayMethodRepository payMethodRepo, JavaMailSender mailSender,
 						  String subject,String content,String link) {
+		this.imageService=imageService;
+		
 		this.usersRepo=userRepo;
 		this.addressRepo=addressRepo;
 		this.payMethodRepo=payMethodRepo;
@@ -70,7 +78,7 @@ public class AccountService implements IAccountService{
 				Map<String,Object> data= new HashMap<String, Object>();
 				if(users.get().getAddress()!=null)
 					data.put("address", users.get().getAddress().toModel());
-				data.put("user", users.get().toModelWithPayMethod());
+				data.put("user", imageService.loadImagesForItem(users.get().toModelWithPayMethod()));
 				String jwt=jwtUtil.generateToken(users.get(),data);
 				login.setId(users.get().getId());
 				login.setFirstName(users.get().getName());
@@ -95,7 +103,7 @@ public class AccountService implements IAccountService{
 	public UserModel refreshToken(User principal) throws AuctionAppException {
 		UserModel refresh=principal.toModel();
 		Map<String,Object> data= new HashMap<String, Object>();
-		data.put("user", principal.toModelWithPayMethod());
+		data.put("user", imageService.loadImagesForItem(principal.toModelWithPayMethod()));
 		String jwt=jwtUtil.generateToken(principal,data);
 		refresh.setJwt(jwt);
 		return refresh;
@@ -154,7 +162,7 @@ public class AccountService implements IAccountService{
 		
 		sendMail(user.getEmail(),user.getForgotPasswordToken());
 		
-		return user.toModel();
+		return imageService.loadImagesForItem(user.toModel());
 	}
 	
 	@Override
@@ -178,7 +186,7 @@ public class AccountService implements IAccountService{
 		User user=users.get();
 		user.setPasswd(hashUtil.hashPassword(newPassword.getPassword()));
 		user.setForgotPasswordTokenEndTime(new Timestamp(System.currentTimeMillis()));
-		return usersRepo.save(user).toModel();
+		return imageService.loadImagesForItem(usersRepo.save(user).toModel());
 	}
 	
 	private void sendMail(String to,String token) {
@@ -208,7 +216,7 @@ public class AccountService implements IAccountService{
 		authUser.setSurname(userData.getLastName());
 		authUser.setGender(userData.getGender());
 		authUser.setBirthday(userData.getBirthday());
-		return usersRepo.save(authUser).toModel();
+		return imageService.loadImagesForItem(usersRepo.save(authUser).toModel());
 	}
 
 	@Override
@@ -223,7 +231,7 @@ public class AccountService implements IAccountService{
 		authUser.setAddress(address);
 		authUser=usersRepo.save(authUser);
 		if(authUser.getAddress()!=null&&authUser.getAddress().getId()==address.getId())
-			return authUser.toModelWithPayMethod();
+			return imageService.loadImagesForItem(authUser.toModelWithPayMethod());
 		else {
 			addressRepo.delete(address);
 			problems.clear();
@@ -245,7 +253,7 @@ public class AccountService implements IAccountService{
 		address.populate(addressData);
 		address.setId(authUser.getAddress().getId());
 		authUser.setAddress(addressRepo.save(address));
-		return authUser.toModelWithPayMethod();
+		return imageService.loadImagesForItem(authUser.toModelWithPayMethod());
 	}
 
 	@Override
@@ -260,7 +268,7 @@ public class AccountService implements IAccountService{
 		authUser.setPayMethod(payMethod);
 		authUser=usersRepo.save(authUser);
 		if(authUser.getPayMethod()!=null&&authUser.getPayMethod().getId()==payMethod.getId())
-			return authUser.toModelWithPayMethod();
+			return imageService.loadImagesForItem(authUser.toModelWithPayMethod());
 		else {
 			payMethodRepo.delete(payMethod);
 			problems.clear();
@@ -282,7 +290,17 @@ public class AccountService implements IAccountService{
 		payMethod.populate(payData);
 		payMethod.setId(authUser.getPayMethod().getId());
 		authUser.setPayMethod(payMethodRepo.save(payMethod));
-		return authUser.toModelWithPayMethod();
+		return imageService.loadImagesForItem(authUser.toModelWithPayMethod());
+	}
+
+	@Override
+	public UserModel setProfileImage(UserModel userData,User principal) throws AuctionAppException {
+		try {
+			imageService.addImage(Integer.toString(principal.getId()), userData.getNewImage());
+		} catch (ImageUploadException | ImageHashException e) {
+			throw new InsertFailedException();
+		}
+		return imageService.loadImagesForItem(principal.toModelWithPayMethod());
 	}
 
 }
