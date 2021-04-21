@@ -5,6 +5,7 @@ import AccountSeller from './accountSeller';
 import AccountBids from './accountBids';
 import AccountProfile from './accountProfile';
 import AuthContext from '../context';
+import AccountWishlist from './accountWishlist';
 
 function Account(props){
 
@@ -32,6 +33,7 @@ function Account(props){
                     {tab==='profile'&&<AccountProfile/>}
                     {tab==='bids'&&<AccountBids/>}
                     {tab==='seller'&&<AccountSeller/>}
+                    {tab=='watchlist'&&<AccountWishlist/>}
                 </div>
             </div>
         )

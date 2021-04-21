@@ -30,7 +30,7 @@ class ItemElement extends React.Component{
                 <div className={imgContClass}>
                     <img crossorigin="anonymous" className={imageClass} src={this.props.item.images[0]}/>
                     {this.props.type==="grid"&&
-                    <div className="gridItemOverlay"><ListItemButtons bidLink={this.props.link} mode="grid"/></div>}
+                    <div className="gridItemOverlay"><ListItemButtons bidLink={this.props.link} mode="grid" item={this.props.item}/></div>}
                 </div>
                 <div className={textClass}>
                     <Link to={this.props.link}>
@@ -38,7 +38,7 @@ class ItemElement extends React.Component{
                     </Link>
                     {this.props.type==="list"&&<div className="listDescription">{this.props.item.description}</div>}
                     <span className={priceClass}>Starts From ${this.props.item.startingprice}</span>
-                    {this.props.type==="list"&&<ListItemButtons bidLink={this.props.link} mode="list"/>}
+                    {this.props.type==="list"&&<ListItemButtons bidLink={this.props.link} mode="list"  item={this.props.item}/>}
                 </div>
             </div>
         );

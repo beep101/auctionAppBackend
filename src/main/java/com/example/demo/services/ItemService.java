@@ -50,13 +50,13 @@ public class ItemService implements IItemService {
 	private AddressesRepository addressesRepo;
 	
 
-	private IImageStorageService imageService;
+	private IImageStorageService<ItemModel> imageService;
 	private ISearchSuggestionService searchService;
 	
 	@Autowired
 	SessionFactory sessionFactory;
 	
-	public ItemService(IImageStorageService imageService, ISearchSuggestionService searchService, ItemsRepository itemsRepo, CategoriesRepository categoriesRepo,
+	public ItemService(IImageStorageService<ItemModel> imageService, ISearchSuggestionService searchService, ItemsRepository itemsRepo, CategoriesRepository categoriesRepo,
 			           SubcategoriesRepository subcateogriesRepo,AddressesRepository addressesRepo) {
 		this.itemsRepo=itemsRepo;
 		this.categoriesRepo=categoriesRepo;

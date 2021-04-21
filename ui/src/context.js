@@ -1,5 +1,6 @@
 import React from 'react';
 import jwtDecode from 'jwt-decode';
+import { getAllWishes } from './apiConsumer/wishlistConsumer';
 
 const AuthContext = React.createContext();
 
@@ -10,15 +11,22 @@ export class AuthProvider extends React.Component{
         this.searchCallback=(text)=>{console.log('No callback set')};
         this.searchText="";
         let token=localStorage.getItem('token');
+   
         if(token){
             this.state={
                 jwt:token,
-                user:jwtDecode(token)
+                user:jwtDecode(token),
+                wishes:[]
             }
+            getAllWishes(token,(success,data)=>{
+                if(success)
+                    this.setState({['wishes']:data});
+            })
         }else{
             this.state={
                 jwt:"",
-                user:{}
+                user:{},
+                wishes:[]
             }
         }
     }
@@ -27,7 +35,12 @@ export class AuthProvider extends React.Component{
         this.setState({
             jwt:jwt,
             user:jwtDecode(jwt),
-            searchCallback:()=>{console.log('No callback set')}
+            searchCallback:()=>{console.log('No callback set')},
+            wishes:[]
+        })
+        getAllWishes(jwt,(success,data)=>{
+            if(success)
+                this.setState({['wishes']:data});
         })
     }
 
@@ -35,8 +48,21 @@ export class AuthProvider extends React.Component{
         this.setState({
             jwt:"",
             user:{},
-            searchCallback:()=>{console.log('No callback set')}
+            searchCallback:()=>{console.log('No callback set')},
+            wishes:[]
         })
+    }
+
+    addWish=(wish)=>{
+        let wishes=[...this.state.wishes];
+        wishes.push(wish);
+        this.setState({['wishes']:wishes});
+    }
+
+    removeWish=(wish)=>{
+        let wishes=[...this.state.wishes];
+        wishes=wishes.filter(w=>(wish.id!=w.id));
+        this.setState({['wishes']:wishes});
     }
 
     search=(text)=>{
@@ -62,10 +88,10 @@ export class AuthProvider extends React.Component{
 
 
     render(){
-        const {jwt,user}=this.state;
-        const {login,logout,search,setSearchCallback,removeSearchCallback,setUser}=this;
+        const {jwt,user,wishes}=this.state;
+        const {login,logout,search,setSearchCallback,removeSearchCallback,setUser,addWish,removeWish}=this;
         return(
-            <AuthContext.Provider value={{jwt,user,login,logout,search,setSearchCallback,removeSearchCallback,setUser}}>
+            <AuthContext.Provider value={{jwt,user,wishes,login,logout,search,setSearchCallback,removeSearchCallback,setUser,addWish,removeWish}}>
                 {this.props.children}
             </AuthContext.Provider>
         )

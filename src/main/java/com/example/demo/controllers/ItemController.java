@@ -77,7 +77,7 @@ public class ItemController {
 	@ApiOperation(value = "Returns item specified by ID", notes = "Public access")
 	@GetMapping("/api/items/{itemId}")
 	public ItemModel getItemById(@PathVariable(name="itemId")int itemId) throws AuctionAppException{
-		return (ItemModel)imageService.loadImagesForItem(itemService.getItem(itemId));
+		return imageService.loadImagesForItem(itemService.getItem(itemId));
 	}
 	
 	@ApiOperation(value = "Returns random item", notes = "Public access")

@@ -15,7 +15,6 @@ import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import static org.easymock.EasyMock.*;
 
@@ -26,7 +25,6 @@ import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.UnallowedOperationException;
 import com.example.demo.models.AddressModel;
-import com.example.demo.models.ItemModel;
 import com.example.demo.models.PayMethodModel;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;

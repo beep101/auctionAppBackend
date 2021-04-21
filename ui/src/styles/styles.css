@@ -1027,6 +1027,7 @@ hr.solidVerticalLine{
 .gridItemButton{
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 2px;
     padding-left: 12px;
     padding-right: 6px;
@@ -1036,8 +1037,6 @@ hr.solidVerticalLine{
     border-color: #5a5a5a;
     border-width: 1px;
     border-style: solid;
-
-    cursor: pointer;
 
     background-color: #ffffff;
 
@@ -1643,6 +1642,8 @@ img.accountSellerTable{
     border-width: 3px;
     border-style: solid;
     border-color: #9b9b9b;
+    
+    box-shadow: 3px 3px #d8d8d8;
 }
 
 .center{
@@ -1961,4 +1962,100 @@ img.accountSellerTable{
     border-style: solid;   
     
     box-shadow: 4px 4px #d8d8d8;
+}
+.openWish{
+    text-align: center;
+
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    color:#417505;
+    background-color: #ececec;
+    font-family: 'Lato', sans-serif;  
+    font-size: medium;
+    font-weight: bold;
+}
+.closedWish{
+    text-align: center;
+
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    color:#9c2510;
+    background-color: #ececec;
+    font-family: 'Lato', sans-serif;  
+    font-size: medium;
+    font-weight: bold;
+}
+
+.itemWishlistButton{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px;
+    padding-left: 12px;
+    padding-right: 6px;
+
+    margin: 10px;
+
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+
+    background-color: #ffffff;
+
+    color: #d8d8d8;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;
+}
+
+.itemWishlistButtonSelected{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px;
+    padding-left: 12px;
+    padding-right: 6px;
+
+    margin: 10px;
+
+    border-color: #8367D8;
+    border-width: 1px;
+    border-style: solid;
+
+    background-color: #ffffff;
+
+    color: #8367D8;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;    
+}
+
+.pointer{
+    cursor: pointer;
+}
+
+.gridItemButtonSelected{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px;
+    padding-left: 12px;
+    padding-right: 6px;
+
+    margin: 10px;
+
+    border-color: #8367D8;
+    border-width: 1px;
+    border-style: solid;
+
+    background-color: #ffffff;
+
+    color: #8367D8;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;
 }
