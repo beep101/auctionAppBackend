@@ -1,4 +1,4 @@
-import {get,post,del} from './apiConsumer';
+import {get,post,del,defaultErrorHandler} from './apiConsumer';
 
 export function getAllWishes(token,handler){
     get("wishlist",{headers:{'Authorization' : 'Bearer '+token}}).then(

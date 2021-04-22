@@ -17,13 +17,13 @@ function AccountWishlist(props){
 
     return(
         <table className="accountSellerTable">
-            <tr className="accountSellerTableMedium">
-                <th className="accountSellerTable">Item</th>
-                <th className="accountSellerTable left">Name</th>
-                <th className="accountSellerTable">Time left</th>
-                <th className="accountSellerTable">Highest bid</th>
-                <th className="accountSellerTable">Status</th>
-                <th className="accountSellerTable"></th>
+            <tr className="accountSellerTableMediumTr">
+                <th className="accountSellerTableTh">Item</th>
+                <th className="accountSellerTableTh left">Name</th>
+                <th className="accountSellerTableTh">Time left</th>
+                <th className="accountSellerTableTh">Highest bid</th>
+                <th className="accountSellerTableTh">Status</th>
+                <th className="accountSellerTableTh"></th>
             </tr>
             {wishes.map(wish=>(<WishItem wish={wish}/>))}
         </table>
@@ -53,13 +53,13 @@ function WishItem(props){
     }
 
     return(
-        <tr className="accountSellerTable">
-            <td className="accountSellerTable center"><div className="accountSellerTableImgContainer"><img className="accountSellerTable" src={props.wish.item.images[0]}></img></div></td>
-            <td className="accountSellerTable left">{props.wish.item.name}</td>
-            <td className="accountSellerTable">{timeLeft}</td>
-            <td className="accountSellerTable">{props.wish.item.bids.length?`$${props.wish.item.bids[props.wish.item.bids.length-1].amount}`:'None'}</td>
-            <td className="accountSellerTable"><div className={isActive?"openWish":"closedWish"}>{isActive?'OPEN':'CLOSED'}</div></td>
-            <td className="accountSellerTable"><Link className="accountSellerTableLinkButton" to={`/item?id=${props.wish.item.id}`}>View</Link></td>
+        <tr className="accountSellerTableTr">
+            <td className="accountSellerTableTd center"><div className="accountSellerTableImgContainer"><img className="accountSellerTableImg" src={props.wish.item.images[0]}></img></div></td>
+            <td className="accountSellerTableTd left">{props.wish.item.name}</td>
+            <td className="accountSellerTableTd">{timeLeft}</td>
+            <td className="accountSellerTableTd">{props.wish.item.bids.length?`$${props.wish.item.bids[props.wish.item.bids.length-1].amount}`:'None'}</td>
+            <td className="accountSellerTableTd"><div className={isActive?"openWish":"closedWish"}>{isActive?'OPEN':'CLOSED'}</div></td>
+            <td className="accountSellerTableTd"><Link className="accountSellerTableLinkButton" to={`/item?id=${props.wish.item.id}`}>View</Link></td>
         </tr>
     )
 }

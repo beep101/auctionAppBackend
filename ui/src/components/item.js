@@ -138,7 +138,7 @@ class Item extends React.Component{
     }
 
     isWish=(data)=>{
-        setIsWish(this.context.wishes.some(w => w.item.id === data.id));
+        this.setState({['isWish']:this.context.wishes.some(w => w.item.id === data.id)});
     }
 
     onWishClick=()=>{

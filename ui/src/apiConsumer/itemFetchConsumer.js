@@ -1,4 +1,4 @@
-import {get} from './apiConsumer'
+import {get,defaultErrorHandler} from './apiConsumer'
 
 export function getLastChance(page,count,handler){
     get(`items/lastChance?page=${page}&count=${count}`).then(

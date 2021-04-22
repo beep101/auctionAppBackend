@@ -64,14 +64,14 @@ function ActiveItems(props){
     if(items.length)
         return(
             <table className="accountSellerTable">
-                <tr className="accountSellerTableMedium">
-                    <th className="accountSellerTable">Item</th>
-                    <th className="accountSellerTable left">Name</th>
-                    <th className="accountSellerTable">Time left</th>
-                    <th className="accountSellerTable">Starting price</th>
-                    <th className="accountSellerTable">No.bids</th>
-                    <th className="accountSellerTable">Highest bid</th>
-                    <th className="accountSellerTable"></th>
+                <tr className="accountSellerTableMediumTr">
+                    <th className="accountSellerTableTh">Item</th>
+                    <th className="accountSellerTableTh left">Name</th>
+                    <th className="accountSellerTableTh">Time left</th>
+                    <th className="accountSellerTableTh">Starting price</th>
+                    <th className="accountSellerTableTh">No.bids</th>
+                    <th className="accountSellerTableTh">Highest bid</th>
+                    <th className="accountSellerTableTh"></th>
                 </tr>
                 {items.map(item=><ActiveItem item={item}></ActiveItem>)}
             </table>
@@ -93,14 +93,14 @@ function InactiveItems(props){
     if(items.length)
         return(
             <table className="accountSellerTable">
-                <tr className="accountSellerTableMedium">
-                    <th className="accountSellerTable">Item</th>
-                    <th className="accountSellerTable left">Name</th>
-                    <th className="accountSellerTable">End date</th>
-                    <th className="accountSellerTable">Starting price</th>
-                    <th className="accountSellerTable">No.bids</th>
-                    <th className="accountSellerTable">Highest bid</th>
-                    <th className="accountSellerTable"></th>
+                <tr className="accountSellerTableMediumTr">
+                    <th className="accountSellerTableTh">Item</th>
+                    <th className="accountSellerTableTh left">Name</th>
+                    <th className="accountSellerTableTh">End date</th>
+                    <th className="accountSellerTableTh">Starting price</th>
+                    <th className="accountSellerTableTh">No.bids</th>
+                    <th className="accountSellerTableTh">Highest bid</th>
+                    <th className="accountSellerTableTh"></th>
                 </tr>
                 {items.map(item=><InactiveItem item={item}></InactiveItem>)}
             </table>
@@ -123,14 +123,14 @@ function ActiveItem(props){
     }
 
     return(
-        <tr className="accountSellerTable">
-            <td className="accountSellerTable center"><div className="accountSellerTableImgContainer"><img className="accountSellerTable" src={props.item.images[0]}></img></div></td>
-            <td className="accountSellerTable left">{props.item.name}</td>
-            <td className="accountSellerTable">{timeLeft}</td>
-            <td className="accountSellerTable">${props.item.startingprice}</td>
-            <td className="accountSellerTable">{props.item.bids.length}</td>
-            <td className="accountSellerTable">{props.item.bids.length?`$${props.item.bids[props.item.bids.length-1].amount}`:'None'}</td>
-            <td className="accountSellerTable"><Link className="accountSellerTableLinkButton" to={`/item?id=${props.item.id}`}>View</Link></td>
+        <tr className="accountSellerTableTr">
+            <td className="accountSellerTableTd center"><div className="accountSellerTableImgContainer"><img className="accountSellerTableImg" src={props.item.images[0]}></img></div></td>
+            <td className="accountSellerTableTd left">{props.item.name}</td>
+            <td className="accountSellerTableTd">{timeLeft}</td>
+            <td className="accountSellerTableTd">${props.item.startingprice}</td>
+            <td className="accountSellerTableTd">{props.item.bids.length}</td>
+            <td className="accountSellerTableTd">{props.item.bids.length?`$${props.item.bids[props.item.bids.length-1].amount}`:'None'}</td>
+            <td className="accountSellerTableTd"><Link className="accountSellerTableLinkButton" to={`/item?id=${props.item.id}`}>View</Link></td>
         </tr>
     )
 
@@ -152,14 +152,14 @@ function InactiveItem(props){
     }
 
     return(
-        <tr className="accountSellerTable">
-            <td className="accountSellerTable center"><div className="accountSellerTableImgContainer"><img className="accountSellerTable" src={props.item.images[0]}></img></div></td>
-            <td className="accountSellerTable left">{props.item.name}</td>
-            <td className="accountSellerTable">{enddate}</td>
-            <td className="accountSellerTable">${props.item.startingprice}</td>
-            <td className="accountSellerTable">{props.item.bids.length}</td>
-            <td className="accountSellerTable">{props.item.bids.length?`$${props.item.bids[props.item.bids.length-1].amount}`:'None'}</td>
-            <td className="accountSellerTable"><Link className="accountSellerTableLinkButton" to={`/item?id=${props.item.id}`}>View</Link></td>
+        <tr className="accountSellerTableTr">
+            <td className="accountSellerTableTd center"><div className="accountSellerTableImgContainer"><img className="accountSellerTableImg" src={props.item.images[0]}></img></div></td>
+            <td className="accountSellerTableTd left">{props.item.name}</td>
+            <td className="accountSellerTableTd">{enddate}</td>
+            <td className="accountSellerTableTd">${props.item.startingprice}</td>
+            <td className="accountSellerTableTd">{props.item.bids.length}</td>
+            <td className="accountSellerTableTd">{props.item.bids.length?`$${props.item.bids[props.item.bids.length-1].amount}`:'None'}</td>
+            <td className="accountSellerTableTd"><Link className="accountSellerTableLinkButton" to={`/item?id=${props.item.id}`}>View</Link></td>
         </tr>
     )
 

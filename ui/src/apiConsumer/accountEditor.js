@@ -1,4 +1,4 @@
-import { post, put } from './apiConsumer'
+import { post, put,defaultErrorHandler } from './apiConsumer'
 
 export function modUserData(data,token,handler){
     put("account",data,{headers:{'Authorization' : 'Bearer '+token}}).then(
@@ -6,15 +6,7 @@ export function modUserData(data,token,handler){
             handler(true,response.data);
         },
         (error)=>{
-            if(error.response){
-                if(error.response.status<500){
-                    handler(false,error.response.data);
-                }else{
-                    handler(false,"Server error");
-                }
-            }else{
-                handler(false,"Something went wrong");
-            }
+            defaultErrorHandler(error,handler);
         }
     );
 
@@ -26,15 +18,7 @@ export function addUserAddress(data,token,handler){
             handler(true,response.data);
         },
         (error)=>{
-            if(error.response){
-                if(error.response.status<500){
-                    handler(false,error.response.data);
-                }else{
-                    handler(false,"Server error");
-                }
-            }else{
-                handler(false,"Something went wrong");
-            }
+            defaultErrorHandler(error,handler);
         }
     );
 
@@ -46,15 +30,7 @@ export function modUserAddress(data,token,handler){
             handler(true,response.data);
         },
         (error)=>{
-            if(error.response){
-                if(error.response.status<500){
-                    handler(false,error.response.data);
-                }else{
-                    handler(false,"Server error");
-                }
-            }else{
-                handler(false,"Something went wrong");
-            }
+            defaultErrorHandler(error,handler);
         }
     );
 

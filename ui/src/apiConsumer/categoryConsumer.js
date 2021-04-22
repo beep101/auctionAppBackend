@@ -1,4 +1,4 @@
-import {get} from './apiConsumer'
+import {get,defaultErrorHandler} from './apiConsumer'
 
 export function getAllCategories(handler){
     get("categories").then(
