@@ -1,5 +1,5 @@
 package com.example.demo.services.interfaces;
 
-public interface ICountryCityService {
+public interface CountryCityService {
 
 }

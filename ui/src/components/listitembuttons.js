@@ -9,11 +9,7 @@ function ListItemButtons(props){
     const [isWish,setIsWish]=useState(false);
 
     useEffect(()=>{
-        if(context.wishes.filter(w=>w.item.id===props.item.id).length>0){
-            setIsWish(true);
-            return;
-        }
-        setIsWish(false);
+        setIsWish(context.wishes.some(w => w.item.id === props.item.id));
     },[])
 
     const onWishClick=()=>{
@@ -40,13 +36,13 @@ function ListItemButtons(props){
             <div className={container}>
                 {props.item.seller.id==context.user.jti?  
                     <div className={buttons}>
-                        Watchlist
+                        Wishlist
                         <img className="socialImg" src={props.mode==="grid"?"/images/watchlist_dark.svg":"/images/watchlist.svg"}/>
                     </div>
                     :
                     <div className={isWish?`${buttons}Selected pointer`:`${buttons} pointer`}
                         onClick={onWishClick}>
-                        Watchlist
+                        Wishlist
                         <img className="socialImg" src={isWish?"/images/watchlist_ppl.svg":props.mode==="grid"?"/images/watchlist_dark.svg":"/images/watchlist.svg"}/>
                     </div>
                 }

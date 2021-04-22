@@ -10,7 +10,7 @@ import BidTable from './bidTable';
 import RelatedItems from './relatedItems';
 import ReactTooltip from 'react-tooltip';
 import { addWishToWishlist, delWishFromWishlist } from '../apiConsumer/wishlistConsumer';
-import { ReactReduxContext } from 'react-redux';
+import { timeDiffTodayToDateString } from '../utils/functions';
 
 class Item extends React.Component{
 
@@ -91,25 +91,7 @@ class Item extends React.Component{
     timeDiff=()=>{
         if(this.state.isExpired)
             return "Expired";
-        let t = this.state.item.endtime.split(/[-T:.]/);
-        let endtime = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
-        let secs=(endtime.getTime()-Date.now())/1000;
-
-        if(secs/60>1){
-            let mins=secs/60;
-            if(mins/60>1){
-                let hrs=mins/60;
-                if(hrs/24>1){
-                    return Math.round(hrs/24)+' days';
-                }else{
-                    return Math.round(hrs)+' hours';
-                }
-            }else{
-                return Math.round(mins/60)+' minutes';
-            }
-        }else{
-            return Math.round(secs/60)+' seconds';
-        }
+        return timeDiffTodayToDateString(this.state.item.endtime)
     }
 
     placeBid=()=>{
@@ -156,11 +138,7 @@ class Item extends React.Component{
     }
 
     isWish=(data)=>{
-        if(this.context.wishes.filter(w=>w.item.id===data.id).length>0){
-            this.setState({['isWish']:true});
-            return;
-        }
-        this.setState({['isWish']:false})
+        setIsWish(this.context.wishes.some(w => w.item.id === data.id));
     }
 
     onWishClick=()=>{
@@ -231,12 +209,12 @@ class Item extends React.Component{
                                 <br/>
                                 {this.state.item.seller.id==this.context.user.jti?  
                                     <div className="itemWishlistButton">
-                                        Watchlist
+                                        Wishlist
                                         <img className="socialImg" src={this.state.isWish?"/images/watchlist_ppl.svg":"/images/watchlist.svg"}/>
                                     </div>:
                                     <div className={this.state.isWish?"itemWishlistButtonSelected pointer":"itemWishlistButton pointer"}
                                         onClick={this.onWishClick}>
-                                        Watchlist
+                                        Wishlist
                                         <img className="socialImg" src={this.state.isWish?"/images/watchlist_ppl.svg":"/images/watchlist.svg"}/>
                                     </div>
                                 }

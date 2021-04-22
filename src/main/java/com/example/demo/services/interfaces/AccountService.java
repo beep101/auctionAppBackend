@@ -6,7 +6,7 @@ import com.example.demo.models.AddressModel;
 import com.example.demo.models.PayMethodModel;
 import com.example.demo.models.UserModel;
 
-public interface IAccountService{
+public interface AccountService{
 	UserModel login(UserModel login) throws AuctionAppException ;
 	UserModel signUp(UserModel signup) throws AuctionAppException ;
 	UserModel forgotPassword(UserModel forgotPassword) throws AuctionAppException;

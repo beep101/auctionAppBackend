@@ -6,7 +6,7 @@ import java.util.List;
 import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.models.ModelWithImages;
 
-public interface IImageStorageService<T extends ModelWithImages>{
+public interface ImageStorageService<T extends ModelWithImages>{
 	
 	public String addImage(String itemId,byte[] imageJpg) throws AuctionAppException;
 	public List<String> addImages(String itemId,List<byte[]> imagesJpgs) throws AuctionAppException;

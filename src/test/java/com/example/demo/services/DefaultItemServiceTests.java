@@ -42,31 +42,31 @@ import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.SubcategoriesRepository;
-import com.example.demo.services.interfaces.IImageStorageService;
-import com.example.demo.services.interfaces.ISearchSuggestionService;
+import com.example.demo.services.interfaces.ImageStorageService;
+import com.example.demo.services.interfaces.SearchSuggestionService;
 import com.example.demo.utils.ItemSorting;
 import com.example.demo.utils.PaginationParams;
 import com.example.demo.utils.SortingPaginationParams;
 import com.example.demo.validations.FilterItemsRequest;
 
 @RunWith(EasyMockRunner.class)
-public class ItemServiceTests extends EasyMockSupport{
+public class DefaultItemServiceTests extends EasyMockSupport{
 	
 	@Mock
 	ItemsRepository itemsRepoMock;
 	@Mock
 	CategoriesRepository categoriesRepo;
 	@Mock
-	IImageStorageService<ItemModel> imageService;
+	ImageStorageService<ItemModel> imageService;
 	@Mock
 	SubcategoriesRepository subcategoriesRepo;
 	@Mock
 	AddressesRepository addressesRepo;
 	@Mock
-	ISearchSuggestionService searchServiceMock;
+	SearchSuggestionService searchServiceMock;
 	
 	@TestSubject
-	ItemService itemService=new ItemService(imageService, searchServiceMock, itemsRepoMock, categoriesRepo, subcategoriesRepo, addressesRepo);
+	DefaultItemService itemService=new DefaultItemService(imageService, searchServiceMock, itemsRepoMock, categoriesRepo, subcategoriesRepo, addressesRepo);
 	
 	@Test
 	public void testPagebleCreationShouldCreateValidPageableAllMethods() throws AuctionAppException {

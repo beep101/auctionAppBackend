@@ -5,7 +5,6 @@ import java.util.Collection;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.AuthUser;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
-import com.example.demo.exceptions.UnauthenticatedException;
 import com.example.demo.models.BidModel;
 import com.example.demo.repositories.BidsRepository;
 import com.example.demo.repositories.ItemsRepository;
-import com.example.demo.services.BidService;
-import com.example.demo.services.interfaces.IBidService;
+import com.example.demo.services.DefaultBidService;
+import com.example.demo.services.interfaces.BidService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,22 +32,16 @@ public class BidController {
 	@Autowired
 	private ItemsRepository itemsRepo;
 	
-	private IBidService bidService;
+	private BidService bidService;
 	
 	@PostConstruct
 	public void init() {
-		bidService=new BidService(bidsRepo, itemsRepo);
+		bidService=new DefaultBidService(bidsRepo, itemsRepo);
 	}
 	
 	@ApiOperation(value = "Adds bid to item", notes = "Only authenticated users")
 	@PostMapping("/api/bids")
-	public BidModel addBid( @RequestBody BidModel bid) throws AuctionAppException{
-		User principal=null;
-		try {
-			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}catch(ClassCastException ex) {
-			throw new UnauthenticatedException();
-		}
+	public BidModel addBid( @RequestBody BidModel bid,@AuthUser User principal) throws AuctionAppException{
 		return bidService.addBid(bid,principal);
 	}
 	

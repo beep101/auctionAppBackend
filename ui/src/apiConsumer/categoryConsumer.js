@@ -6,8 +6,7 @@ export function getAllCategories(handler){
             handler(true,response.data);
         },
         (error)=>{
-            console.log(error);
-            handler(false,null);
+            defaultErrorHandler(error,handler);
         }
     );
 }

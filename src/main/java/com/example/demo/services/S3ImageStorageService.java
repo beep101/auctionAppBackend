@@ -22,15 +22,15 @@ import com.example.demo.exceptions.ImageDeleteException;
 import com.example.demo.exceptions.ImageHashException;
 import com.example.demo.exceptions.ImageUploadException;
 import com.example.demo.models.ModelWithImages;
-import com.example.demo.services.interfaces.IImageStorageService;
+import com.example.demo.services.interfaces.ImageStorageService;
 import com.example.demo.utils.IAwsS3Adapter;
 
-public class ImageStorageS3<T extends ModelWithImages> implements IImageStorageService<T>{
+public class S3ImageStorageService<T extends ModelWithImages> implements ImageStorageService<T>{
 	private IAwsS3Adapter s3;	
 	private String bucketName;
 	private String baseUrl;
 
-	public ImageStorageS3(String bucketName,String baseUrl,IAwsS3Adapter s3) {
+	public S3ImageStorageService(String bucketName,String baseUrl,IAwsS3Adapter s3) {
 		this.s3=s3;
 		this.baseUrl=baseUrl;
 		this.bucketName=bucketName;

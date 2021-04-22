@@ -35,14 +35,14 @@ import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.SubcategoriesRepository;
-import com.example.demo.services.interfaces.IImageStorageService;
-import com.example.demo.services.interfaces.IItemService;
-import com.example.demo.services.interfaces.ISearchSuggestionService;
+import com.example.demo.services.interfaces.ImageStorageService;
+import com.example.demo.services.interfaces.ItemService;
+import com.example.demo.services.interfaces.SearchSuggestionService;
 import com.example.demo.utils.PaginationParams;
 import com.example.demo.validations.FilterItemsRequest;
 import com.example.demo.validations.ItemRequest;
 
-public class ItemService implements IItemService {
+public class DefaultItemService implements ItemService {
 	
 	private ItemsRepository itemsRepo;
 	private CategoriesRepository categoriesRepo;
@@ -50,13 +50,13 @@ public class ItemService implements IItemService {
 	private AddressesRepository addressesRepo;
 	
 
-	private IImageStorageService<ItemModel> imageService;
-	private ISearchSuggestionService searchService;
+	private ImageStorageService<ItemModel> imageService;
+	private SearchSuggestionService searchService;
 	
 	@Autowired
 	SessionFactory sessionFactory;
 	
-	public ItemService(IImageStorageService<ItemModel> imageService, ISearchSuggestionService searchService, ItemsRepository itemsRepo, CategoriesRepository categoriesRepo,
+	public DefaultItemService(ImageStorageService<ItemModel> imageService, SearchSuggestionService searchService, ItemsRepository itemsRepo, CategoriesRepository categoriesRepo,
 			           SubcategoriesRepository subcateogriesRepo,AddressesRepository addressesRepo) {
 		this.itemsRepo=itemsRepo;
 		this.categoriesRepo=categoriesRepo;
@@ -115,7 +115,7 @@ public class ItemService implements IItemService {
 			newAddress=true;
 		}
 		
-		item=itemsRepo.saveAndFlush(item);
+		item=itemsRepo.save(item);
 		if(item.getId()==0) {
 			problems.clear();
 			problems.put("save","Cannot save data");

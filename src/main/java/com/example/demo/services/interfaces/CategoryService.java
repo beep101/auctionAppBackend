@@ -4,6 +4,6 @@ import java.util.Collection;
 
 import com.example.demo.models.CategoryModel;
 
-public interface ICategoryService {
+public interface CategoryService {
 	Collection<CategoryModel> getAllCategories();
 }

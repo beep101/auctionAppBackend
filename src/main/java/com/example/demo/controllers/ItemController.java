@@ -8,7 +8,6 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.AuthUser;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.UnauthenticatedException;
@@ -26,12 +26,12 @@ import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.CategoriesRepository;
 import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.SubcategoriesRepository;
-import com.example.demo.services.ImageStorageS3;
-import com.example.demo.services.ItemService;
-import com.example.demo.services.SearchSuggestionService;
-import com.example.demo.services.interfaces.IImageStorageService;
-import com.example.demo.services.interfaces.IItemService;
-import com.example.demo.services.interfaces.ISearchSuggestionService;
+import com.example.demo.services.S3ImageStorageService;
+import com.example.demo.services.DefaultItemService;
+import com.example.demo.services.DefaultSearchSuggestionService;
+import com.example.demo.services.interfaces.ImageStorageService;
+import com.example.demo.services.interfaces.ItemService;
+import com.example.demo.services.interfaces.SearchSuggestionService;
 import com.example.demo.utils.AwsS3Adapter;
 import com.example.demo.utils.ItemSorting;
 import com.example.demo.utils.PaginationParams;
@@ -63,15 +63,15 @@ public class ItemController {
 	@Autowired
 	private AddressesRepository addressesRepo;
 	
-	private IItemService itemService;
-	private IImageStorageService<ItemModel> imageService;
-	private ISearchSuggestionService searchService;
+	private ItemService itemService;
+	private ImageStorageService<ItemModel> imageService;
+	private SearchSuggestionService searchService;
 	
 	@PostConstruct
 	public void init() {
-		imageService=new ImageStorageS3<ItemModel>(bucketName,imageBucketBaseUrl,new AwsS3Adapter(id, key));
-		searchService=new SearchSuggestionService(itemsRepo);
-		itemService=new ItemService(imageService,searchService,itemsRepo,categoriesRepo,subcategoriesRepo,addressesRepo);
+		imageService=new S3ImageStorageService<ItemModel>(bucketName,imageBucketBaseUrl,new AwsS3Adapter(id, key));
+		searchService=new DefaultSearchSuggestionService(itemsRepo);
+		itemService=new DefaultItemService(imageService,searchService,itemsRepo,categoriesRepo,subcategoriesRepo,addressesRepo);
 	}
 	
 	@ApiOperation(value = "Returns item specified by ID", notes = "Public access")
@@ -128,13 +128,7 @@ public class ItemController {
 	
 	@ApiOperation(value = "Creating new item for sale", notes = "Only authenticated users")
 	@PostMapping("/api/items")
-	public ItemModel addItem(@RequestBody ItemModel model)  throws AuctionAppException{
-		User principal=null;
-		try {
-			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}catch(ClassCastException ex) {
-			throw new UnauthenticatedException();
-		}
+	public ItemModel addItem(@RequestBody ItemModel model,@AuthUser User principal)  throws AuctionAppException{
 		return imageService.loadImagesForItem(itemService.addItem(model,principal));
 	}
 	
@@ -146,37 +140,19 @@ public class ItemController {
 
 	@ApiOperation(value = "Returns all active items of currently authenticated user", notes = "Only authenticated users")
 	@GetMapping("/api/items/active")
-	public Collection<ItemModel> getActiveItemsForUser() throws UnauthenticatedException{
-		User principal=null;
-		try {
-			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}catch(ClassCastException ex) {
-			throw new UnauthenticatedException();
-		}
+	public Collection<ItemModel> getActiveItemsForUser(@AuthUser User principal) throws UnauthenticatedException{
 		return imageService.loadImagesForItems(itemService.getActiveItemsForUser(principal));
 	}
 
 	@ApiOperation(value = "Returns all inactive items of currently authenticated user", notes = "Only authenticated users")
 	@GetMapping("/api/items/inactive")
-	public Collection<ItemModel> getInactiveItemsForUser() throws UnauthenticatedException{
-		User principal=null;
-		try {
-			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}catch(ClassCastException ex) {
-			throw new UnauthenticatedException();
-		}
+	public Collection<ItemModel> getInactiveItemsForUser(@AuthUser User principal) throws UnauthenticatedException{
 		return imageService.loadImagesForItems(itemService.getInactiveItemsForUser(principal));
 	}
 
 	@ApiOperation(value = "Returns all bidded by currently authenticated user", notes = "Only authenticated users")
 	@GetMapping("/api/items/bidded")
-	public Collection<ItemModel> getBiddedItemsForUser() throws UnauthenticatedException{
-		User principal=null;
-		try {
-			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}catch(ClassCastException ex) {
-			throw new UnauthenticatedException();
-		}
+	public Collection<ItemModel> getBiddedItemsForUser(@AuthUser User principal) throws UnauthenticatedException{
 		return imageService.loadImagesForItems(itemService.getBiddedItemsForUser(principal));
 	}
 }

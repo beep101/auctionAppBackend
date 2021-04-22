@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RunWith(EasyMockRunner.class)
-public class WishServiceTests extends EasyMockSupport{
+public class DefaultWishlistServiceTests extends EasyMockSupport{
 
 	@Mock
 	WishRepository wishesRepoMock;
@@ -43,13 +43,14 @@ public class WishServiceTests extends EasyMockSupport{
 	UsersRepository usersRepoMock;
 	
 	@TestSubject
-	WishService wishService=new WishService(wishesRepoMock,itemsRepoMock,usersRepoMock);
+	DefaultWishlistService wishService=new DefaultWishlistService(wishesRepoMock,itemsRepoMock,usersRepoMock);
 	
 	@Test(expected = UnallowedOperationException.class)
 	public void testCreateWishOwnItemShouldThrowException() throws AuctionAppException {
 		WishModel wish=new WishModel();
 		wish.setItem(new ItemModel());
 		User user=new User();
+		user.setWishes(new ArrayList<Wish>());
 		List<Item> items=new ArrayList<Item>();
 		items.add(new Item());
 		user.setItems(items);
@@ -66,6 +67,7 @@ public class WishServiceTests extends EasyMockSupport{
 		WishModel wish=new WishModel();
 		wish.setItem(new ItemModel());
 		User user=new User();
+		user.setWishes(new ArrayList<Wish>());
 		List<Item> items=new ArrayList<Item>();
 		user.setItems(items);
 		
@@ -92,7 +94,8 @@ public class WishServiceTests extends EasyMockSupport{
 		User user=new User();
 		user.setId(userId);
 		user.setItems(new ArrayList<Item>());
-
+		user.setWishes(new ArrayList<Wish>());
+		
 		Item dbItem=new Item();
 		dbItem.setId(itemId);
 		dbItem.setSeller(new User());
@@ -100,10 +103,10 @@ public class WishServiceTests extends EasyMockSupport{
 		sub.setCategory(new Category());
 		dbItem.setSubcategory(sub);
 
-		expect(usersRepoMock.findById(anyInt())).andReturn(Optional.of(user));
-		expect(itemsRepoMock.findById(anyInt())).andReturn(Optional.of(dbItem));
+		expect(usersRepoMock.findById(userId)).andReturn(Optional.of(user));
+		expect(itemsRepoMock.findById(itemId)).andReturn(Optional.of(dbItem));
 		Capture<Wish> wishCapture=EasyMock.newCapture(CaptureType.ALL);
-		expect(wishesRepoMock.saveAndFlush(capture(wishCapture))).andAnswer(new IAnswer<Wish>(){
+		expect(wishesRepoMock.save(capture(wishCapture))).andAnswer(new IAnswer<Wish>(){
 		    public Wish answer() throws Throwable {
 		        return wishCapture.getValue();
 		    }
@@ -119,18 +122,21 @@ public class WishServiceTests extends EasyMockSupport{
 	
 	@Test
 	public void testDeleteWishHappyFlow() throws AuctionAppException {
+		int userId=13;
+		
 		WishModel wish=new WishModel();
 		wish.setId(13);
 		wish.setItem(new ItemModel());
 		
 		User user=new User();
+		user.setId(userId);
 		List<Wish> wishes=new ArrayList<>();
 		Wish usersWish=new Wish();
 		usersWish.setId(13);
 		wishes.add(usersWish);
 		user.setWishes(wishes);
 
-		expect(usersRepoMock.findById(anyInt())).andReturn(Optional.of(user));
+		expect(usersRepoMock.findById(userId)).andReturn(Optional.of(user));
 		wishesRepoMock.delete(anyObject());
 		expectLastCall().atLeastOnce();
 		replayAll();
@@ -144,14 +150,16 @@ public class WishServiceTests extends EasyMockSupport{
 
 	@Test(expected = UnallowedOperationException.class)
 	public void testDeleteWishOthersWishShouldThrowException() throws AuctionAppException {
+		int userId=13;
 		WishModel wish=new WishModel();
 		wish.setId(13);
 		wish.setItem(new ItemModel());
 		
 		User user=new User();
+		user.setId(userId);
 		user.setWishes(new ArrayList<Wish>());
 
-		expect(usersRepoMock.findById(anyInt())).andReturn(Optional.of(user));
+		expect(usersRepoMock.findById(userId)).andReturn(Optional.of(user));
 		replayAll();
 		
 		wishService.deleteWish(wish, user);
@@ -162,7 +170,9 @@ public class WishServiceTests extends EasyMockSupport{
 
 	@Test
 	public void testGetWishes() throws AuctionAppException {
+		int userId=13;
 		User user=new User();
+		user.setId(userId);
 		List<Wish> wishes=new ArrayList<>();
 		Wish usersWish=new Wish();
 		usersWish.setId(13);
@@ -176,7 +186,7 @@ public class WishServiceTests extends EasyMockSupport{
 		wishes.add(usersWish);
 		user.setWishes(wishes);
 
-		expect(usersRepoMock.findById(anyInt())).andReturn(Optional.of(user));
+		expect(usersRepoMock.findById(userId)).andReturn(Optional.of(user));
 		replayAll();
 		
 		List<WishModel> results= wishService.getWishes(user);

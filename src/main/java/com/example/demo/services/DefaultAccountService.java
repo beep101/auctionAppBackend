@@ -30,15 +30,15 @@ import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
-import com.example.demo.services.interfaces.IAccountService;
-import com.example.demo.services.interfaces.IImageStorageService;
+import com.example.demo.services.interfaces.AccountService;
+import com.example.demo.services.interfaces.ImageStorageService;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
 import com.example.demo.validations.AddressRequest;
 import com.example.demo.validations.PayMethodRequest;
 import com.example.demo.validations.UserRequest;
 
-public class AccountService implements IAccountService{
+public class DefaultAccountService implements AccountService{
 	private UsersRepository usersRepo;
 	private AddressesRepository addressRepo;
 	private PayMethodRepository payMethodRepo;
@@ -52,9 +52,9 @@ public class AccountService implements IAccountService{
 	private String mailContent;
 	private String mailLink;
 
-	private IImageStorageService<UserModel> imageService;
+	private ImageStorageService<UserModel> imageService;
 	
-	public AccountService(IImageStorageService<UserModel> imageService,IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo,AddressesRepository addressRepo,PayMethodRepository payMethodRepo, JavaMailSender mailSender,
+	public DefaultAccountService(ImageStorageService<UserModel> imageService,IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo,AddressesRepository addressRepo,PayMethodRepository payMethodRepo, JavaMailSender mailSender,
 						  String subject,String content,String link) {
 		this.imageService=imageService;
 		

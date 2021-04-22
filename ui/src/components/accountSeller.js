@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { getActiveItems, getInactiveItems } from '../apiConsumer/itemFetchConsumer';
 import AuthContext from '../context';
+import { timeDiffTodayToDateString } from '../utils/functions';
 
 function AccountSeller(props){
     const [active, setActive]=useState([]);
@@ -118,25 +119,7 @@ function ActiveItem(props){
     },[props.item.endtime])
 
     const timeDiff=()=>{
-        let t = props.item.endtime.split(/[-T:.]/);
-        let endtime = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
-        let secs=(endtime.getTime()-Date.now())/1000;
-
-        if(secs/60>1){
-            let mins=secs/60;
-            if(mins/60>1){
-                let hrs=mins/60;
-                if(hrs/24>1){
-                    return Math.round(hrs/24)+' days';
-                }else{
-                    return Math.round(hrs)+' hours';
-                }
-            }else{
-                return Math.round(mins/60)+' minutes';
-            }
-        }else{
-            return Math.round(secs/60)+' seconds';
-        }
+        return timeDiffTodayToDateString(props.item.endtime);
     }
 
     return(

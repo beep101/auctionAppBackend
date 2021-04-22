@@ -8,7 +8,6 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,18 +15,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.AuthUser;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
-import com.example.demo.exceptions.UnauthenticatedException;
 import com.example.demo.models.ItemModel;
 import com.example.demo.models.WishModel;
 import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.repositories.WishRepository;
-import com.example.demo.services.ImageStorageS3;
-import com.example.demo.services.WishService;
-import com.example.demo.services.interfaces.IImageStorageService;
-import com.example.demo.services.interfaces.IWishService;
+import com.example.demo.services.S3ImageStorageService;
+import com.example.demo.services.DefaultWishlistService;
+import com.example.demo.services.interfaces.ImageStorageService;
+import com.example.demo.services.interfaces.WishService;
 import com.example.demo.utils.AwsS3Adapter;
 
 import io.swagger.annotations.Api;
@@ -46,59 +45,40 @@ public class WishlistController {
 	@Value("${s3.bucketName}")
 	private String bucketName;
 	
-	private IImageStorageService<ItemModel> imageService;
+	private ImageStorageService<ItemModel> imageService;
 	
 	@Autowired
-	WishRepository wishesRepo;
+	private WishRepository wishesRepo;
 	@Autowired
-	ItemsRepository itemsRepo;
+	private ItemsRepository itemsRepo;
 	@Autowired
-	UsersRepository usersRepo;
+	private UsersRepository usersRepo;
 	
-	IWishService wishesService;
+	WishService wishesService;
 	
 	@PostConstruct
 	public void init() {
-		imageService=new ImageStorageS3<>(bucketName, imageBucketBaseUrl, new AwsS3Adapter(id, key));
-		wishesService=new WishService(wishesRepo, itemsRepo,usersRepo);
+		imageService=new S3ImageStorageService<>(bucketName, imageBucketBaseUrl, new AwsS3Adapter(id, key));
+		wishesService=new DefaultWishlistService(wishesRepo, itemsRepo,usersRepo);
 	}
 	
 	@ApiOperation(value = "Adds wish to user's wishlist", notes = "Only authenticated users")
 	@PostMapping("/api/wishlist")
-	public WishModel addWish( @RequestBody WishModel wish) throws AuctionAppException{
-		User principal=null;
-		try {
-			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}catch(ClassCastException ex) {
-			throw new UnauthenticatedException();
-		}
-		System.out.println(wish.getItem().getId());
+	public WishModel addWish( @RequestBody WishModel wish,@AuthUser User principal) throws AuctionAppException{
 		return wishesService.createWish(wish,principal);
 	}
 	
 	@ApiOperation(value = "Removes wish from user's wishlist", notes = "Only authenticated users")
 	@DeleteMapping("/api/wishlist")
-	public WishModel removeWish( @RequestParam int wishId) throws AuctionAppException{
-		User principal=null;
+	public WishModel removeWish( @RequestParam int wishId,@AuthUser User principal) throws AuctionAppException{
 		WishModel wish=new WishModel();
 		wish.setId(wishId);
-		try {
-			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}catch(ClassCastException ex) {
-			throw new UnauthenticatedException();
-		}
 		return wishesService.deleteWish(wish,principal);
 	}
 	
 	@ApiOperation(value = "Get all wishes for user", notes = "Only authenticated users")
 	@GetMapping("/api/wishlist")
-	public Collection<WishModel> getAllWishes() throws AuctionAppException{
-		User principal=null;
-		try {
-			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}catch(ClassCastException ex) {
-			throw new UnauthenticatedException();
-		}
+	public Collection<WishModel> getAllWishes(@AuthUser User principal) throws AuctionAppException{
 		List<WishModel> wishes=wishesService.getWishes(principal);
 		wishes=wishes.stream().map(x->{x.setItem(imageService.loadImagesForItem(x.getItem()));return x;}).collect(Collectors.toList());
 		return wishes;

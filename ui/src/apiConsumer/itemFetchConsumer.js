@@ -1,5 +1,4 @@
 import {get} from './apiConsumer'
-import { getLinks } from './imageLinker';
 
 export function getLastChance(page,count,handler){
     get(`items/lastChance?page=${page}&count=${count}`).then(
@@ -7,7 +6,7 @@ export function getLastChance(page,count,handler){
             handler(true,response.data);
         },
         (error)=>{
-            handler(false,null);
+            defaultErrorHandler(error,handler);
         }
     );
 }
@@ -18,7 +17,7 @@ export function getNewArrivals(page,count,handler){
             handler(true,response.data);
         },
         (error)=>{
-            handler(false,"");
+            defaultErrorHandler(error,handler);
         }
     );
 }
@@ -29,7 +28,7 @@ export function getItemsByCategory(categoryId,page,count,handler){
             handler(true,response.data);
         },
         (error)=>{
-            handler(false,"");
+            defaultErrorHandler(error,handler);
         }
     );
 }
@@ -40,7 +39,7 @@ export function getItems(page,count,handler){
             handler(true,response.data);
         },
         (error)=>{
-            handler(false,"");
+            defaultErrorHandler(error,handler);
         }
     );
 }
@@ -56,7 +55,7 @@ export function searchItems(term,categories,subcategories,minPrice,maxPrice,page
             handler(true,response.data.items,response.data.alternative);
         },
         (error)=>{
-            handler(false,"","");
+            defaultErrorHandler(error,handler);
         }
     );
 }
@@ -67,7 +66,7 @@ export function getItemById(id,handler){
             handler(true,response.data);
         },
         (error)=>{
-            handler(false,"")
+            defaultErrorHandler(error,handler);
         }
     )
 }
@@ -78,7 +77,7 @@ export function getFeaturedItem(handler){
             handler(true,response.data)
         },
         (error)=>{
-            handler(false,"")
+            defaultErrorHandler(error,handler);
         }
     );
 }
@@ -89,7 +88,7 @@ export function getPriceHistogram(handler){
             handler(true,response.data)
         },
         (error)=>{
-            handler(false,"")
+            defaultErrorHandler(error,handler);
         }
     )
 }
@@ -100,7 +99,7 @@ export function getActiveItems(token,handler){
             handler(true,response.data)
         },
         (error)=>{
-            handler(false,"")
+            defaultErrorHandler(error,handler);
         }
     )
 }
@@ -111,7 +110,7 @@ export function getInactiveItems(token,handler){
             handler(true,response.data)
         },
         (error)=>{
-            handler(false,"")
+            defaultErrorHandler(error,handler);
         }
     )
 }
@@ -122,7 +121,7 @@ export function getBiddedItems(token, handler){
             handler(true,response.data)
         },
         (error)=>{
-            handler(false,"")
+            defaultErrorHandler(error,handler);
         }
     )
 }

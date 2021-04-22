@@ -39,7 +39,7 @@ import com.example.demo.repositories.BidsRepository;
 import com.example.demo.repositories.ItemsRepository;
 
 @RunWith(EasyMockRunner.class)
-public class BidServiceTests extends EasyMockSupport{
+public class DefaultBidServiceTests extends EasyMockSupport{
 	static final long ONE_HOUR_MILIS=60*60*1000;
 	
 	@Mock
@@ -48,7 +48,7 @@ public class BidServiceTests extends EasyMockSupport{
 	ItemsRepository itemsRepo;
 	
 	@TestSubject
-	BidService bidService=new BidService(bidsRepo,itemsRepo);
+	DefaultBidService bidService=new DefaultBidService(bidsRepo,itemsRepo);
 	
 	
 	@Test(expected = InvalidDataException.class)

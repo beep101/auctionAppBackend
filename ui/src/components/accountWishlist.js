@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { getAllWishes } from '../apiConsumer/wishlistConsumer';
 import AuthContext from '../context';
+import { timeDiffTodayToDateString } from '../utils/functions';
 
 function AccountWishlist(props){
     const [wishes,setWishes]=useState([]);
@@ -39,31 +40,14 @@ function WishItem(props){
     },[props.wish.item])
 
     const timeDiff=()=>{
-        let t = props.wish.item.endtime.split(/[-T:.]/);
-        let endtime = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
-        let secs=(endtime.getTime()-Date.now())/1000;
-
-        if(secs/60>1){
-            let mins=secs/60;
-            if(mins/60>1){
-                let hrs=mins/60;
-                if(hrs/24>1){
-                    return Math.round(hrs/24)+' days';
-                }else{
-                    return Math.round(hrs)+' hours';
-                }
-            }else{
-                return Math.round(mins/60)+' minutes';
-            }
-        }else{
-            return Math.round(secs/60)+' seconds';
-        }
+        return timeDiffTodayToDateString(props.wish.item.endtime);
     }
 
     const checkIfActive=()=>{
-        let t = props.wish.item.endtime.split(/[-T:.]/);
-        let endtime = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
-        if(props.wish.item.sold||endtime.getTime()>(new Date()).getTime())
+        let dateComponent = props.wish.item.endtime.split(/[-T:.]/);
+        let endtime = new Date(Date.UTC(dateComponent[0], dateComponent[1]-1, dateComponent[2],
+                                        dateComponent[3], dateComponent[4], dateComponent[5]));
+        if(props.wish.item.sold||endtime.getTime()<(new Date()).getTime())
             return false;
         return true;
     }

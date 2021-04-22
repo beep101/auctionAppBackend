@@ -6,13 +6,13 @@ import java.util.stream.Collectors;
 
 import com.example.demo.models.CategoryModel;
 import com.example.demo.repositories.CategoriesRepository;
-import com.example.demo.services.interfaces.ICategoryService;
+import com.example.demo.services.interfaces.CategoryService;
 
-public class CategoryService implements ICategoryService{
+public class DefaultCategoryService implements CategoryService{
 	
 	private CategoriesRepository categoriesRepo;
 	
-	public CategoryService(CategoriesRepository categoriesRepo) {
+	public DefaultCategoryService(CategoriesRepository categoriesRepo) {
 		this.categoriesRepo=categoriesRepo;
 	}
 	

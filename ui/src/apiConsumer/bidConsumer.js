@@ -1,4 +1,4 @@
-import {get,post} from './apiConsumer';
+import {get,post,defaultErrorHandler} from './apiConsumer';
 
 export function getBids(itemId,handler){
     get(`items/${itemId}/bids`).then(
@@ -6,7 +6,7 @@ export function getBids(itemId,handler){
             handler(true,response.data);
         },
         (error)=>{
-            handler(false,error);
+            defaultErrorHandler(error,handler);
         }
     );
 }
@@ -17,7 +17,7 @@ export function getBidsLimited(itemId,limit,handler){
             handler(true,response.data);
         },
         (error)=>{
-            handler(false,error);
+            defaultErrorHandler(error,handler);
         }
     );
 }
@@ -28,15 +28,7 @@ export function addBid(bid,token,handler){
             handler(true,response.data);
         },
         (error)=>{
-            if(error.response){
-                if(error.response.status<500){
-                    handler(false,error.response.data);
-                }else{
-                    handler(false,"Server error");
-                }
-            }else{
-                handler(false,"Something went wrong");
-            }
+            defaultErrorHandler(error,handler);
         }
     );
 }

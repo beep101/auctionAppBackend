@@ -66,15 +66,7 @@ export function addUserPayMethod(data,token,handler){
             handler(true,response.data);
         },
         (error)=>{
-            if(error.response){
-                if(error.response.status<500){
-                    handler(false,error.response.data);
-                }else{
-                    handler(false,"Server error");
-                }
-            }else{
-                handler(false,"Something went wrong");
-            }
+            defaultErrorHandler(error,handler);
         }
     );
 
@@ -86,15 +78,7 @@ export function modUserPayMethod(data,token,handler){
             handler(true,response.data);
         },
         (error)=>{
-            if(error.response){
-                if(error.response.status<500){
-                    handler(false,error.response.data);
-                }else{
-                    handler(false,"Server error");
-                }
-            }else{
-                handler(false,"Something went wrong");
-            }
+            defaultErrorHandler(error,handler);
         }
     );
 
@@ -106,7 +90,7 @@ export function addUserImage(data,token,handler){
             handler(true,response.data);
         },
         (error)=>{
-            handler(false,null)
+            defaultErrorHandler(error,handler);
         }
     );
 }

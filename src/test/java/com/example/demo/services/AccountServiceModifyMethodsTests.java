@@ -30,7 +30,7 @@ import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
-import com.example.demo.services.interfaces.IImageStorageService;
+import com.example.demo.services.interfaces.ImageStorageService;
 import com.example.demo.utils.Gender;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
@@ -38,7 +38,7 @@ import com.example.demo.utils.IJwtUtil;
 @RunWith(EasyMockRunner.class)
 public class AccountServiceModifyMethodsTests  extends EasyMockSupport{
 	@Mock
-	IImageStorageService<UserModel> imageService;
+	ImageStorageService<UserModel> imageService;
 	@Mock
 	IJwtUtil jwtUtilMock;
 	@Mock
@@ -58,7 +58,7 @@ public class AccountServiceModifyMethodsTests  extends EasyMockSupport{
 	
 	
 	@TestSubject
-	AccountService accountService=new AccountService(imageService,hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,payMethodRepoMock,mailSenderMock,subject,content,link);
+	DefaultAccountService accountService=new DefaultAccountService(imageService,hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,payMethodRepoMock,mailSenderMock,subject,content,link);
 	
 
 	@Test

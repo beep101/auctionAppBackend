@@ -14,12 +14,12 @@ import java.util.stream.Stream;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 
 import com.example.demo.repositories.ItemsRepository;
-import com.example.demo.services.interfaces.ISearchSuggestionService;
+import com.example.demo.services.interfaces.SearchSuggestionService;
 
-public class SearchSuggestionService implements ISearchSuggestionService{
+public class DefaultSearchSuggestionService implements SearchSuggestionService{
 	private ItemsRepository itemsRepo;
 	
-	public SearchSuggestionService(ItemsRepository itemsRepo) {
+	public DefaultSearchSuggestionService(ItemsRepository itemsRepo) {
 		this.itemsRepo=itemsRepo;
 	}
 

@@ -12,7 +12,6 @@ export function getLinks(item){
                 resolve();
             },
             (error)=>{
-                console.log(error);
                 reject();
             }
         );

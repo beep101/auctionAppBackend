@@ -24,7 +24,7 @@ public class SearchSuggestionserviceTests extends EasyMockSupport {
 	ItemsRepository itemsRepoMock;
 	
 	@TestSubject
-	SearchSuggestionService searchSerivce=new SearchSuggestionService(itemsRepoMock);
+	DefaultSearchSuggestionService searchSerivce=new DefaultSearchSuggestionService(itemsRepoMock);
 	
 	@Test
 	public void testGetSuggestionBlankTermShouldReturnNull() throws Exception{
