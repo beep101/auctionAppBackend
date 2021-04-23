@@ -23,15 +23,15 @@ import com.example.demo.exceptions.UnallowedOperationException;
 import com.example.demo.models.BidModel;
 import com.example.demo.repositories.BidsRepository;
 import com.example.demo.repositories.ItemsRepository;
-import com.example.demo.services.interfaces.IBidService;
+import com.example.demo.services.interfaces.BidService;
 
 
-public class BidService implements IBidService{
+public class DefaultBidService implements BidService{
 	
 	private BidsRepository bidsRepo;
 	private ItemsRepository itemsRepo;
 
-	public BidService(BidsRepository bidsRepo,ItemsRepository itemsRepo) {
+	public DefaultBidService(BidsRepository bidsRepo,ItemsRepository itemsRepo) {
 		this.bidsRepo=bidsRepo;
 		this.itemsRepo=itemsRepo;
 	}

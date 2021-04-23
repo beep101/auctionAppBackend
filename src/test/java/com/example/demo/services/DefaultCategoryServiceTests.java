@@ -23,13 +23,13 @@ import com.example.demo.models.CategoryModel;
 import com.example.demo.repositories.CategoriesRepository;
 
 @RunWith(EasyMockRunner.class)
-public class CategoryServiceTests extends EasyMockSupport{
+public class DefaultCategoryServiceTests extends EasyMockSupport{
 	
 	@Mock
 	CategoriesRepository categoriesRepo;
 	
 	@TestSubject
-	CategoryService categoryService=new CategoryService(categoriesRepo);
+	DefaultCategoryService categoryService=new DefaultCategoryService(categoriesRepo);
 	
 	  @Before
 	  public void before(){

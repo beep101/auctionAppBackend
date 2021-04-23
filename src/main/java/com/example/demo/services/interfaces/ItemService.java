@@ -11,7 +11,7 @@ import com.example.demo.models.SearchModel;
 import com.example.demo.utils.PaginationParams;
 import com.example.demo.validations.FilterItemsRequest;
 
-public interface IItemService {
+public interface ItemService {
 	ItemModel getItem(int id) throws AuctionAppException;
 	ItemModel addItem(ItemModel item,User user) throws AuctionAppException;
 	ItemModel modItem(ItemModel item);

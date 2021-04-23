@@ -9,6 +9,8 @@ import ReactMarkdown from 'react-markdown'
 import BidTable from './bidTable';
 import RelatedItems from './relatedItems';
 import ReactTooltip from 'react-tooltip';
+import { addWishToWishlist, delWishFromWishlist } from '../apiConsumer/wishlistConsumer';
+import { timeDiffTodayToDateString } from '../utils/functions';
 
 class Item extends React.Component{
 
@@ -24,7 +26,8 @@ class Item extends React.Component{
                 msg:"",
                 msgType:"itemMsg",
                 isOwner:false,
-                expired:false
+                expired:false,
+                isWish:false
             }
         }else{
             this.state={
@@ -35,7 +38,8 @@ class Item extends React.Component{
                 msg:"",
                 msgType:"itemMsg",
                 isOwner:false,
-                isExpired:false
+                isExpired:false,
+                isWish:false
             }
         }
     }
@@ -47,12 +51,12 @@ class Item extends React.Component{
     componentDidMount=()=>{
         getItemById(this.state.id,(success,data)=>{
             if(success){
-                console.log(data);
                 this.setState({['item']:data});
                 this.setState({['displayedImage']:data.images[0]});
                 this.setState({['isOwner']:data.seller.id==this.context.user.jti});
                 this.isExpired();
-                if(data.bids[0].bidder.id==this.context.user.jti)
+                this.isWish(data);
+                if(data.bids.length&&data.bids[0].bidder.id==this.context.user.jti)
                     this.setBanner('You are the highest bidder','itemMsg successItemMsg');
             }else{
                 this.setState({['msg']:'Cannot load item',['msgType']:'itemMsg warningItemMsg'});
@@ -87,25 +91,7 @@ class Item extends React.Component{
     timeDiff=()=>{
         if(this.state.isExpired)
             return "Expired";
-        let t = this.state.item.endtime.split(/[-T:.]/);
-        let endtime = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
-        let secs=(endtime.getTime()-Date.now())/1000;
-
-        if(secs/60>1){
-            let mins=secs/60;
-            if(mins/60>1){
-                let hrs=mins/60;
-                if(hrs/24>1){
-                    return Math.round(hrs/24)+' days';
-                }else{
-                    return Math.round(hrs)+' hours';
-                }
-            }else{
-                return Math.round(mins/60)+' minutes';
-            }
-        }else{
-            return Math.round(secs/60)+' seconds';
-        }
+        return timeDiffTodayToDateString(this.state.item.endtime)
     }
 
     placeBid=()=>{
@@ -133,7 +119,6 @@ class Item extends React.Component{
                 this.loadBids();
             }else{
                 if(data.errors){
-                    console.log(data.errors)
                     this.setMsg(data.errors['User'],'itemMsg errorItemMsg');
                     this.loadBids();
                 }else{
@@ -150,6 +135,29 @@ class Item extends React.Component{
 
     setBanner=(msg,type)=>{
         this.setState({['msg']:msg,['msgType']:type});
+    }
+
+    isWish=(data)=>{
+        this.setState({['isWish']:this.context.wishes.some(w => w.item.id === data.id)});
+    }
+
+    onWishClick=()=>{
+        if(this.state.isWish){
+            let wishes=this.context.wishes.filter(w=>w.item.id===this.state.item.id);
+            delWishFromWishlist({id:wishes[0].id},this.context.jwt,(success,data)=>{
+                if(success){
+                    this.context.removeWish(data);
+                    this.setState({['isWish']:false});
+                }
+            })
+        }else{
+            addWishToWishlist({item:{id:this.state.item.id}},this.context.jwt,(success,data)=>{
+                if(success){
+                    this.context.addWish(data);
+                    this.setState({['isWish']:true});
+                }                
+            })
+        }
     }
 
     render(){
@@ -199,10 +207,17 @@ class Item extends React.Component{
                                 </div>
 
                                 <br/>
-                                <div className="listItemButton">
-                                    Watchlist
-                                    <img className="socialImg" src="/images/watchlist.svg"/>
-                                </div>
+                                {this.state.item.seller.id==this.context.user.jti?  
+                                    <div className="itemWishlistButton">
+                                        Wishlist
+                                        <img className="socialImg" src={this.state.isWish?"/images/watchlist_ppl.svg":"/images/watchlist.svg"}/>
+                                    </div>:
+                                    <div className={this.state.isWish?"itemWishlistButtonSelected pointer":"itemWishlistButton pointer"}
+                                        onClick={this.onWishClick}>
+                                        Wishlist
+                                        <img className="socialImg" src={this.state.isWish?"/images/watchlist_ppl.svg":"/images/watchlist.svg"}/>
+                                    </div>
+                                }
                             </div>
                                 
                         </div>

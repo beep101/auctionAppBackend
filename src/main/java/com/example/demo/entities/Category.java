@@ -18,7 +18,8 @@ import com.example.demo.models.CategoryModel;
 @Entity
 @Table(name="categories")
 @NamedQuery(name="Category.findAll", query="SELECT c FROM Category c")
-public class Category implements Serializable {
+public class Category  implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

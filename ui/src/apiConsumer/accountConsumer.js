@@ -1,4 +1,4 @@
-import { post } from './apiConsumer'
+import { post,defaultErrorHandler } from './apiConsumer'
 
 export function login(credentials,handler){
     post("login",credentials).then(
@@ -34,15 +34,7 @@ export function refresh(token,handler){
             handler(true,response.data);
         },
         (error)=>{
-            if(error.response){
-                if(error.response.status<500){
-                    handler(false,error.response.data);
-                }else{
-                    handler(false,"Server error");
-                }
-            }else{
-                handler(false,"Something went wrong");
-            }
+            defaultErrorHandler(error,handler);
         }
     );
 }

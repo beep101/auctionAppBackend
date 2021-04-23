@@ -15,7 +15,6 @@ import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import static org.easymock.EasyMock.*;
 
@@ -26,13 +25,12 @@ import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.UnallowedOperationException;
 import com.example.demo.models.AddressModel;
-import com.example.demo.models.ItemModel;
 import com.example.demo.models.PayMethodModel;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
-import com.example.demo.services.interfaces.IImageStorageService;
+import com.example.demo.services.interfaces.ImageStorageService;
 import com.example.demo.utils.Gender;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
@@ -40,7 +38,7 @@ import com.example.demo.utils.IJwtUtil;
 @RunWith(EasyMockRunner.class)
 public class AccountServiceModifyMethodsTests  extends EasyMockSupport{
 	@Mock
-	IImageStorageService<UserModel> imageService;
+	ImageStorageService<UserModel> imageService;
 	@Mock
 	IJwtUtil jwtUtilMock;
 	@Mock
@@ -60,7 +58,7 @@ public class AccountServiceModifyMethodsTests  extends EasyMockSupport{
 	
 	
 	@TestSubject
-	AccountService accountService=new AccountService(imageService,hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,payMethodRepoMock,mailSenderMock,subject,content,link);
+	DefaultAccountService accountService=new DefaultAccountService(imageService,hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,payMethodRepoMock,mailSenderMock,subject,content,link);
 	
 
 	@Test

@@ -1,4 +1,4 @@
-import {post} from './apiConsumer'
+import {post,defaultErrorHandler} from './apiConsumer'
 
 export function addItem(item,token,handler){
     post("items",item,{headers:{'Authorization' : 'Bearer '+token}}).then(
@@ -6,8 +6,7 @@ export function addItem(item,token,handler){
             handler(true,response.data);
         },
         (error)=>{
-            console.log(error);
-            handler(false,null);
+            defaultErrorHandler(error,handler);
         }
     );
 }

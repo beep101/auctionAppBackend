@@ -31,13 +31,13 @@ import com.example.demo.models.ModelWithImages;
 import com.example.demo.utils.IAwsS3Adapter;
 
 @RunWith(EasyMockRunner.class)
-public class ImageStorageS3Tests extends EasyMockSupport{
+public class S3ImageStorageServiceTests extends EasyMockSupport{
 	
 	@Mock
 	IAwsS3Adapter s3Adapter;
 	
 	@TestSubject
-	ImageStorageS3<ModelWithImages> imageStorage=new ImageStorageS3<>("","", s3Adapter);
+	S3ImageStorageService<ModelWithImages> imageStorage=new S3ImageStorageService<>("","", s3Adapter);
 	
 	@Test
 	public void addImageShouldCreateValidPutRequest() throws AuctionAppException, IOException {

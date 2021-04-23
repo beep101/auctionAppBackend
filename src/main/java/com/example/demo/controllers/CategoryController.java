@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.models.CategoryModel;
 import com.example.demo.repositories.CategoriesRepository;
-import com.example.demo.services.CategoryService;
-import com.example.demo.services.interfaces.ICategoryService;
+import com.example.demo.services.DefaultCategoryService;
+import com.example.demo.services.interfaces.CategoryService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,11 +23,11 @@ public class CategoryController {
 	@Autowired
 	private CategoriesRepository categoriesRepo;
 	
-	private ICategoryService categoryService;
+	private CategoryService categoryService;
 	
 	@PostConstruct
 	public void init() {
-		this.categoryService=new CategoryService(categoriesRepo);
+		this.categoryService=new DefaultCategoryService(categoriesRepo);
 	}
 	
 	@ApiOperation(value = "Lists all item categories", notes = "Public access")

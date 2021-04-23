@@ -1,4 +1,4 @@
-import {get} from './apiConsumer'
+import {get,defaultErrorHandler} from './apiConsumer'
 
 export function getAllCategories(handler){
     get("categories").then(
@@ -6,8 +6,7 @@ export function getAllCategories(handler){
             handler(true,response.data);
         },
         (error)=>{
-            console.log(error);
-            handler(false,null);
+            defaultErrorHandler(error,handler);
         }
     );
 }

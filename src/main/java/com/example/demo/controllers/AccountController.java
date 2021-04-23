@@ -5,25 +5,24 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.AuthUser;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
-import com.example.demo.exceptions.UnauthenticatedException;
 import com.example.demo.models.AddressModel;
 import com.example.demo.models.PayMethodModel;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
 import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
-import com.example.demo.services.AccountService;
-import com.example.demo.services.ImageStorageS3;
-import com.example.demo.services.interfaces.IAccountService;
-import com.example.demo.services.interfaces.IImageStorageService;
+import com.example.demo.services.DefaultAccountService;
+import com.example.demo.services.S3ImageStorageService;
+import com.example.demo.services.interfaces.AccountService;
+import com.example.demo.services.interfaces.ImageStorageService;
 import com.example.demo.utils.AwsS3Adapter;
 import com.example.demo.utils.IHashUtil;
 import com.example.demo.utils.IJwtUtil;
@@ -64,13 +63,13 @@ public class AccountController {
 	@Value("${s3.userBucketName}")
 	private String bucketName;
 
-	private IAccountService accountService;
-	private IImageStorageService<UserModel> imageService;
+	private AccountService accountService;
+	private ImageStorageService<UserModel> imageService;
 	
 	@PostConstruct
 	public void init() {
-		imageService=new ImageStorageS3<UserModel>(bucketName,imageBucketBaseUrl,new AwsS3Adapter(id, key));
-		accountService=new AccountService(imageService,hashUtil, jwtUtil, usersRepo,addressRepo,payMethodRepo,mailSender,subject,content,link);
+		imageService=new S3ImageStorageService<UserModel>(bucketName,imageBucketBaseUrl,new AwsS3Adapter(id, key));
+		accountService=new DefaultAccountService(imageService,hashUtil, jwtUtil, usersRepo,addressRepo,payMethodRepo,mailSender,subject,content,link);
 	}
 	
 	@ApiOperation(value = "Requires valid email and password to return JWT", notes = "Public access")
@@ -99,85 +98,43 @@ public class AccountController {
 
 	@ApiOperation(value = "Updates account data", notes = "Only authenticated users")
 	@PutMapping("api/account")
-	public UserModel updateData(@RequestBody UserModel data) throws AuctionAppException{
-		User principal=null;
-		try {
-			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}catch(ClassCastException ex) {
-			throw new UnauthenticatedException();
-		}
+	public UserModel updateData(@RequestBody UserModel data,@AuthUser User principal) throws AuctionAppException{
 		return accountService.updateAccount(data,principal);
 	}
 	
 	@ApiOperation(value = "Bind new address to account", notes = "Only authenticated users")
 	@PostMapping("api/account/address")
-	public UserModel addAddress(@RequestBody AddressModel data) throws AuctionAppException{
-		User principal=null;
-		try {
-			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}catch(ClassCastException ex) {
-			throw new UnauthenticatedException();
-		}
+	public UserModel addAddress(@RequestBody AddressModel data,@AuthUser User principal) throws AuctionAppException{
 		return accountService.addAddress(data,principal);
 	}
 	
 	@ApiOperation(value = "Modifies current address", notes = "Only authenticated users")
 	@PutMapping("api/account/address")
-	public UserModel modAddress(@RequestBody AddressModel data) throws AuctionAppException{
-		User principal=null;
-		try {
-			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}catch(ClassCastException ex) {
-			throw new UnauthenticatedException();
-		}
+	public UserModel modAddress(@RequestBody AddressModel data,@AuthUser User principal) throws AuctionAppException{
 		return accountService.modAddress(data,principal);
 	}
 	
 	@ApiOperation(value = "Bind new pay method to account", notes = "Only authenticated users")
 	@PostMapping("api/account/payMethod")
-	public UserModel addPayMethod(@RequestBody PayMethodModel data) throws AuctionAppException{
-		User principal=null;
-		try {
-			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}catch(ClassCastException ex) {
-			throw new UnauthenticatedException();
-		}
+	public UserModel addPayMethod(@RequestBody PayMethodModel data,@AuthUser User principal) throws AuctionAppException{
 		return accountService.addPayMethod(data,principal);
 	}
 	
 	@ApiOperation(value = "Modifies current pay method", notes = "Only authenticated users")
 	@PutMapping("api/account/payMethod")
-	public UserModel modPayMethod(@RequestBody PayMethodModel data) throws AuctionAppException{
-		User principal=null;
-		try {
-			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}catch(ClassCastException ex) {
-			throw new UnauthenticatedException();
-		}
+	public UserModel modPayMethod(@RequestBody PayMethodModel data,@AuthUser User principal) throws AuctionAppException{
 		return accountService.modPayMethod(data,principal);
 	}
 	
 	@ApiOperation(value = "Sets new profile image for user", notes = "Only authenticated users")
 	@PostMapping("api/account/image")
-	public UserModel addProfileImage(@RequestBody UserModel data) throws AuctionAppException{
-		User principal=null;
-		try {
-			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}catch(ClassCastException ex) {
-			throw new UnauthenticatedException();
-		}
+	public UserModel addProfileImage(@RequestBody UserModel data,@AuthUser User principal) throws AuctionAppException{
 		return accountService.setProfileImage(data,principal);
 	}
 	
 	@ApiOperation(value = "Returns new extended JWT if old still valid", notes = "Only authenticated users")
 	@PostMapping("api/refresh")
-	public UserModel refreshToken() throws AuctionAppException{
-		User principal=null;
-		try {
-			principal = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}catch(ClassCastException ex) {
-			throw new UnauthenticatedException();
-		}
+	public UserModel refreshToken(@AuthUser User principal) throws AuctionAppException{
 		return accountService.refreshToken(principal);
 	}
 }

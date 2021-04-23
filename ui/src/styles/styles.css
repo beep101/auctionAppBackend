@@ -719,7 +719,7 @@ hr.gridBreak{
     align-items: center;
 }
 
-table.bidTable{
+.bidTable{
     border-color: #d8d8d8;
     border-width: 1px;
     border-style: solid;
@@ -735,12 +735,12 @@ table.bidTable{
     margin-bottom: 2vw;
 }
 
-tr.bidTable{
+.bidTableTr{
     text-align: left;
     font-size: large;
 }
 
-th.bidTable{
+.bidTableTh{
     font-weight: normal;
     padding-bottom: 5px;
     color: #8367D8;
@@ -749,7 +749,7 @@ th.bidTable{
     border-bottom-style: solid;
 }
 
-td.bidTable{
+.bidTableTd{
     padding-top: 4px;
     padding-bottom: 4px;
 }
@@ -1027,6 +1027,7 @@ hr.solidVerticalLine{
 .gridItemButton{
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 2px;
     padding-left: 12px;
     padding-right: 6px;
@@ -1036,8 +1037,6 @@ hr.solidVerticalLine{
     border-color: #5a5a5a;
     border-width: 1px;
     border-style: solid;
-
-    cursor: pointer;
 
     background-color: #ffffff;
 
@@ -1542,7 +1541,7 @@ hr.solidVerticalLine{
     margin-right: 10px;
 }
 
-table.accountSellerTable{
+.accountSellerTable{
     border-color: #d8d8d8;
     border-width: 1px;
     border-style: solid;
@@ -1556,15 +1555,15 @@ table.accountSellerTable{
     text-align: center;
 }
 
-tr.accountSellerTable{
+.accountSellerTableTr{
     font-size: large;
 }
 
-tr.accountSellerTableMedium{
+.accountSellerTableMediumTr{
     font-size: medium;
 }
 
-th.accountSellerTable{
+.accountSellerTableTh{
     color: #252525;
     background-color: #ececec;
     padding: 10px;
@@ -1572,7 +1571,7 @@ th.accountSellerTable{
     padding-right: 25px;
 }
 
-.accountSellerTable td{
+.accountSellerTableTd{
     padding: 10px;
     padding-left: 25px;
     padding-right: 25px;
@@ -1586,7 +1585,7 @@ th.accountSellerTable{
     justify-content: center;
 }
 
-img.accountSellerTable{
+.accountSellerTableImg{
     max-width: 95%;
     max-height: 95%;
 }
@@ -1643,6 +1642,8 @@ img.accountSellerTable{
     border-width: 3px;
     border-style: solid;
     border-color: #9b9b9b;
+    
+    box-shadow: 3px 3px #d8d8d8;
 }
 
 .center{
@@ -1961,4 +1962,100 @@ img.accountSellerTable{
     border-style: solid;   
     
     box-shadow: 4px 4px #d8d8d8;
+}
+.openWish{
+    text-align: center;
+
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    color:#417505;
+    background-color: #ececec;
+    font-family: 'Lato', sans-serif;  
+    font-size: medium;
+    font-weight: bold;
+}
+.closedWish{
+    text-align: center;
+
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    color:#9c2510;
+    background-color: #ececec;
+    font-family: 'Lato', sans-serif;  
+    font-size: medium;
+    font-weight: bold;
+}
+
+.itemWishlistButton{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px;
+    padding-left: 12px;
+    padding-right: 6px;
+
+    margin: 10px;
+
+    border-color: #d8d8d8;
+    border-width: 1px;
+    border-style: solid;
+
+    background-color: #ffffff;
+
+    color: #d8d8d8;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;
+}
+
+.itemWishlistButtonSelected{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px;
+    padding-left: 12px;
+    padding-right: 6px;
+
+    margin: 10px;
+
+    border-color: #8367D8;
+    border-width: 1px;
+    border-style: solid;
+
+    background-color: #ffffff;
+
+    color: #8367D8;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;    
+}
+
+.pointer{
+    cursor: pointer;
+}
+
+.gridItemButtonSelected{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px;
+    padding-left: 12px;
+    padding-right: 6px;
+
+    margin: 10px;
+
+    border-color: #8367D8;
+    border-width: 1px;
+    border-style: solid;
+
+    background-color: #ffffff;
+
+    color: #8367D8;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;
 }

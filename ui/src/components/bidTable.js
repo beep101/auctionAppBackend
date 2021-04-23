@@ -16,10 +16,10 @@ function BidTable(props){
             <col className="bidTableColumn2"/>
             <col className="bidTableColumn3"/>
             <thead/>
-            <tr className="bidTable">
-                <th className="bidTable">Name</th>
-                <th className="bidTable">Date</th>
-                <th className="bidTable">Amount</th>
+            <tr className="bidTableTr">
+                <th className="bidTableTh">Name</th>
+                <th className="bidTableTh">Date</th>
+                <th className="bidTableTh">Amount</th>
             </tr>
             {bids.map((bid)=><BidLine bid={bid}/>)}
         </table>
@@ -47,10 +47,10 @@ function BidLine(props){
     
 
     return(
-        <tr className="bidTable">
-            <td className="bidTable">{name}</td>
-            <td className="bidTable">{time}</td>
-            <td className="bidTable">{amount}</td>
+        <tr className="bidTableTr">
+            <td className="bidTableTd">{name}</td>
+            <td className="bidTableTd">{time}</td>
+            <td className="bidTableTd">{amount}</td>
         </tr>
     )
 }

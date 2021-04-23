@@ -1,7 +1,7 @@
-import {get,post,defaultErrorHandler} from './apiConsumer';
+import {get,post,del,defaultErrorHandler} from './apiConsumer';
 
-export function getBids(itemId,handler){
-    get(`items/${itemId}/bids`).then(
+export function getAllWishes(token,handler){
+    get("wishlist",{headers:{'Authorization' : 'Bearer '+token}}).then(
         (response)=>{
             handler(true,response.data);
         },
@@ -11,8 +11,8 @@ export function getBids(itemId,handler){
     );
 }
 
-export function getBidsLimited(itemId,limit,handler){
-    get(`items/${itemId}/bids?limit=${limit}`).then(
+export function addWishToWishlist(wish,token,handler){
+    post("wishlist",wish,{headers:{'Authorization' : 'Bearer '+token}}).then(
         (response)=>{
             handler(true,response.data);
         },
@@ -22,8 +22,8 @@ export function getBidsLimited(itemId,limit,handler){
     );
 }
 
-export function addBid(bid,token,handler){
-    post("bids",bid,{headers:{'Authorization' : 'Bearer '+token}}).then(
+export function delWishFromWishlist(wish,token,handler){
+    del(`wishlist?wishId=${wish.id}`,{headers:{'Authorization' : 'Bearer '+token}}).then(
         (response)=>{
             handler(true,response.data);
         },

@@ -59,6 +59,9 @@ public class User implements Serializable {
 	@OneToMany(mappedBy="seller")
 	private List<Item> items;
 	
+	@OneToMany(mappedBy="user")
+	private List<Wish> wishes;
+	
 	@ManyToOne
 	@JoinColumn(name="address")
 	private Address address;
@@ -132,6 +135,14 @@ public class User implements Serializable {
 
 	public void setAddress(Address address) {
 		this.address = address;
+	}
+	
+	public List<Wish> getWishes() {
+		return wishes;
+	}
+
+	public void setWishes(List<Wish> wishes) {
+		this.wishes = wishes;
 	}
 
 	public Timestamp getForgotPasswordTokenEndTime() {
