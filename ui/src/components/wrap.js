@@ -20,6 +20,7 @@ import ForgotPassword from './forgotPassword';
 import NewPassword from './newPassword';
 import AllCategories from './allCategories';
 import AddItem from './addItem';
+import Notifications from './notifications';
 
 class Wrap extends Component{
 
@@ -55,6 +56,7 @@ class Wrap extends Component{
                         <Route path="/newPassword" exact component={NewPassword} />
                         <Route path="/allCategories" exact component={AllCategories} />
                         <Route path="/addItem" exact component={AddItem}/>
+                        <Route path="/notifications" exact component={Notifications}/>
                     </div>
 
                     <div id="footer"  className="footerBar">
