@@ -37,6 +37,7 @@ import com.example.demo.models.ItemModel;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.BidsRepository;
 import com.example.demo.repositories.ItemsRepository;
+import com.example.demo.services.interfaces.PushNotificationsService;
 
 @RunWith(EasyMockRunner.class)
 public class DefaultBidServiceTests extends EasyMockSupport{
@@ -46,9 +47,11 @@ public class DefaultBidServiceTests extends EasyMockSupport{
 	BidsRepository bidsRepo;
 	@Mock
 	ItemsRepository itemsRepo;
+	@Mock
+	PushNotificationsService notificationsService;
 	
 	@TestSubject
-	DefaultBidService bidService=new DefaultBidService(bidsRepo,itemsRepo);
+	DefaultBidService bidService=new DefaultBidService(bidsRepo,itemsRepo,notificationsService);
 	
 	
 	@Test(expected = InvalidDataException.class)
@@ -349,6 +352,8 @@ public class DefaultBidServiceTests extends EasyMockSupport{
 		
 		expect(itemsRepo.getOne(anyInt())).andReturn(item);
 		expect(bidsRepo.save(anyObject())).andReturn(bid);
+		notificationsService.notifyUser(anyObject(), anyObject());
+		expectLastCall().anyTimes();
 		replayAll();
 		
 		BidModel resultModel=bidService.addBid(model, user);

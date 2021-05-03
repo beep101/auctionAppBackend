@@ -12,5 +12,5 @@
       ],
       "@babel/preset-react"
     ],
-    "plugins": ["@babel/plugin-proposal-class-properties","transform-async-to-generator","emotion"]
+    "plugins": ["@babel/proposal-class-properties","@babel/plugin-transform-async-to-generator","emotion"]
   }

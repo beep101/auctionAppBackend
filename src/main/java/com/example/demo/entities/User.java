@@ -70,6 +70,9 @@ public class User implements Serializable {
 	@JoinColumn(name="payment")
 	private PayMethod payMethod;
 
+	@OneToMany(mappedBy="user")
+	private List<PushSub> pushSub;
+	
 	public User() {
 	}
 
@@ -212,7 +215,15 @@ public class User implements Serializable {
 
 		return item;
 	}
-	
+		
+	public List<PushSub> getPushSub() {
+		return pushSub;
+	}
+
+	public void setPushSub(List<PushSub> pushSub) {
+		this.pushSub = pushSub;
+	}
+
 	public UserModel toModel() {
 		UserModel model=new UserModel();
 		model.setId(this.getId());

@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.example.demo.entities.Bid;
 import com.example.demo.entities.Item;
+import com.example.demo.entities.Notification;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.BidAmountLowException;
@@ -24,16 +25,20 @@ import com.example.demo.models.BidModel;
 import com.example.demo.repositories.BidsRepository;
 import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.services.interfaces.BidService;
+import com.example.demo.services.interfaces.PushNotificationsService;
 
 
 public class DefaultBidService implements BidService{
 	
 	private BidsRepository bidsRepo;
 	private ItemsRepository itemsRepo;
+	
+	private PushNotificationsService notificationsService;
 
-	public DefaultBidService(BidsRepository bidsRepo,ItemsRepository itemsRepo) {
+	public DefaultBidService(BidsRepository bidsRepo,ItemsRepository itemsRepo, PushNotificationsService notificationsService) {
 		this.bidsRepo=bidsRepo;
 		this.itemsRepo=itemsRepo;
+		this.notificationsService=notificationsService;
 	}
 	
 	@Override
@@ -83,8 +88,22 @@ public class DefaultBidService implements BidService{
 
 		Timestamp crr=new Timestamp(System.currentTimeMillis());
 		bidEntity.setTime(crr);
+		bidEntity=bidsRepo.save(bidEntity);
+		//notify last bidder and seller
+		if(maxBid.isPresent()) {
+			Notification ntf=new Notification(
+					"You are outbidded!",
+					"Someone bidded more than you on "+item.getName(),
+					"/item?id="+item.getId());
+			notificationsService.notifyUser(maxBid.get().getBidder(), ntf);
+		}
+		Notification ntf=new Notification(
+				"Your item recieved a bid",
+				user.getName()+" "+user.getSurname()+" bidded on "+item.getName(),
+				"/item?id="+item.getId());
+		notificationsService.notifyUser(item.getSeller(), ntf);
 		
-		return bidsRepo.save(bidEntity).toModel();
+		return bidEntity.toModel();
 	}
 	
 	@Override
