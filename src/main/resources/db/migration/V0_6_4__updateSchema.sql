@@ -1,1 +1,1 @@
-alter table notifications add column link varchar;
+alter table notifications add column link varchar not null default '';

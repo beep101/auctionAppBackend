@@ -98,7 +98,7 @@ public class DefaultBidService implements BidService{
 			notificationsService.notifyUser(maxBid.get().getBidder(), ntf);
 		}
 		Notification ntf=new Notification(
-				"Your item recieved a bid",
+				"Your item received a bid",
 				user.getName()+" "+user.getSurname()+" bidded on "+item.getName(),
 				"/item?id="+item.getId());
 		notificationsService.notifyUser(item.getSeller(), ntf);

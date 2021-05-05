@@ -118,7 +118,11 @@ public class DefaultPushNotificationsService implements PushNotificationsService
 		notifications.stream().forEach(t -> {
 			try {
 				sendNotification(t);
-			} catch (AuctionAppException e) {}
+			} catch (AuctionAppException e) {
+				System.out.println("Sending notificatin unsuccesseful");
+				System.out.println("Recipient: "+t.getUser().getId()+" "+t.getUser().getEmail());
+				System.out.println("Notification URL: "+t.getLink()+"\n");
+			}
 		});
 	}
 	

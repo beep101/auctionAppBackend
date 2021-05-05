@@ -56,13 +56,13 @@ public class PushNotificationsController {
 		return pushNotificationsService.getPublicKeyBase64();
 	}
 
-	@ApiOperation(value = "Fetches push notifications service public key", notes = "Only authenticated users")
+	@ApiOperation(value = "Subscribes browser to push notifications", notes = "Only authenticated users")
 	@PostMapping("/api/pushNotifications")
 	public PushServiceSubModel subscribe(@RequestBody PushServiceSubModel subData,@AuthUser User principal) throws AuctionAppException{
 		return pushNotificationsService.subscribe(subData, principal);
 	}
 	
-	@ApiOperation(value = "Fetches push notifications service public key", notes = "Only authenticated users")
+	@ApiOperation(value = "Unsubscribes browser that uses link passed in request", notes = "Only authenticated users")
 	@DeleteMapping("/api/pushNotifications")
 	public PushServiceSubModel unsubscribe(@RequestParam String link,@AuthUser User principal) throws AuctionAppException{
 		return pushNotificationsService.unsubscribe(link, principal);
