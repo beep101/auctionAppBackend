@@ -19,6 +19,7 @@ public class UserModel implements ModelWithImages{
 	private PayMethodModel payMethod;
 	private byte[] newImage;
 	private List<String> images;
+	private String merchantId;
 	
 	public UserModel() {
 		super();
@@ -118,4 +119,13 @@ public class UserModel implements ModelWithImages{
 	public void setImages(List<String> images) {
 		this.images = images;
 	}
+
+	public String getMerchantId() {
+		return merchantId;
+	}
+
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
+	}
+		
 }

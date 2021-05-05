@@ -47,6 +47,9 @@ public class User implements Serializable {
 
 	@Column(name="birthday")
 	private Timestamp birthday;
+
+	@Column(name="merchantid")
+	private String merchantId;
 	
 	@Column(name="forgot_password_token_end_time")
 	private Timestamp forgotPasswordTokenEndTime;
@@ -223,6 +226,14 @@ public class User implements Serializable {
 	public void setPushSub(List<PushSub> pushSub) {
 		this.pushSub = pushSub;
 	}
+	
+	public String getMerchantId() {
+		return merchantId;
+	}
+
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
+	}
 
 	public UserModel toModel() {
 		UserModel model=new UserModel();
@@ -232,6 +243,7 @@ public class User implements Serializable {
 		model.setEmail(this.getEmail());
 		model.setBirthday(this.getBirthday());
 		model.setGender(this.getGender());
+		model.setMerchantId(this.getMerchantId());
 		if(this.getAddress()!=null)
 			model.setAddress(this.getAddress().toModel());
 		return model;

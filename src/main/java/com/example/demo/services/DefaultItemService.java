@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import com.example.demo.exceptions.ImageUploadException;
 import com.example.demo.exceptions.InsertFailedException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.NotFoundException;
+import com.example.demo.exceptions.UnallowedOperationException;
 import com.example.demo.models.HistogramResponseModel;
 import com.example.demo.models.ItemModel;
 import com.example.demo.models.SearchModel;
@@ -77,6 +79,11 @@ public class DefaultItemService implements ItemService {
 
 	@Override
 	public ItemModel addItem(ItemModel itemModel,User user) throws AuctionAppException {
+		if(user.getMerchantId().isBlank()) {
+			Map<String,String> problems=new HashMap<>();
+			problems.put("User", "Userm must have seller account, PayPal integration required");
+			throw new UnallowedOperationException(problems);
+		}
 		Map<String,String> problems=(new ItemRequest(itemModel)).validate();
 		if(!problems.isEmpty()) {
 			throw new InvalidDataException(problems);

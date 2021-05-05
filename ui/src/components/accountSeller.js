@@ -1,10 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
+import { refresh } from '../apiConsumer/accountConsumer';
 import { getActiveItems, getInactiveItems } from '../apiConsumer/itemFetchConsumer';
+import { getPayPalOnboardUrl } from '../apiConsumer/payPalIntegrationConsumer';
 import AuthContext from '../context';
 import { timeDiffTodayToDateString } from '../utils/functions';
 
 function AccountSeller(props){
+    const [payPalUrl, setPayPalUrl]=useState('');
     const [active, setActive]=useState([]);
     const [inactive,setInactive]=useState([]);
     const [activeSelected,setActiveSelected]=useState(true);
@@ -13,6 +16,13 @@ function AccountSeller(props){
 
     useEffect(()=>{
         const token=context.jwt;
+        refresh(context.jwt,(success,data)=>{
+            if(success){
+                context.login(data.jwt);
+                localStorage.removeItem('token');
+                localStorage.setItem('token',data.jwt);
+            }
+        })
         getActiveItems(token,(success,data)=>{
             if(success){
                 setActive(data);
@@ -27,15 +37,31 @@ function AccountSeller(props){
                 setInactive([]);
             }
         });
+        getPayPalOnboardUrl(token,(success,data)=>{
+            if(success){
+                setPayPalUrl(data.url);
+            }else{
+                setPayPalUrl('');
+            }
+        });
     },[])
 
-    if(active.length==0&&inactive.length==0)
+    if(!context.user.user.merchantId){
+        return(
+            <div className="notSellerContainer">
+                <div className="notSellerTitle">SELL</div>
+                <img className="notSellerImg" src="images/bag.svg"></img>
+                <div className="notSellerLabel">You haven't verified PayPal account, verify account to become seller.</div>
+                <a href={payPalUrl} className="notSellerButton" to="/addItem">Become seller</a>
+            </div>
+        )
+    }else if(active.length==0&&inactive.length==0)
         return(
             <div className="notSellerContainer">
                 <div className="notSellerTitle">SELL</div>
                 <img className="notSellerImg" src="images/bag.svg"></img>
                 <div className="notSellerLabel">You do not have any scheduled items for sale.</div>
-                <Link className="notSellerButton" to="/addItem">Become seller</Link>
+                <Link className="notSellerButton" to="/addItem">Add item</Link>
             </div>
         )
     else
