@@ -94,6 +94,7 @@ public class ItemServiceAddItemTests extends EasyMockSupport{
 		Address address=new Address();
 		address.setId(1);
 		user.setAddress(address);
+		user.setMerchantId("QWERTY");
 		return user;
 	}
 	

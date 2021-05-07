@@ -10,3 +10,14 @@ export function getPayPalOnboardUrl(token,handler){
         }
     );
 }
+
+export function getClientTokens(token,handler){
+    get('getClientToken',{headers:{'Authorization' : 'Bearer '+token}}).then(
+        (response)=>{
+            handler(true,response.data);
+        },
+        (error)=>{
+            defaultErrorHandler(error,handler);
+        }
+    );
+}

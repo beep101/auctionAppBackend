@@ -79,7 +79,7 @@ public class DefaultItemService implements ItemService {
 
 	@Override
 	public ItemModel addItem(ItemModel itemModel,User user) throws AuctionAppException {
-		if(user.getMerchantId().isBlank()) {
+		if(user.getMerchantId()!=null&&user.getMerchantId().isBlank()) {
 			Map<String,String> problems=new HashMap<>();
 			problems.put("User", "Userm must have seller account, PayPal integration required");
 			throw new UnallowedOperationException(problems);

@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -11,12 +12,24 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Base64;
 import java.util.Optional;
 
+import com.example.demo.entities.Item;
+import com.example.demo.entities.Order;
 import com.example.demo.entities.User;
+import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.ExternalServiceError;
+import com.example.demo.exceptions.InvalidDataException;
+import com.example.demo.exceptions.UnallowedOperationException;
 import com.example.demo.models.paypal.AccessTokenResponseModel;
+import com.example.demo.models.paypal.ClientTokenModel;
 import com.example.demo.models.paypal.OnboardingUrlModel;
 import com.example.demo.models.paypal.OnboardingUrlResponseModel;
+import com.example.demo.models.paypal.OrderModel;
+import com.example.demo.models.paypal.OrderRequestModel;
+import com.example.demo.models.paypal.OrderResponseModel;
 import com.example.demo.models.paypal.WebhookOnboardingModel;
+import com.example.demo.models.paypal.WebhookOrderModel;
+import com.example.demo.repositories.ItemsRepository;
+import com.example.demo.repositories.OrdersRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +37,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class DefaultPayPalTransactionService {
 	private static final String TOKEN_PATH="/v1/oauth2/token";
 	private static final String ONBOARDING_REQ_PATH="/v2/customer/partner-referrals";
+	private static final String CLIENT_TOKEN_PATH="/v1/identity/generate-token";
+	private static final String ORDER_PATH="/v2/checkout/orders";
 	private static final String ONBOARDING_REQ_BODY="{\r\n"
 			+ "    \"tracking_id\": \"%d\",\r\n"
 			+ "    \"operations\": [\r\n"
@@ -55,9 +70,12 @@ public class DefaultPayPalTransactionService {
 			+ "}";
 	
 	private UsersRepository usersRepo;
+	private ItemsRepository itemsRepo;
+	private OrdersRepository ordersRepo;
 	
 	private String id;
 	private String secret;
+	private String bncode;
 	private String baseUrl;
 	
 	private HttpClient httpClient;
@@ -65,15 +83,18 @@ public class DefaultPayPalTransactionService {
 	
 	private String key;
 	
-	public DefaultPayPalTransactionService(String id,String secret, String baseUrl, UsersRepository usersRepo) {
+	public DefaultPayPalTransactionService(String id,String secret,String bncode, String baseUrl,OrdersRepository ordersRepo, UsersRepository usersRepo,ItemsRepository itemsRepo) {
 		this.id=id;
 		this.secret=secret;
+		this.bncode=bncode;
 		this.baseUrl=baseUrl;
 		
 	    this.httpClient = HttpClient.newHttpClient();
 	    this.objectMapper=new ObjectMapper();
 	    
 	    this.usersRepo=usersRepo;
+	    this.itemsRepo=itemsRepo;
+	    this.ordersRepo=ordersRepo;
 	}
 
 	public int fetchKey() {
@@ -127,6 +148,32 @@ public class DefaultPayPalTransactionService {
 		return model;
 	}
 	
+	public ClientTokenModel getClientToken() throws ExternalServiceError {
+		Builder requestBuilder=HttpRequest.newBuilder();
+		requestBuilder.uri(URI.create(baseUrl+CLIENT_TOKEN_PATH))
+			.header("Authorization", "Bearer "+this.key)
+			.header("Accept", "application/json")
+			.header("Content-Type", "application/json")
+			.header("Accept-Language", "en_US");
+		requestBuilder.POST(BodyPublishers.noBody());
+		
+		HttpResponse<String> response;
+		try {
+			response = this.httpClient.send(requestBuilder.build(),BodyHandlers.ofString());
+		} catch (IOException | InterruptedException e) {
+			throw new ExternalServiceError();
+		}
+		ClientTokenModel model;
+		try {
+			model = objectMapper.readValue(response.body(), ClientTokenModel.class);
+		} catch (JsonProcessingException e) {
+			throw new ExternalServiceError();
+		}
+		model.setClient_id(this.id);
+		model.setBncode(bncode);
+		return model;		
+	}
+	
 	public void onboardingEvent(WebhookOnboardingModel data) {
 		switch(data.getEvent_type()) {
 			case "MERCHANT.ONBOARDING.COMPLETED":
@@ -168,5 +215,97 @@ public class DefaultPayPalTransactionService {
 				usersRepo.save(user);
 			}
 		}
+	}
+	
+	public OrderModel createOrder(Item item,User principal) throws AuctionAppException {
+		Optional<Item> itemOpt=itemsRepo.findById(item.getId());
+		if(itemOpt.isEmpty())
+			throw new InvalidDataException();
+		item=itemOpt.get();
+		if(item.getWinner().getId()!=principal.getId())
+			throw new UnallowedOperationException();
+		BigDecimal price=item.getBids().stream().max((a,b)->a.getAmount().compareTo(b.getAmount())).get().getAmount();
+		OrderRequestModel orderReqData=new OrderRequestModel(item.getId(),price,item.getSeller().getMerchantId());
+		
+		Builder requestBuilder=HttpRequest.newBuilder();
+		requestBuilder.uri(URI.create(baseUrl+ORDER_PATH))
+			.header("Authorization", "Bearer "+this.key)
+			.header("PayPal-Partner-Attribution-Id", this.bncode)
+			.header("Content-Type", "application/json");
+		try {
+			requestBuilder.POST(BodyPublishers.ofString(objectMapper.writeValueAsString(orderReqData)));
+		} catch (JsonProcessingException e1) {
+			throw new InvalidDataException();
+		}
+		
+		HttpResponse<String> response;
+		try {
+			response = this.httpClient.send(requestBuilder.build(),BodyHandlers.ofString());
+		} catch (IOException | InterruptedException e) {
+			throw new ExternalServiceError();
+		}
+		if(response.statusCode()>=300)
+			throw new ExternalServiceError();
+
+		OrderResponseModel orderResponse;
+		try {
+			orderResponse = objectMapper.readValue(response.body(), OrderResponseModel.class);
+		} catch (JsonProcessingException e) {
+			throw new ExternalServiceError();
+		}
+		if(!orderResponse.getStatus().equals("CREATED"))
+			throw new ExternalServiceError();
+		
+		Order orderEntity=new Order();
+		orderEntity.setOrderId(orderResponse.getId());
+		orderEntity.setItem(item);
+		orderEntity.setSuccesseful(false);
+		ordersRepo.save(orderEntity);
+		OrderModel orderResponseModel=new OrderModel(orderEntity.getOrderId(),item.getSeller().getMerchantId(),price,false);
+		return orderResponseModel;
+	}
+	
+	public OrderModel captureOrder(String orderId,User principal) throws AuctionAppException {
+
+		Optional<Order> orderOpt=ordersRepo.findById(orderId);
+		if(orderOpt.isEmpty())
+			throw new InvalidDataException();
+		
+		Order orderEntity=orderOpt.get();
+		String merchantId=orderEntity.getItem().getSeller().getMerchantId();
+		BigDecimal price=orderEntity.getItem().getBids().stream().max((a,b)->a.getAmount().compareTo(b.getAmount())).get().getAmount();
+		
+		Builder requestBuilder=HttpRequest.newBuilder();
+		requestBuilder.uri(URI.create(baseUrl+ORDER_PATH+"/"+orderId+"/capture"))
+			.header("Authorization", "Bearer "+this.key)
+			.header("PayPal-Partner-Attribution-Id", this.bncode)
+			.header("Content-Type", "application/json")
+			.POST(BodyPublishers.ofString("{}"));
+		
+		HttpResponse<String> response;
+		try {
+			response = this.httpClient.send(requestBuilder.build(),BodyHandlers.ofString());
+		} catch (IOException | InterruptedException e) {
+			throw new ExternalServiceError();
+		}
+		if(response.statusCode()>=300)
+			throw new ExternalServiceError();
+
+		OrderResponseModel orderResponse;
+		try {
+			orderResponse = objectMapper.readValue(response.body(), OrderResponseModel.class);
+		} catch (JsonProcessingException e) {
+			throw new ExternalServiceError();
+		}
+		if(orderResponse.getStatus()!="COMPLETED")
+			throw new InvalidDataException();
+		
+		ordersRepo.save(orderEntity);
+		OrderModel orderResponseModel=new OrderModel(orderEntity.getOrderId(),merchantId,price,false);
+		return orderResponseModel;
+	}
+	
+	public void orderEvent(WebhookOrderModel order) {
+		
 	}
 }
