@@ -95,13 +95,17 @@ public class DefaultBidService implements BidService{
 					"You are outbidded!",
 					"Someone bidded more than you on "+item.getName(),
 					"/item?id="+item.getId());
-			notificationsService.notifyUser(maxBid.get().getBidder(), ntf);
+			ntf.setUser(user);
+			ntf.setTime(new Timestamp(System.currentTimeMillis()));
+			notificationsService.sendNotification(ntf);
 		}
 		Notification ntf=new Notification(
 				"Your item received a bid",
 				user.getName()+" "+user.getSurname()+" bidded on "+item.getName(),
 				"/item?id="+item.getId());
-		notificationsService.notifyUser(item.getSeller(), ntf);
+		ntf.setUser(user);
+		ntf.setTime(new Timestamp(System.currentTimeMillis()));
+		notificationsService.sendNotification(ntf);
 		
 		return bidEntity.toModel();
 	}
