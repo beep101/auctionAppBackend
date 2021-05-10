@@ -44,6 +44,17 @@ public class ScheduledSoldItemsCheckComponent{
 
 	private PushNotificationsService notificationsService;
 	
+	public ScheduledSoldItemsCheckComponent() {
+		super();
+	}
+	
+	public ScheduledSoldItemsCheckComponent(ItemsRepository itemsRepo, PushNotificationsService notificationsService) throws AuctionAppException {
+		super();
+		
+		this.itemsRepo=itemsRepo;
+		this.notificationsService=notificationsService;
+	}
+	
 	@PostConstruct
 	public void init() throws AuctionAppException {
 		this.notificationsService=new DefaultPushNotificationsService(pushSubsRepo,notificationsRepo,msgEncryptionUtil,new DefaultHttpClientAdapter(),privateKey,publicKey);
