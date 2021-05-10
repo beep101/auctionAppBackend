@@ -104,7 +104,7 @@ public class Notification {
 		model.setTitle(this.getTitle());
 		model.setBody(this.getBody());
 		model.setTime(this.getTime());
-		model.setLink(this.link==null?"":this.link);
+		model.setLink(this.getLink());
 		
 		return model;
 	}

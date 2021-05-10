@@ -352,7 +352,7 @@ public class DefaultBidServiceTests extends EasyMockSupport{
 		
 		expect(itemsRepo.getOne(anyInt())).andReturn(item);
 		expect(bidsRepo.save(anyObject())).andReturn(bid);
-		notificationsService.notifyUser(anyObject(), anyObject());
+		notificationsService.sendNotification(anyObject());
 		expectLastCall().anyTimes();
 		replayAll();
 		

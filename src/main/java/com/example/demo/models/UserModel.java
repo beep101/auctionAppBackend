@@ -20,6 +20,7 @@ public class UserModel implements ModelWithImages{
 	private byte[] newImage;
 	private List<String> images;
 	private String merchantId;
+	private boolean pushNotifications;
 	
 	public UserModel() {
 		super();
@@ -128,4 +129,11 @@ public class UserModel implements ModelWithImages{
 		this.merchantId = merchantId;
 	}
 		
+	public boolean isPushNotifications() {
+		return pushNotifications;
+	}
+
+	public void setPushNotifications(boolean pushNotifications) {
+		this.pushNotifications = pushNotifications;
+	}
 }

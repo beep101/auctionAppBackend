@@ -46,6 +46,7 @@
     align-items: flex-start;
 }
 
+
 .categorySelectsInline{
     display:flex;
     flex-direction: row;
@@ -2122,4 +2123,10 @@ hr.solidVerticalLine{
 .notificationBody{
     font-weight: normal;
     font-size: small;
+}
+.paddingBtm20{
+    padding-bottom: 20px;
+}
+.selfAlignLeft{
+    align-self: flex-start;
 }

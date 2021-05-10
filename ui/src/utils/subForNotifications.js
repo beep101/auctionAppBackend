@@ -13,7 +13,7 @@ export async function subForNotifications(token,notificationsKey){
         })
         subscribeForPushNotifcations(token,subData,(success,data)=>{
             if(!success){
-                console.log("Cannot subscribe to notifications")
+                console.error("Cannot subscribe to notifications")
             }
         });
     }

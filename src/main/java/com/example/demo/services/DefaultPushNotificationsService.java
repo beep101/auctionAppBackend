@@ -1,16 +1,8 @@
 package com.example.demo.services;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.BodyPublishers;
-import java.net.http.HttpRequest.Builder;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.ECPrivateKey;
@@ -18,14 +10,16 @@ import java.security.interfaces.ECPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpMethod;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -36,11 +30,13 @@ import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.BadInitializatinException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.UnallowedOperationException;
+import com.example.demo.models.HttpResponseModel;
 import com.example.demo.models.NotificationModel;
 import com.example.demo.models.PushServiceSubModel;
 import com.example.demo.repositories.NotificationsRepository;
 import com.example.demo.repositories.PushSubsRepository;
 import com.example.demo.services.interfaces.PushNotificationsService;
+import com.example.demo.utils.HttpClientAdapter;
 import com.example.demo.utils.PushMessageEncryptionUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,12 +54,13 @@ public class DefaultPushNotificationsService implements PushNotificationsService
 	private NotificationsRepository notificationsRepo;
 	
 	private PushMessageEncryptionUtil msgEncryptionUtil;
-	private HttpClient httpClient;
+	private HttpClientAdapter httpClient;
 	private Algorithm jwtAlgorithm;
 	
 	private ObjectMapper objectMapper;
 
-	public DefaultPushNotificationsService(PushSubsRepository pushSubsRepo, NotificationsRepository notificationsRepo, PushMessageEncryptionUtil msgEncryptionUtil,String privateKey,String publicKey) throws AuctionAppException {
+	public DefaultPushNotificationsService(PushSubsRepository pushSubsRepo, NotificationsRepository notificationsRepo,
+			PushMessageEncryptionUtil msgEncryptionUtil,HttpClientAdapter httpClient, String privateKey,String publicKey) throws AuctionAppException {
 		this.pushSubsRepo=pushSubsRepo;
 		this.notificationsRepo=notificationsRepo;
 		
@@ -83,7 +80,7 @@ public class DefaultPushNotificationsService implements PushNotificationsService
 			throw new BadInitializatinException();
 		}
         
-	    this.httpClient = HttpClient.newHttpClient();
+	    this.httpClient = httpClient;
 	    this.jwtAlgorithm = Algorithm.ECDSA256(this.publicKey, this.privateKey);
 	    this.objectMapper=new ObjectMapper();
 	}
@@ -100,35 +97,47 @@ public class DefaultPushNotificationsService implements PushNotificationsService
 		return Base64.getUrlEncoder().withoutPadding().encodeToString(this.getPublicKeyUncompressed());
 	}
 	
-	public PushServiceSubModel subscribe(PushServiceSubModel model,User principal) {
+	public PushServiceSubModel subscribe(PushServiceSubModel model,User principal) throws AuctionAppException {
+		if(!principal.isPushNotifications())
+			throw new UnallowedOperationException();
 		PushSub entity=PushSub.fromModel(model);
 		entity.setUser(principal);
 		return pushSubsRepo.save(entity).toModel();
 	}
 	
-	public void notifyUser(User user,Notification notification) throws AuctionAppException {
-		notification.setUser(user);
-		notification.setTime(new Timestamp(System.currentTimeMillis()));
+	public void sendNotification(Notification notification) {
 		notificationsRepo.save(notification);
-		sendNotification(notification);
+		try {
+			if(notification.getUser().isPushNotifications())
+				sendNotificationRequest(notification);
+		} catch (AuctionAppException e) {
+				System.err.println("Sending notificatin unsuccesseful\n"+
+					"Recipient: "+notification.getUser().getId()+" "+notification.getUser().getEmail()+
+					"Notification URL: "+notification.getLink());
+		}
 	}
 	
 	public void sendMultipleNotifications(List<Notification> notifications){
 		notificationsRepo.saveAll(notifications);
 		notifications.stream().forEach(t -> {
 			try {
-				sendNotification(t);
-			} catch (AuctionAppException e) {}
+				if(t.getUser().isPushNotifications())
+					sendNotificationRequest(t);
+			} catch (AuctionAppException e) {
+				System.err.println("Sending notificatin unsuccesseful\n"+
+					"Recipient: "+t.getUser().getId()+" "+t.getUser().getEmail()+
+					"Notification URL: "+t.getLink());
+			}
 		});
 	}
 	
-	private void sendNotification(Notification notification) throws AuctionAppException {
+	private void sendNotificationRequest(Notification notification) throws AuctionAppException {
 		for(PushSub pushSub:notification.getUser().getPushSub()) {
 			String data;
 			try {
 				data=objectMapper.writeValueAsString(notification.toModel());
 			} catch (JsonProcessingException e) {
-				throw new InvalidDataException();
+				return;
 			}
 			if(!sendRequest(pushSub,msgEncryptionUtil.encrypt(data, pushSub.getAuth(),pushSub.getP256dh()))) 
 				pushSubsRepo.delete(pushSub);
@@ -144,31 +153,26 @@ public class DefaultPushNotificationsService implements PushNotificationsService
 	    catch (MalformedURLException e) {
 	      return false;
 	    }
+	    
 	    Date exp = new Date((new Date()).getTime() + HALF_DAY_MILIS);
-
 	    String token = JWT.create().withAudience(audience).withExpiresAt(exp)
 	        .withSubject("mailto:auction.purple.info@gmail.com").sign(this.jwtAlgorithm);
-	    
-	    Builder requestBuilder=HttpRequest.newBuilder();
-	    requestBuilder.uri(URI.create(pushSub.getUrl()))
-	    	.header("TTL", "180")
-	    	.header("Authorization", "vapid t="+token+", k="+getPublicKeyBase64());
+	    Map<String,String> headers=new HashMap<String,String>();
+	    headers.put("TTL", "180");
+	    headers.put("Authorization", "vapid t="+token+", k="+getPublicKeyBase64());
 	    
 	    if(data!=null) {
-	    	requestBuilder.POST(BodyPublishers.ofByteArray(data))
-	          .header("Content-Type", "application/octet-stream")
-	          .header("Content-Encoding", "aes128gcm");
-	    }else{ 
-	    	requestBuilder.POST(BodyPublishers.noBody());
+	    	headers.put("Content-Type", "application/octet-stream");
+	    	headers.put("Content-Encoding", "aes128gcm");
 	    }
+	    
 	    try {
-	    	HttpResponse<Void> response = this.httpClient.send(requestBuilder.build(),BodyHandlers.discarding());
-	    	System.out.println(response.statusCode());
-	    	if(response.statusCode()==404||response.statusCode()==410)
-	    		return false;
-	    }catch (IOException | InterruptedException e) {	    
-		    return true;
-		}	    
+			HttpResponseModel response=httpClient.sendHttpRequest(HttpMethod.PUT, pushSub.getUrl(), headers, data);
+			if(response.getStatusCode()==404||response.getStatusCode()==410)
+				return false;
+		} catch (AuctionAppException e) {
+			return true;
+		}
 	    return true;
 	}
 

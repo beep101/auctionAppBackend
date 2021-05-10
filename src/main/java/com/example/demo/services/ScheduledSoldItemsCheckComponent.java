@@ -21,6 +21,7 @@ import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.NotificationsRepository;
 import com.example.demo.repositories.PushSubsRepository;
 import com.example.demo.services.interfaces.PushNotificationsService;
+import com.example.demo.utils.DefaultHttpClientAdapter;
 import com.example.demo.utils.PushMessageEncryptionUtil;
 
 @Component
@@ -43,9 +44,20 @@ public class ScheduledSoldItemsCheckComponent{
 
 	private PushNotificationsService notificationsService;
 	
+	public ScheduledSoldItemsCheckComponent() {
+		super();
+	}
+	
+	public ScheduledSoldItemsCheckComponent(ItemsRepository itemsRepo, PushNotificationsService notificationsService) throws AuctionAppException {
+		super();
+		
+		this.itemsRepo=itemsRepo;
+		this.notificationsService=notificationsService;
+	}
+	
 	@PostConstruct
 	public void init() throws AuctionAppException {
-		this.notificationsService=new DefaultPushNotificationsService(pushSubsRepo,notificationsRepo,msgEncryptionUtil,privateKey,publicKey);
+		this.notificationsService=new DefaultPushNotificationsService(pushSubsRepo,notificationsRepo,msgEncryptionUtil,new DefaultHttpClientAdapter(),privateKey,publicKey);
 	}
 
 	@Transactional

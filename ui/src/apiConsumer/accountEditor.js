@@ -70,3 +70,14 @@ export function addUserImage(data,token,handler){
         }
     );
 }
+
+export function switchPushNotificationsAllowed(token,handler){
+    post("account/pushNotifications","{}",{headers:{'Authorization' : 'Bearer '+token}}).then(
+        (response)=>{
+            handler(true,response.data);
+        },
+        (error)=>{
+            defaultErrorHandler(error,handler);
+        }
+    );
+}

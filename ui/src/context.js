@@ -50,11 +50,13 @@ export class AuthProvider extends React.Component{
             if(success)
                 this.setState({['wishes']:data});
         });
-        getPushNotificationPublicKey(jwt,(success,data)=>{
-            if(success)
-                this.setState({['notificationsKey']:data});
-                subForNotifications(jwt,data);
-        })
+        if(jwtDecode(jwt).pushNotifications){
+            getPushNotificationPublicKey(jwt,(success,data)=>{
+                if(success)
+                    this.setState({['notificationsKey']:data});
+                    subForNotifications(jwt,data);
+            });
+        }
     }
 
     logout=()=>{

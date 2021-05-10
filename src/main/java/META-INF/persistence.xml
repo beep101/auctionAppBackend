@@ -6,6 +6,12 @@
 		<class>com.example.demo.entities.User</class>
 		<class>com.example.demo.entities.Subcategory</class>
 		<class>com.example.demo.entities.Address</class>
+		<class>com.example.demo.entities.Category</class>
+		<class>com.example.demo.entities.Notification</class>
+		<class>com.example.demo.entities.PayMethod</class>
+		<class>com.example.demo.entities.PushSub</class>
+		<class>com.example.demo.entities.Wish</class>
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 	</persistence-unit>
 
 </persistence>

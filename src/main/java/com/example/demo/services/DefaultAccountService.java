@@ -303,4 +303,10 @@ public class DefaultAccountService implements AccountService{
 		return imageService.loadImagesForItem(principal.toModelWithPayMethod());
 	}
 
+	@Override
+	public UserModel pushNotificationsOnOff(User principal) throws AuctionAppException {
+		principal.setPushNotifications(!principal.isPushNotifications());
+		return imageService.loadImagesForItem(usersRepo.save(principal).toModelWithPayMethod());
+	}
+
 }

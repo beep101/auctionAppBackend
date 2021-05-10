@@ -25,6 +25,7 @@ import com.example.demo.services.DefaultBidService;
 import com.example.demo.services.DefaultPushNotificationsService;
 import com.example.demo.services.interfaces.BidService;
 import com.example.demo.services.interfaces.PushNotificationsService;
+import com.example.demo.utils.DefaultHttpClientAdapter;
 import com.example.demo.utils.PushMessageEncryptionUtil;
 
 import io.swagger.annotations.Api;
@@ -54,7 +55,7 @@ public class BidController {
 	
 	@PostConstruct
 	public void init() throws AuctionAppException {
-		PushNotificationsService notificationsService=new DefaultPushNotificationsService(pushSubsRepo, notificationsRepo, msgEncryptionUtil, privateKey, publicKey);
+		PushNotificationsService notificationsService=new DefaultPushNotificationsService(pushSubsRepo, notificationsRepo, msgEncryptionUtil,new DefaultHttpClientAdapter(), privateKey, publicKey);
 		bidService=new DefaultBidService(bidsRepo, itemsRepo,notificationsService);
 	}
 	
