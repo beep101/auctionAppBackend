@@ -18,4 +18,5 @@ public interface AccountService{
 	UserModel modPayMethod(PayMethodModel payData,User principal)throws AuctionAppException;
 	UserModel refreshToken(User principal) throws AuctionAppException;
 	UserModel setProfileImage(UserModel userData,User principal) throws AuctionAppException;
+	UserModel pushNotificationsOnOff(User principal) throws AuctionAppException;
 }

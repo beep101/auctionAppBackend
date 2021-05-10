@@ -48,6 +48,9 @@ public class User implements Serializable {
 	@Column(name="birthday")
 	private Timestamp birthday;
 	
+	@Column(name="pushnotifications")
+	private boolean pushNotifications;
+	
 	@Column(name="forgot_password_token_end_time")
 	private Timestamp forgotPasswordTokenEndTime;
 	
@@ -70,6 +73,9 @@ public class User implements Serializable {
 	@JoinColumn(name="payment")
 	private PayMethod payMethod;
 
+	@OneToMany(mappedBy="user")
+	private List<PushSub> pushSub;
+	
 	public User() {
 	}
 
@@ -212,7 +218,23 @@ public class User implements Serializable {
 
 		return item;
 	}
+		
+	public List<PushSub> getPushSub() {
+		return pushSub;
+	}
+
+	public void setPushSub(List<PushSub> pushSub) {
+		this.pushSub = pushSub;
+	}
 	
+	public boolean isPushNotifications() {
+		return pushNotifications;
+	}
+
+	public void setPushNotifications(boolean pushNotifications) {
+		this.pushNotifications = pushNotifications;
+	}
+
 	public UserModel toModel() {
 		UserModel model=new UserModel();
 		model.setId(this.getId());
@@ -221,6 +243,7 @@ public class User implements Serializable {
 		model.setEmail(this.getEmail());
 		model.setBirthday(this.getBirthday());
 		model.setGender(this.getGender());
+		model.setPushNotifications(this.isPushNotifications());
 		if(this.getAddress()!=null)
 			model.setAddress(this.getAddress().toModel());
 		return model;

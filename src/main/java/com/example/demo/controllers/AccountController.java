@@ -137,4 +137,11 @@ public class AccountController {
 	public UserModel refreshToken(@AuthUser User principal) throws AuctionAppException{
 		return accountService.refreshToken(principal);
 	}
+	
+	@ApiOperation(value = "Turn ON/OFF push notifications", notes = "Only authenticated users")
+	@PostMapping("api/account/pushNotifications")
+	public UserModel pushNotificationsOnOff(@AuthUser User principal) throws AuctionAppException{
+		return accountService.pushNotificationsOnOff(principal);
+	}
+	
 }

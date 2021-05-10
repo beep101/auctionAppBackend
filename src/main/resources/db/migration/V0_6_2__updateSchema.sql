@@ -1,0 +1,1 @@
+ALTER TABLE pushsubs ADD COLUMN p256dh VARCHAR not null;

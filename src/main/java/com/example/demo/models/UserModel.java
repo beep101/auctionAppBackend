@@ -19,6 +19,7 @@ public class UserModel implements ModelWithImages{
 	private PayMethodModel payMethod;
 	private byte[] newImage;
 	private List<String> images;
+	private boolean pushNotifications;
 	
 	public UserModel() {
 		super();
@@ -117,5 +118,13 @@ public class UserModel implements ModelWithImages{
 
 	public void setImages(List<String> images) {
 		this.images = images;
+	}
+
+	public boolean isPushNotifications() {
+		return pushNotifications;
+	}
+
+	public void setPushNotifications(boolean pushNotifications) {
+		this.pushNotifications = pushNotifications;
 	}
 }

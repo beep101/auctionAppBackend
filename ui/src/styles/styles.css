@@ -46,6 +46,7 @@
     align-items: flex-start;
 }
 
+
 .categorySelectsInline{
     display:flex;
     flex-direction: row;
@@ -245,7 +246,6 @@ h1,h2,h3,p{
     padding-bottom: 7px;
     background-color: #252525;
     width: 100%;
-    overflow: hidden;
 }
 .navBar{
     width:100%;
@@ -321,6 +321,11 @@ h1,h2,h3,p{
     height: 20px;
     margin-left: 6px;
     margin-right: 6px;
+}
+
+.wh25px{
+    width: 25px;
+    height: 25px;
 }
 
 .aboutImgBig{
@@ -2058,4 +2063,70 @@ hr.solidVerticalLine{
     font-size: medium;
     font-weight: bold;
     font-family: 'Lato', sans-serif;
+}
+
+.notifiationsIcon{
+    position: relative;
+}
+
+.notificationsBox{
+    position: absolute;
+
+    right: 6px;
+    width: 20vw;
+    min-height: 2vw;
+    
+    display: flex;
+    flex-direction: column;
+
+    background-color: white;
+
+    border-color: #d8d8d8;
+    border-style: solid;
+    border-width: 1px;
+
+    border-right: none;
+
+    z-index: 5;
+    
+    box-shadow: 4px 4px #d8d8d8;
+}
+
+.notificationContainer{
+    cursor: pointer;
+    text-decoration: none;
+
+    font-family: 'Lato', sans-serif;
+    
+    color: #d8d8d8;
+    
+    padding: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    
+}
+.notificationContainer:hover{
+    background-color: #8367D8;
+    color: #ffffff;   
+}
+
+.notificationContainer:hover .notificationTitle{
+    color: #ffffff;   
+}
+
+.notificationTitle{
+    color: #8367D8;
+    font-weight: bold;
+    font-size: medium;
+}
+
+.notificationBody{
+    font-weight: normal;
+    font-size: small;
+}
+.paddingBtm20{
+    padding-bottom: 20px;
+}
+.selfAlignLeft{
+    align-self: flex-start;
 }

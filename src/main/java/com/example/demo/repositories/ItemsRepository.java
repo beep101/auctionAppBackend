@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.example.demo.entities.Category;
@@ -50,4 +51,11 @@ public interface ItemsRepository extends JpaRepository<Item, Integer>{
 	
 	@Query("SELECT i.name FROM Item i WHERE i.sold=false AND i.endtime>:now AND i.starttime<:now")
 	List<String> getAllNamesForActiveItems(Timestamp now);
+	
+	//item sold notifications queries
+	@Query("SELECT i FROM Item i  WHERE i.sold=false AND i.endtime<:now")
+	List<Item> findBySoldFalseAndEndtimeBefore(Timestamp now);
+	@Modifying
+	@Query("update Item i set i.sold=true where i.id in (:itemIds)")
+	void makeItemsSold(List<Integer> itemIds);
 }
