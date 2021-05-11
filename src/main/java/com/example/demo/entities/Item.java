@@ -43,7 +43,7 @@ public class Item implements Serializable {
 	
 	@Column(name="sold")
 	private Boolean sold;
-
+	
 	@Column(name="paid")
 	private Boolean paid;
 	
@@ -212,6 +212,7 @@ public class Item implements Serializable {
 		model.setSeller(this.seller.toModel());
 		model.setSubcategory(this.getSubcategory().toModel());
 		model.setPaid(this.getPaid());
+		
 		if(this.address!=null) {
 			model.setAddress(this.getAddress().toModel());
 		}

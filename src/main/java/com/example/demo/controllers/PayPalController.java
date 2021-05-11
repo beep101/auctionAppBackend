@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +47,8 @@ public class PayPalController {
 	private String payPalKey;
 	@Value("${paypal.bncode}")
 	private String bncode;
+	@Value("${paypal.merchantid}")
+	private String merchantId;
 	@Value("${paypal.url}")
 	private String baseUrl;
 	
@@ -56,7 +57,7 @@ public class PayPalController {
 	@PostConstruct
 	public void init() {
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
-		payPalService=new DefaultPayPalTransactionService(payPalId, payPalKey,bncode,baseUrl,ordersRepo,usersRepo,itemsRepo);
+		payPalService=new DefaultPayPalTransactionService(payPalId, payPalKey,bncode,merchantId,baseUrl,ordersRepo,usersRepo,itemsRepo);
 		int delay=payPalService.fetchKey();
 
 		Runnable task=()->{
@@ -88,12 +89,6 @@ public class PayPalController {
 		return payPalService.createOrder(item,principal);
 	}
 
-	@ApiOperation(value = "Client notifies that order is approved", notes = "Only authenticated users")
-	@PostMapping("/api/createOrder/{orderId}")
-	public OrderModel captureOrder(@PathVariable("orderId") String orderId,@AuthUser User principal) throws AuctionAppException {
-		return payPalService.captureOrder(orderId,principal);
-	}
-
 	//webhook endpoints
 	@ApiOperation(value = "Webhook used by PayPal to notify onboarding related stuff", notes = "Used by PayPal service")
 	@PostMapping("/api/onboardingHook")
@@ -102,7 +97,7 @@ public class PayPalController {
 		return true;
 	}
 
-	@ApiOperation(value = "Webhook used by PayPal to notify onboarding related stuff", notes = "Used by PayPal service")
+	@ApiOperation(value = "Webhook used by PayPal to notify payment related stuff", notes = "Used by PayPal service")
 	@PostMapping("/api/orderHook")
 	public boolean paypalOrderEvent(@RequestBody WebhookOrderModel data) {
 		payPalService.orderEvent(data);

@@ -15,7 +15,7 @@ export default function PayMenu(props){
             if(success){
                 const merchantId=props.item.seller.merchantId;
                 const script = document.createElement("script");
-                script.src=`https://www.paypal.com/sdk/js?&client-id=${data.client_id}&merchant-id=${merchantId}`
+                script.src=`https://www.paypal.com/sdk/js?&client-id=${data.client_id}&merchant-id=${data.client_merchant_id}`
                 //script.src = `https://www.paypal.com/sdk/js?components=hosted-fields&client-id=${data.client_id}&merchant-id=${merchantId}&currency=USD&intent=capture`;
                 //script.dataset.partnerAttributionId=data.bncode;
                 //script.dataset.dataClientToken=data.client_token;

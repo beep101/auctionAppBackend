@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class ClientTokenModel {
 	private String client_token;
 	private String client_id;
+	private String client_merchant_id;
 	private String bncode;
 	private int expires_in;
 	
@@ -33,5 +34,11 @@ public class ClientTokenModel {
 	}
 	public void setBncode(String bncode) {
 		this.bncode = bncode;
+	}
+	public String getClient_merchant_id() {
+		return client_merchant_id;
+	}
+	public void setClient_merchant_id(String client_merchant_id) {
+		this.client_merchant_id = client_merchant_id;
 	}
 }

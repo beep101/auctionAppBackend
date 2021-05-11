@@ -236,6 +236,7 @@ public class User implements Serializable {
 
 	public void setMerchantId(String merchantId) {
 		this.merchantId = merchantId;
+	}
 	public boolean isPushNotifications() {
 		return pushNotifications;
 	}

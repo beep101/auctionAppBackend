@@ -23,7 +23,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors().and().csrf().disable()
-        .authorizeRequests().antMatchers("/*","/api/login","/api/signup","/api/forgotPassword","/api/newPassword","/api/items/**","/api/categories","/api/onboardingHook").permitAll()
+        .authorizeRequests().antMatchers("/*","/api/login","/api/signup","/api/forgotPassword","/api/newPassword","/api/items/**","/api/categories","/api/onboardingHook","/api/orderHook").permitAll()
         .antMatchers("/api/**","/api/bids").authenticated().and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEnteryPoint);
         
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

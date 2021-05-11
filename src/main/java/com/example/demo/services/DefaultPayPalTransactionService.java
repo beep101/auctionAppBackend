@@ -77,17 +77,19 @@ public class DefaultPayPalTransactionService {
 	private String secret;
 	private String bncode;
 	private String baseUrl;
+	private String merchantId;
 	
 	private HttpClient httpClient;
 	private ObjectMapper objectMapper;
 	
 	private String key;
 	
-	public DefaultPayPalTransactionService(String id,String secret,String bncode, String baseUrl,OrdersRepository ordersRepo, UsersRepository usersRepo,ItemsRepository itemsRepo) {
+	public DefaultPayPalTransactionService(String id, String secret, String bncode, String merchantId, String baseUrl,OrdersRepository ordersRepo, UsersRepository usersRepo,ItemsRepository itemsRepo) {
 		this.id=id;
 		this.secret=secret;
 		this.bncode=bncode;
 		this.baseUrl=baseUrl;
+		this.merchantId=merchantId;
 		
 	    this.httpClient = HttpClient.newHttpClient();
 	    this.objectMapper=new ObjectMapper();
@@ -171,6 +173,7 @@ public class DefaultPayPalTransactionService {
 		}
 		model.setClient_id(this.id);
 		model.setBncode(bncode);
+		model.setClient_merchant_id(merchantId);
 		return model;		
 	}
 	
@@ -195,6 +198,8 @@ public class DefaultPayPalTransactionService {
 		Optional<User> userOpt=usersRepo.findById(userId);
 		if(userOpt.isPresent()) {
 			User user=userOpt.get();
+			if(!user.getMerchantId().isBlank())
+				return;
 			user.setMerchantId(data.getResource().getMerchant_id());
 			usersRepo.save(user);
 		}
@@ -265,15 +270,15 @@ public class DefaultPayPalTransactionService {
 		return orderResponseModel;
 	}
 	
-	public OrderModel captureOrder(String orderId,User principal) throws AuctionAppException {
+	public void captureOrder(String orderId) throws AuctionAppException {
 
 		Optional<Order> orderOpt=ordersRepo.findById(orderId);
 		if(orderOpt.isEmpty())
 			throw new InvalidDataException();
 		
 		Order orderEntity=orderOpt.get();
-		String merchantId=orderEntity.getItem().getSeller().getMerchantId();
-		BigDecimal price=orderEntity.getItem().getBids().stream().max((a,b)->a.getAmount().compareTo(b.getAmount())).get().getAmount();
+		if(orderEntity.isSuccesseful())
+			return;
 		
 		Builder requestBuilder=HttpRequest.newBuilder();
 		requestBuilder.uri(URI.create(baseUrl+ORDER_PATH+"/"+orderId+"/capture"))
@@ -286,26 +291,30 @@ public class DefaultPayPalTransactionService {
 		try {
 			response = this.httpClient.send(requestBuilder.build(),BodyHandlers.ofString());
 		} catch (IOException | InterruptedException e) {
+			System.out.println("Error on request");
 			throw new ExternalServiceError();
 		}
-		if(response.statusCode()>=300)
-			throw new ExternalServiceError();
-
-		OrderResponseModel orderResponse;
-		try {
-			orderResponse = objectMapper.readValue(response.body(), OrderResponseModel.class);
-		} catch (JsonProcessingException e) {
+		if(response.statusCode()!=201) {
+			System.out.println("Unssucessful response");
+			System.out.println(response.body());
 			throw new ExternalServiceError();
 		}
-		if(orderResponse.getStatus()!="COMPLETED")
-			throw new InvalidDataException();
 		
+		orderEntity.setSuccesseful(true);
 		ordersRepo.save(orderEntity);
-		OrderModel orderResponseModel=new OrderModel(orderEntity.getOrderId(),merchantId,price,false);
-		return orderResponseModel;
+		Item item=orderEntity.getItem();
+		item.setPaid(true);
+		itemsRepo.save(item);
 	}
 	
 	public void orderEvent(WebhookOrderModel order) {
-		
+		if(order.getEvent_type().equals("CHECKOUT.ORDER.APPROVED")) {
+			try {
+				captureOrder(order.getResource().getId());
+			} catch (AuctionAppException e) {
+				System.out.println(e);
+				System.out.print("Order "+order.getResource().getId()+" was unsuccessful\n");
+			}
+		}
 	}
 }
