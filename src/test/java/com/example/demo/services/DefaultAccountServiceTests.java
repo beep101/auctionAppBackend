@@ -31,6 +31,8 @@ import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.InvalidTokenException;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
+import com.example.demo.repositories.BidsRepository;
+import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.interfaces.ImageStorageService;
@@ -52,6 +54,10 @@ public class DefaultAccountServiceTests extends EasyMockSupport {
 	@Mock
 	PayMethodRepository payMethodRepoMock;
 	@Mock
+	ItemsRepository itemsRepoMock;
+	@Mock
+	BidsRepository bidsRepoMock;
+	@Mock
 	JavaMailSender mailSenderMock;
 	
 	String subject="Subject";
@@ -60,7 +66,7 @@ public class DefaultAccountServiceTests extends EasyMockSupport {
 	
 	
 	@TestSubject
-	DefaultAccountService accountService=new DefaultAccountService(imageService,hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,payMethodRepoMock,mailSenderMock,subject,content,link);
+	DefaultAccountService accountService=new DefaultAccountService(imageService,hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,payMethodRepoMock,itemsRepoMock,bidsRepoMock,mailSenderMock,subject,content,link);
 	
 	//login tests
 	@Test

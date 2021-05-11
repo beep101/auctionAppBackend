@@ -10,8 +10,10 @@ import java.util.UUID;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entities.Address;
+import com.example.demo.entities.Item;
 import com.example.demo.entities.PayMethod;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
@@ -28,6 +30,8 @@ import com.example.demo.models.AddressModel;
 import com.example.demo.models.PayMethodModel;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
+import com.example.demo.repositories.BidsRepository;
+import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.interfaces.AccountService;
@@ -42,6 +46,8 @@ public class DefaultAccountService implements AccountService{
 	private UsersRepository usersRepo;
 	private AddressesRepository addressRepo;
 	private PayMethodRepository payMethodRepo;
+	private ItemsRepository itemsRepo;
+	private BidsRepository bidsRepo;
 	private IHashUtil hashUtil;
 	private IJwtUtil jwtUtil;
 	private JavaMailSender mailSender;
@@ -54,13 +60,18 @@ public class DefaultAccountService implements AccountService{
 
 	private ImageStorageService<UserModel> imageService;
 	
-	public DefaultAccountService(ImageStorageService<UserModel> imageService,IHashUtil hashUtil,IJwtUtil jwtUtil, UsersRepository userRepo,AddressesRepository addressRepo,PayMethodRepository payMethodRepo, JavaMailSender mailSender,
-						  String subject,String content,String link) {
+	public DefaultAccountService(ImageStorageService<UserModel> imageService,
+							IHashUtil hashUtil, IJwtUtil jwtUtil, UsersRepository userRepo,
+							AddressesRepository addressRepo, PayMethodRepository payMethodRepo,
+							ItemsRepository itemsRepo, BidsRepository bidsRepo, 
+							JavaMailSender mailSender, String subject,String content,String link) {
 		this.imageService=imageService;
 		
 		this.usersRepo=userRepo;
 		this.addressRepo=addressRepo;
 		this.payMethodRepo=payMethodRepo;
+		this.itemsRepo=itemsRepo;
+		this.bidsRepo=bidsRepo;
 		this.hashUtil=hashUtil;
 		this.jwtUtil=jwtUtil;
 		this.mailSender=mailSender;
@@ -307,6 +318,29 @@ public class DefaultAccountService implements AccountService{
 	public UserModel pushNotificationsOnOff(User principal) throws AuctionAppException {
 		principal.setPushNotifications(!principal.isPushNotifications());
 		return imageService.loadImagesForItem(usersRepo.save(principal).toModelWithPayMethod());
+	}
+
+	@Override
+	@Transactional
+	public UserModel deleteAccount(int id, boolean permanent, User principal) throws AuctionAppException {
+		if(itemsRepo.countActiveItemsForUser(principal)+itemsRepo.countUnpaidItems(principal)>0)
+			throw new UnallowedOperationException();
+		bidsRepo.deleteByBidder(principal);
+		if(permanent) {
+			User deletedUser=new User();
+			deletedUser.setId(0);
+			List<Item> soldItems=itemsRepo.findByPaidTrueAndSellerEquals(principal);
+			List<Item> wonItems=itemsRepo.findByWinnerEquals(principal);
+			soldItems.stream().forEach(x->x.setSeller(deletedUser));
+			wonItems.stream().forEach(x->x.setWinner(deletedUser));
+			itemsRepo.saveAll(wonItems);
+			itemsRepo.saveAll(soldItems);
+			usersRepo.delete(principal);
+		}else {
+			principal.setDeactivated(true);
+			usersRepo.save(principal);
+		}
+		return null;
 	}
 
 }
