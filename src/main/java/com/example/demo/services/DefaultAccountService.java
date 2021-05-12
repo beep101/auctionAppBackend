@@ -325,7 +325,7 @@ public class DefaultAccountService implements AccountService{
 	public UserModel deleteAccount(int id, boolean permanent, User principal) throws AuctionAppException {
 		if(itemsRepo.countActiveItemsForUser(principal)+itemsRepo.countUnpaidItems(principal)>0)
 			throw new UnallowedOperationException();
-		bidsRepo.deleteByBidder(principal);
+		bidsRepo.deleteActiveByBidder(principal,new Timestamp(System.currentTimeMillis()));
 		if(permanent) {
 			User deletedUser=new User();
 			deletedUser.setId(0);
