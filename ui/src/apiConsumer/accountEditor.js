@@ -1,4 +1,4 @@
-import { post, put,defaultErrorHandler } from './apiConsumer'
+import { post, put,defaultErrorHandler, del } from './apiConsumer'
 
 export function modUserData(data,token,handler){
     put("account",data,{headers:{'Authorization' : 'Bearer '+token}}).then(
@@ -79,5 +79,16 @@ export function switchPushNotificationsAllowed(token,handler){
         (error)=>{
             defaultErrorHandler(error,handler);
         }
+    );
+}
+
+export function deactivateAccount(token,id,permanent,handler){
+    del(`account?id=${id}&permanent=${permanent}`,{headers:{'Authorization' : 'Bearer '+token}}).then(
+        (response)=>{
+            handler(true,response.data);
+        },
+        (error)=>{
+            defaultErrorHandler(error,handler);
+        }       
     );
 }

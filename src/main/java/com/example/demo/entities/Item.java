@@ -55,11 +55,11 @@ public class Item implements Serializable {
 	private List<Order> orders;
 	
 	//bi-directional many-to-one association to User
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="seller")
 	private User seller;
 	
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="winner")
 	private User winner;
 	
@@ -232,7 +232,7 @@ public class Item implements Serializable {
 		this.setStarttime(model.getStarttime());
 		this.setEndtime(model.getEndtime());
 		this.setSold(model.getSold());
-		
+		this.setPaid(model.getPaid());
 		if(model.getSubcategory()!=null) {
 			Subcategory subcategory=new Subcategory();
 			subcategory.setId(model.getSubcategory().getId());

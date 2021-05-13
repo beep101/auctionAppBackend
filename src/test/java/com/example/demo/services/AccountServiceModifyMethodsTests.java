@@ -28,6 +28,8 @@ import com.example.demo.models.AddressModel;
 import com.example.demo.models.PayMethodModel;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
+import com.example.demo.repositories.BidsRepository;
+import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.interfaces.ImageStorageService;
@@ -50,6 +52,10 @@ public class AccountServiceModifyMethodsTests  extends EasyMockSupport{
 	@Mock
 	PayMethodRepository payMethodRepoMock;
 	@Mock
+	ItemsRepository itemsRepo;
+	@Mock
+	BidsRepository bidsRepo;
+	@Mock
 	JavaMailSender mailSenderMock;
 	
 	String subject="Subject";
@@ -58,7 +64,7 @@ public class AccountServiceModifyMethodsTests  extends EasyMockSupport{
 	
 	
 	@TestSubject
-	DefaultAccountService accountService=new DefaultAccountService(imageService,hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,payMethodRepoMock,mailSenderMock,subject,content,link);
+	DefaultAccountService accountService=new DefaultAccountService(imageService,hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,payMethodRepoMock,itemsRepo,bidsRepo,mailSenderMock,subject,content,link);
 	
 
 	@Test

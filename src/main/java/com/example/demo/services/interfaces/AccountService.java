@@ -19,4 +19,5 @@ public interface AccountService{
 	UserModel refreshToken(User principal) throws AuctionAppException;
 	UserModel setProfileImage(UserModel userData,User principal) throws AuctionAppException;
 	UserModel pushNotificationsOnOff(User principal) throws AuctionAppException;
+	UserModel deleteAccount(int id,boolean permanent, User principal) throws AuctionAppException;
 }

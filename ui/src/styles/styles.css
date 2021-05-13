@@ -1717,6 +1717,12 @@ hr.solidVerticalLine{
     color: #5a5a5a;
 }
 
+.notSellerLabel p{
+    margin: 0px;
+    padding: 0px;
+    padding-bottom: 4px;
+}
+
 .notSellerButton{
     color: #5a5a5a;
     font-size: medium;
@@ -2130,3 +2136,10 @@ hr.solidVerticalLine{
 .selfAlignLeft{
     align-self: flex-start;
 }
+
+.modalButtons{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+

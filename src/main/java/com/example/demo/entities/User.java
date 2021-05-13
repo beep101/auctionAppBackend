@@ -53,6 +53,9 @@ public class User implements Serializable {
 	
 	@Column(name="pushnotifications")
 	private boolean pushNotifications;
+
+	@Column(name="deactivated")
+	private boolean deactivated;
 	
 	@Column(name="forgot_password_token_end_time")
 	private Timestamp forgotPasswordTokenEndTime;
@@ -184,6 +187,14 @@ public class User implements Serializable {
 
 	public void setPayMethod(PayMethod payMethod) {
 		this.payMethod = payMethod;
+	}
+
+	public boolean isDeactivated() {
+		return deactivated;
+	}
+
+	public void setDeactivated(boolean deactivated) {
+		this.deactivated = deactivated;
 	}
 
 	public Bid addBid(Bid bid) {

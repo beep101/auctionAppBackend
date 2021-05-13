@@ -2,6 +2,7 @@ package com.example.demo.entities;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,7 +36,7 @@ public class PushSub  implements Serializable {
 	@JoinColumn(name="p256dh")
 	private String p256dh;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="userid")
 	private User user;
 

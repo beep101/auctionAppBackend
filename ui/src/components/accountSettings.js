@@ -1,6 +1,8 @@
 import React, { useContext, useState } from 'react';
-import { switchPushNotificationsAllowed } from '../apiConsumer/accountEditor';
+import ReactModal from 'react-modal';
+import { deactivateAccount, switchPushNotificationsAllowed } from '../apiConsumer/accountEditor';
 import AuthContext from '../context';
+import { MODAL_CONTENT, MODAL_OVERLAY } from '../styles/modelStyles';
 
 export default function AccountSettings(props){
 
@@ -16,6 +18,8 @@ export default function AccountSettings(props){
 function LogoutButton(){
     const context=useContext(AuthContext);
 
+    const [modalActive,setModalActive]=useState(false);
+
     const logout=()=>{
         context.logout();
         localStorage.removeItem('token');
@@ -23,12 +27,22 @@ function LogoutButton(){
 
     return(
         <div className="formContainer" >
+            <ReactModal isOpen={modalActive} style={{overlay:MODAL_OVERLAY,content: MODAL_CONTENT}}>
+                <div className="formContainerTitle">Logout</div>
+                <div className="notSellerLabel">
+                    <p>Are you sure you want to log out?</p>
+                </div>
+                <div className="modalButtons">
+                    <span className="bidButton" onClick={logout}>Yes</span>
+                    <span className="bidButton" onClick={()=>setModalActive(false)}>No</span>
+                </div>
+            </ReactModal>
             <div className="formContainerTitle">Logout</div>
             <div className="inputFieldContainer selfAlignLeft">
                 <label className="notSellerLabel paddingBtm20 paddingTop10">
                     Press the button below to logout from the device.
                 </label><br/>
-                <div className="bidButton width10vw" onClick={logout}>
+                <div className="bidButton width10vw" onClick={()=>setModalActive(true)}>
                     Logout
                 </div>
             </div>
@@ -39,18 +53,53 @@ function LogoutButton(){
 function DeactivateButton(){
     const context=useContext(AuthContext);
 
-    const deactivate=()=>{
-        
+    const [modalActive,setModalActive]=useState(false);
+    const [errorModalActive,setErrorModalActive]=useState(false);
+
+    const deactivate=(permanent)=>{
+        deactivateAccount(context.jwt,context.user.jti,permanent,(success,data)=>{
+            setModalActive(false);
+            if(success){
+                context.logout();
+                localStorage.removeItem('token');
+            }else{
+                console.log('error');
+                setErrorModalActive(true);
+            }
+        });
     }
 
     return(
         <div className="formContainer" >
+            <ReactModal isOpen={modalActive} style={{overlay:MODAL_OVERLAY,content: MODAL_CONTENT}}>
+                <div className="formContainerTitle">Deactivate account</div>
+                <div className="notSellerLabel">
+                    <p>Deactivate will deactivate account temporarly</p>
+                    <p>Delete will deactivate account permanently</p>
+                    <p>In any case all active bids will be discarded</p>
+                </div>
+                <div className="modalButtons">
+                    <span className="bidButton" onClick={()=>deactivate(false)}>Deactivate</span>
+                    <span className="bidButton" onClick={()=>deactivate(true)}>Delete</span>
+                    <span className="bidButton" onClick={()=>setModalActive(false)}>Close</span>
+                </div>
+            </ReactModal>
+            <ReactModal isOpen={errorModalActive} style={{overlay:MODAL_OVERLAY,content: MODAL_CONTENT}}>
+                <div className="formContainerTitle">Delete unsuccessful</div>
+                <div className="notSellerLabel">
+                    <p>Deactivation did not succeed</p>
+                    <p>Check if you have active or unpaid items</p>
+                </div>
+                <div className="modalButtons">
+                    <span className="bidButton" onClick={()=>setErrorModalActive(false)}>Close</span>
+                </div>
+            </ReactModal>
             <div className="formContainerTitle">Deactivate</div>
             <div className="inputFieldContainer selfAlignLeft">
                 <label className="notSellerLabel paddingBtm20 paddingTop10">
                     Do you want to deactivate the account?
                 </label><br/>
-                <div className="bidButton width10vw" onClick={deactivate}>
+                <div className="bidButton width10vw" onClick={()=>setModalActive(true)}>
                     Deactivate
                 </div>
             </div>
