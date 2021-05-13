@@ -5,6 +5,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -109,7 +110,8 @@ public class AccountController {
 	public UserModel updateData(@RequestBody UserModel data,@AuthUser User principal) throws AuctionAppException{
 		return accountService.updateAccount(data,principal);
 	}
-
+	
+	@Transactional
 	@ApiOperation(value = "Deletes account with specified id", notes = "Only authenticated users")
 	@DeleteMapping("api/account")
 	public UserModel deleteAccount(@RequestParam int id,@RequestParam boolean permanent,@AuthUser User principal) throws AuctionAppException{

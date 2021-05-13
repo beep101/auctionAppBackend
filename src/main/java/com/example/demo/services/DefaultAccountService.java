@@ -10,7 +10,6 @@ import java.util.UUID;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entities.Address;
 import com.example.demo.entities.Item;
@@ -96,6 +95,10 @@ public class DefaultAccountService implements AccountService{
 				login.setLastName(users.get().getSurname());
 				login.setPassword(null);
 				login.setJwt(jwt);
+				if(users.get().isDeactivated()) {
+					users.get().setDeactivated(false);
+					usersRepo.save(users.get());
+				}
 				return login;
 			}else {
 				Map<String,String> problems=new HashMap<>();
@@ -136,6 +139,8 @@ public class DefaultAccountService implements AccountService{
 		newUser.setSurname(signup.getLastName());
 		newUser.setEmail(signup.getEmail());
 		newUser.setPasswd(hashUtil.hashPassword(signup.getPassword()));
+		newUser.setMerchantId("");
+		newUser.setPushNotifications(true);
 		usersRepo.save(newUser);
 		Optional<User> users=usersRepo.findByEmail(signup.getEmail());
 		if(users.isPresent()) {
@@ -320,27 +325,29 @@ public class DefaultAccountService implements AccountService{
 		return imageService.loadImagesForItem(usersRepo.save(principal).toModelWithPayMethod());
 	}
 
+	
 	@Override
-	@Transactional
 	public UserModel deleteAccount(int id, boolean permanent, User principal) throws AuctionAppException {
+		if(principal.getId()!=id)
+			throw new UnallowedOperationException();
 		if(itemsRepo.countActiveItemsForUser(principal)+itemsRepo.countUnpaidItems(principal)>0)
 			throw new UnallowedOperationException();
 		bidsRepo.deleteActiveByBidder(principal,new Timestamp(System.currentTimeMillis()));
+		bidsRepo.flush();
 		if(permanent) {
-			User deletedUser=new User();
-			deletedUser.setId(0);
+			User deletedUser=usersRepo.findById(0).get();
 			List<Item> soldItems=itemsRepo.findByPaidTrueAndSellerEquals(principal);
 			List<Item> wonItems=itemsRepo.findByWinnerEquals(principal);
 			soldItems.stream().forEach(x->x.setSeller(deletedUser));
 			wonItems.stream().forEach(x->x.setWinner(deletedUser));
-			itemsRepo.saveAll(wonItems);
 			itemsRepo.saveAll(soldItems);
+			itemsRepo.saveAll(wonItems);
 			usersRepo.delete(principal);
 		}else {
 			principal.setDeactivated(true);
 			usersRepo.save(principal);
 		}
-		return null;
+		return principal.toModel();
 	}
 
 }

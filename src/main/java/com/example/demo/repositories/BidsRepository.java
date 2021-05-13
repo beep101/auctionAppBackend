@@ -17,6 +17,6 @@ public interface BidsRepository extends JpaRepository<Bid, Integer>{
 	public List<Bid> findByItemEqualsOrderByIdDesc(Item item,Pageable pgbl);
 	
 	@Modifying
-	@Query("DELETE FROM Bid b WHERE b.bidder=:bidder AND (b.item.sold=false AND b.item.endtime>:now)")
+	@Query("DELETE FROM Bid b WHERE b IN (SELECT b FROM Bid b WHERE  b.bidder=:bidder AND b.item.sold=false AND b.item.endtime>:now)")
 	public void deleteActiveByBidder(User bidder,Timestamp now);
 }

@@ -90,6 +90,7 @@ public class DefaultItemService implements ItemService {
 		}
 		
 		itemModel.setSold(false);
+		itemModel.setPaid(false);
 		itemModel.getSeller().setId(user.getId());
 		Item item=new Item();
 		item.populate(itemModel);
