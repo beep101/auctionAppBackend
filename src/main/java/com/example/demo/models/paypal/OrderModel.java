@@ -41,5 +41,4 @@ public class OrderModel {
 	public void setSuccessful(boolean successful) {
 		this.successful = successful;
 	}
-	
 }

@@ -270,7 +270,7 @@ public class DefaultPayPalTransactionService {
 		return orderResponseModel;
 	}
 	
-	public void captureOrder(String orderId) throws AuctionAppException {
+	public synchronized OrderModel captureOrder(String orderId) throws AuctionAppException {
 
 		Optional<Order> orderOpt=ordersRepo.findById(orderId);
 		if(orderOpt.isEmpty())
@@ -278,7 +278,7 @@ public class DefaultPayPalTransactionService {
 		
 		Order orderEntity=orderOpt.get();
 		if(orderEntity.isSuccesseful())
-			return;
+			return orderEntity.toModel();
 		
 		Builder requestBuilder=HttpRequest.newBuilder();
 		requestBuilder.uri(URI.create(baseUrl+ORDER_PATH+"/"+orderId+"/capture"))
@@ -305,6 +305,7 @@ public class DefaultPayPalTransactionService {
 		Item item=orderEntity.getItem();
 		item.setPaid(true);
 		itemsRepo.save(item);
+		return orderEntity.toModel();
 	}
 	
 	public void orderEvent(WebhookOrderModel order) {

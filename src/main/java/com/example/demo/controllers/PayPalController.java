@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -89,6 +90,11 @@ public class PayPalController {
 		return payPalService.createOrder(item,principal);
 	}
 
+	@ApiOperation(value = "Notifies about approved payment", notes = "Only authenticated users")
+	@PostMapping("/api/captureOrder/{id}")
+	public OrderModel captureOrder(@PathVariable String id,@AuthUser User principal) throws AuctionAppException {
+		return payPalService.captureOrder(id);
+	}
 	//webhook endpoints
 	@ApiOperation(value = "Webhook used by PayPal to notify onboarding related stuff", notes = "Used by PayPal service")
 	@PostMapping("/api/onboardingHook")
