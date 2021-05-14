@@ -169,6 +169,10 @@ class Item extends React.Component{
         }
     }
 
+    setPaid=()=>{
+        this.setState({['isPaid']:true});
+    }
+
     render(){
         if(this.state.item.id){
             return(
@@ -235,7 +239,7 @@ class Item extends React.Component{
                         !this.state.isPaid?
                         <div className="itemDataContainer">
                             <div >Ypu won the item, price you are paying is ${this.state.bids.length===0?this.state.item.startingprice:this.state.bids[0].amount}</div>
-                            <PayMenu item={this.state.item}/>
+                            <PayMenu item={this.state.item} setPaid={this.setPaid}/>
                         </div>
                         :
                         <div>You sucessfully bought this item</div>

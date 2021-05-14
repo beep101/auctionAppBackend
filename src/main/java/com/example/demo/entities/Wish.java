@@ -26,11 +26,11 @@ public class Wish implements Serializable{
 	@Column(name="id")
 	private int id;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name="itemid")
 	private Item item;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name="userid")
 	private User user;
 

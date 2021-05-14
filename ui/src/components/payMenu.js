@@ -56,7 +56,9 @@ export default function PayMenu(props){
                 'Authorization': `Bearer ${context.jwt}`
             }
         }).then(function(res) {
-            if (!res.ok) {
+            if (res.ok) {
+                props.setPaid();
+            }else{
                 alert('Something went wrong');
             }
         });

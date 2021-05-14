@@ -36,7 +36,7 @@ public class PushSub  implements Serializable {
 	@JoinColumn(name="p256dh")
 	private String p256dh;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name="userid")
 	private User user;
 

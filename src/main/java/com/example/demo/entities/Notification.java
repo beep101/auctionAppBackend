@@ -33,7 +33,7 @@ public class Notification {
 	@Column(name="time")
 	private Timestamp time;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name="userid")
 	private User user;
 

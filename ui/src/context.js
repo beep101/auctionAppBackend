@@ -50,7 +50,7 @@ export class AuthProvider extends React.Component{
             if(success)
                 this.setState({['wishes']:data});
         });
-        if(jwtDecode(jwt).pushNotifications){
+        if(jwtDecode(jwt).user.pushNotifications){
             getPushNotificationPublicKey(jwt,(success,data)=>{
                 if(success)
                     this.setState({['notificationsKey']:data});

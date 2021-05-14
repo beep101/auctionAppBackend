@@ -28,6 +28,8 @@ import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.OrdersRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.DefaultPayPalTransactionService;
+import com.example.demo.utils.DefaultHttpClientAdapter;
+import com.example.demo.utils.HttpClientAdapter;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -57,8 +59,9 @@ public class PayPalController {
 	
 	@PostConstruct
 	public void init() {
+		HttpClientAdapter httpClient=new DefaultHttpClientAdapter();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
-		payPalService=new DefaultPayPalTransactionService(payPalId, payPalKey,bncode,merchantId,baseUrl,ordersRepo,usersRepo,itemsRepo);
+		payPalService=new DefaultPayPalTransactionService(payPalId, payPalKey,bncode,merchantId,baseUrl,ordersRepo,usersRepo,itemsRepo,httpClient);
 		int delay=payPalService.fetchKey();
 
 		Runnable task=()->{
@@ -87,6 +90,9 @@ public class PayPalController {
 	@ApiOperation(value = "Creates order for item", notes = "Only authenticated users")
 	@PostMapping("/api/createOrder")
 	public OrderModel createOrder(@RequestBody Item item,@AuthUser User principal) throws AuctionAppException {
+		OrderModel existing=payPalService.getOrder(item, principal);
+		if(existing!=null)
+			return existing;
 		return payPalService.createOrder(item,principal);
 	}
 

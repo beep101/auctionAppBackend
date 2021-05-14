@@ -55,11 +55,11 @@ public class Item implements Serializable {
 	private List<Order> orders;
 	
 	//bi-directional many-to-one association to User
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(cascade=CascadeType.REMOVE)
 	@JoinColumn(name="seller")
 	private User seller;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(cascade=CascadeType.REMOVE)
 	@JoinColumn(name="winner")
 	private User winner;
 	

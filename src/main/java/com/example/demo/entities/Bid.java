@@ -36,12 +36,12 @@ public class Bid implements Serializable {
 	private Timestamp time;
 
 	//bi-directional many-to-one association to Item
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name="item")
 	private Item item;
 
 	//bi-directional many-to-one association to User
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name="bidder")
 	private User bidder;
 
