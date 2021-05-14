@@ -11,6 +11,7 @@ import RelatedItems from './relatedItems';
 import ReactTooltip from 'react-tooltip';
 import { addWishToWishlist, delWishFromWishlist } from '../apiConsumer/wishlistConsumer';
 import { timeDiffTodayToDateString } from '../utils/functions';
+import PayMenu from './payMenu';
 
 class Item extends React.Component{
 
@@ -27,7 +28,9 @@ class Item extends React.Component{
                 msgType:"itemMsg",
                 isOwner:false,
                 expired:false,
-                isWish:false
+                isWish:false,
+                isWinner:false,
+                isPaid: false
             }
         }else{
             this.state={
@@ -39,7 +42,9 @@ class Item extends React.Component{
                 msgType:"itemMsg",
                 isOwner:false,
                 isExpired:false,
-                isWish:false
+                isWish:false,
+                isWinner:false,
+                isPaid: false
             }
         }
     }
@@ -58,6 +63,10 @@ class Item extends React.Component{
                 this.isWish(data);
                 if(data.bids.length&&data.bids[0].bidder.id==this.context.user.jti)
                     this.setBanner('You are the highest bidder','itemMsg successItemMsg');
+                console.log(this.context);
+                console.log(data)
+                this.setState({['isWinner']:this.context.user.jti===`${data.winner.id}`});
+                this.setState({['isPaid']:data.paid});
             }else{
                 this.setState({['msg']:'Cannot load item',['msgType']:'itemMsg warningItemMsg'});
             }
@@ -178,6 +187,7 @@ class Item extends React.Component{
                         </div>
                     </div>
                     <div className="itemInformationsContainer">
+                        {!this.state.isWinner?
                         <div className="itemDataContainer">
                             <div className="itemName">{this.state.item.name}</div>
                             <div className="itemStartPrice">Starts from - ${this.state.item.startingprice}</div>
@@ -221,10 +231,18 @@ class Item extends React.Component{
                             </div>
                                 
                         </div>
+                        :
+                        !this.state.isPaid?
+                        <div className="itemDataContainer">
+                            <div >Ypu won the item, price you are paying is ${this.state.bids.length===0?this.state.item.startingprice:this.state.bids[0].amount}</div>
+                            <PayMenu item={this.state.item}/>
+                        </div>
+                        :
+                        <div>You sucessfully bought this item</div>
+                        }
 
                         <div>
                             <div className="itemStartPrice color5a5a5aMarginLeft">Details</div>
-                            
                             <ReactMarkdown className="itemDescriptionText">{this.state.item.description}</ReactMarkdown>
                         </div>
                     </div>

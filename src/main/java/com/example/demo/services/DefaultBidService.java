@@ -89,21 +89,26 @@ public class DefaultBidService implements BidService{
 		Timestamp crr=new Timestamp(System.currentTimeMillis());
 		bidEntity.setTime(crr);
 		bidEntity=bidsRepo.save(bidEntity);
+		
 		//notify last bidder and seller
 		if(maxBid.isPresent()) {
+			User maxBidder=maxBid.get().getBidder();
+			maxBidder.getPushSub();
 			Notification ntf=new Notification(
 					"You are outbidded!",
 					"Someone bidded more than you on "+item.getName(),
 					"/item?id="+item.getId());
-			ntf.setUser(user);
+			ntf.setUser(maxBidder);
 			ntf.setTime(new Timestamp(System.currentTimeMillis()));
 			notificationsService.sendNotification(ntf);
 		}
+		User seller=item.getSeller();
+		seller.getPushSub();
 		Notification ntf=new Notification(
 				"Your item received a bid",
 				user.getName()+" "+user.getSurname()+" bidded on "+item.getName(),
 				"/item?id="+item.getId());
-		ntf.setUser(user);
+		ntf.setUser(seller);
 		ntf.setTime(new Timestamp(System.currentTimeMillis()));
 		notificationsService.sendNotification(ntf);
 		

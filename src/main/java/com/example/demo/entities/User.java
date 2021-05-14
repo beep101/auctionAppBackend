@@ -47,9 +47,15 @@ public class User implements Serializable {
 
 	@Column(name="birthday")
 	private Timestamp birthday;
+
+	@Column(name="merchantid")
+	private String merchantId;
 	
 	@Column(name="pushnotifications")
 	private boolean pushNotifications;
+
+	@Column(name="deactivated")
+	private boolean deactivated;
 	
 	@Column(name="forgot_password_token_end_time")
 	private Timestamp forgotPasswordTokenEndTime;
@@ -183,6 +189,14 @@ public class User implements Serializable {
 		this.payMethod = payMethod;
 	}
 
+	public boolean isDeactivated() {
+		return deactivated;
+	}
+
+	public void setDeactivated(boolean deactivated) {
+		this.deactivated = deactivated;
+	}
+
 	public Bid addBid(Bid bid) {
 		getBids().add(bid);
 		bid.setBidder(this);
@@ -227,6 +241,13 @@ public class User implements Serializable {
 		this.pushSub = pushSub;
 	}
 	
+	public String getMerchantId() {
+		return merchantId;
+	}
+
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
+	}
 	public boolean isPushNotifications() {
 		return pushNotifications;
 	}
@@ -243,6 +264,7 @@ public class User implements Serializable {
 		model.setEmail(this.getEmail());
 		model.setBirthday(this.getBirthday());
 		model.setGender(this.getGender());
+		model.setMerchantId(this.getMerchantId());
 		model.setPushNotifications(this.isPushNotifications());
 		if(this.getAddress()!=null)
 			model.setAddress(this.getAddress().toModel());

@@ -1,6 +1,5 @@
 package com.example.demo.exceptions;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class ExistingUserException extends AuctionAppExtendedException{

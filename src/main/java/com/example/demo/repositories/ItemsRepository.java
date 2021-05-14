@@ -58,4 +58,13 @@ public interface ItemsRepository extends JpaRepository<Item, Integer>{
 	@Modifying
 	@Query("update Item i set i.sold=true where i.id in (:itemIds)")
 	void makeItemsSold(List<Integer> itemIds);
+	
+	@Query("SELECT COUNT(i.id) FROM Item i WHERE ((i.sold=false AND i.winner IS NULL) OR (i.paid=false AND i.winner IS NOT NULL)) AND seller=:seller")
+	int countActiveItemsForUser(User seller);
+	//find items where winner is id and paid is false
+	@Query("SELECT COUNT(i.id) FROM Item i WHERE i.winner=:user AND i.paid=false")
+	int countUnpaidItems(User user);
+	
+	List<Item> findByWinnerEquals(User winner);
+	List<Item> findByPaidTrueAndSellerEquals(User seller);
 }

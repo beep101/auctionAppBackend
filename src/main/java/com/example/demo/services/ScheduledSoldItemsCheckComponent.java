@@ -66,10 +66,14 @@ public class ScheduledSoldItemsCheckComponent{
 		List<Item> items=itemsRepo.findBySoldFalseAndEndtimeBefore(new Timestamp(System.currentTimeMillis()));
 		if(items.isEmpty())
 			return;
-		List<Integer> ids=items.stream().map(x->x.getId()).collect(Collectors.toList());
 		List<Notification> notifications=items.stream().map(this::makeNotifications).flatMap(List::stream).collect(Collectors.toList());
 		this.notificationsService.sendMultipleNotifications(notifications);
-		itemsRepo.makeItemsSold(ids);
+		items.stream().forEach(x->{
+			x.setSold(true);
+			if(!x.getBids().isEmpty())
+				x.setWinner(x.getBids().stream().max((a,b)->a.getAmount().compareTo(b.getAmount())).get().getBidder());
+			});
+		itemsRepo.saveAll(items);
 	}
 	
 	private List<Notification> makeNotifications(Item item){

@@ -5,9 +5,12 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.AuthUser;
@@ -17,6 +20,8 @@ import com.example.demo.models.AddressModel;
 import com.example.demo.models.PayMethodModel;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
+import com.example.demo.repositories.BidsRepository;
+import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.DefaultAccountService;
@@ -46,6 +51,10 @@ public class AccountController {
 	private PayMethodRepository payMethodRepo;
 	@Autowired
 	private JavaMailSender mailSender;
+	@Autowired
+	private ItemsRepository itemsRepo;
+	@Autowired
+	private BidsRepository bidsRepo;
 	
 	@Value("${mail.subject}")
 	private String subject;
@@ -69,7 +78,7 @@ public class AccountController {
 	@PostConstruct
 	public void init() {
 		imageService=new S3ImageStorageService<UserModel>(bucketName,imageBucketBaseUrl,new AwsS3Adapter(id, key));
-		accountService=new DefaultAccountService(imageService,hashUtil, jwtUtil, usersRepo,addressRepo,payMethodRepo,mailSender,subject,content,link);
+		accountService=new DefaultAccountService(imageService,hashUtil, jwtUtil, usersRepo,addressRepo,payMethodRepo,itemsRepo,bidsRepo,mailSender,subject,content,link);
 	}
 	
 	@ApiOperation(value = "Requires valid email and password to return JWT", notes = "Public access")
@@ -100,6 +109,13 @@ public class AccountController {
 	@PutMapping("api/account")
 	public UserModel updateData(@RequestBody UserModel data,@AuthUser User principal) throws AuctionAppException{
 		return accountService.updateAccount(data,principal);
+	}
+	
+	@Transactional
+	@ApiOperation(value = "Deletes account with specified id", notes = "Only authenticated users")
+	@DeleteMapping("api/account")
+	public UserModel deleteAccount(@RequestParam int id,@RequestParam boolean permanent,@AuthUser User principal) throws AuctionAppException{
+		return accountService.deleteAccount(id,permanent,principal);
 	}
 	
 	@ApiOperation(value = "Bind new address to account", notes = "Only authenticated users")

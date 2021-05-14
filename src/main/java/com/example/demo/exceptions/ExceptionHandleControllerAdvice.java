@@ -72,4 +72,8 @@ public class ExceptionHandleControllerAdvice {
     public ResponseEntity<Object> handleUnallowedOperationException(UnallowedOperationException ex,WebRequest request){
     	return buildResponse(ex, HttpStatus.FORBIDDEN);
     }
+    @ExceptionHandler(ExternalServiceError.class)
+    public ResponseEntity<Object> handleExternalServiceError(ExternalServiceError ex,WebRequest request){
+    	return buildResponse(ex, HttpStatus.I_AM_A_TEAPOT);
+    }
 }

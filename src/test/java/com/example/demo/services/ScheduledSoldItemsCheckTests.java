@@ -86,17 +86,16 @@ public class ScheduledSoldItemsCheckTests extends EasyMockSupport{
 		items.add(i2);
 		
 		Capture<List<Notification>> notificationsCapture=EasyMock.newCapture(CaptureType.ALL);
-		Capture<List<Integer>> itemsCapture=EasyMock.newCapture(CaptureType.ALL);
+		Capture<List<Item>> itemsCapture=EasyMock.newCapture(CaptureType.ALL);
 		expect(itemsRepo.findBySoldFalseAndEndtimeBefore(anyObject())).andReturn(items).once();
-		itemsRepo.makeItemsSold(capture(itemsCapture));
-		expectLastCall().once();
+		expect(itemsRepo.saveAll(capture(itemsCapture))).andAnswer(()->itemsCapture.getValue()).once();
 		pushNotificationsService.sendMultipleNotifications(capture(notificationsCapture));
 		expectLastCall().once();
 		replayAll();
 
 		scheduledCheck.checkAndNotify();
 		assertEquals(3,notificationsCapture.getValue().size());
-		assertArrayEquals(new Integer[] {1,2}, itemsCapture.getValue().toArray());
+		assertArrayEquals(items.toArray(), itemsCapture.getValue().toArray());
 		
 		verifyAll();
 	}
@@ -130,17 +129,16 @@ public class ScheduledSoldItemsCheckTests extends EasyMockSupport{
 		items.add(i1);
 		
 		Capture<List<Notification>> notificationsCapture=EasyMock.newCapture(CaptureType.ALL);
-		Capture<List<Integer>> itemsCapture=EasyMock.newCapture(CaptureType.ALL);
+		Capture<List<Item>> itemsCapture=EasyMock.newCapture(CaptureType.ALL);
 		expect(itemsRepo.findBySoldFalseAndEndtimeBefore(anyObject())).andReturn(items).once();
-		itemsRepo.makeItemsSold(capture(itemsCapture));
-		expectLastCall().once();
+		expect(itemsRepo.saveAll(capture(itemsCapture))).andAnswer(()->itemsCapture.getValue()).once();
 		pushNotificationsService.sendMultipleNotifications(capture(notificationsCapture));
 		expectLastCall().once();
 		replayAll();
 
 		scheduledCheck.checkAndNotify();
 		assertEquals(2,notificationsCapture.getValue().size());
-		assertArrayEquals(new Integer[] {1}, itemsCapture.getValue().toArray());
+		assertArrayEquals(items.toArray(), itemsCapture.getValue().toArray());
 		
 		verifyAll();
 	}

@@ -12,8 +12,10 @@ public class ItemModel implements ModelWithImages{
 	private Timestamp starttime;
 	private Timestamp endtime;
 	private Boolean sold;
+	private Boolean paid;
 	private List<BidModel> bids;
 	private UserModel seller;
+	private UserModel winner;
 	private List<String> images;
 	
 	private AddressModel address;
@@ -123,5 +125,20 @@ public class ItemModel implements ModelWithImages{
 	public void setSubcategory(SubcategoryModel subcategory) {
 		this.subcategory = subcategory;
 	}
-	
-}
+
+	public Boolean getPaid() {
+		return paid;
+	}
+
+	public void setPaid(Boolean paid) {
+		this.paid = paid;
+	}
+
+	public UserModel getWinner() {
+		return winner;
+	}
+
+	public void setWinner(UserModel winner) {
+		this.winner = winner;
+	}
+	}

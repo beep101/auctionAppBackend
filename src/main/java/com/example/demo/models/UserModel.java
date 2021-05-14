@@ -19,6 +19,7 @@ public class UserModel implements ModelWithImages{
 	private PayMethodModel payMethod;
 	private byte[] newImage;
 	private List<String> images;
+	private String merchantId;
 	private boolean pushNotifications;
 	
 	public UserModel() {
@@ -120,6 +121,14 @@ public class UserModel implements ModelWithImages{
 		this.images = images;
 	}
 
+	public String getMerchantId() {
+		return merchantId;
+	}
+
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
+	}
+		
 	public boolean isPushNotifications() {
 		return pushNotifications;
 	}

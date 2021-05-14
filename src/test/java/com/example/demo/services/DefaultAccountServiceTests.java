@@ -4,7 +4,9 @@ import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 import org.easymock.Capture;
@@ -21,16 +23,20 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import com.example.demo.entities.Address;
+import com.example.demo.entities.Item;
 import com.example.demo.entities.PayMethod;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
 import com.example.demo.exceptions.BadCredentialsException;
 import com.example.demo.exceptions.ExistingUserException;
 import com.example.demo.exceptions.NonExistentUserException;
+import com.example.demo.exceptions.UnallowedOperationException;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.InvalidTokenException;
 import com.example.demo.models.UserModel;
 import com.example.demo.repositories.AddressesRepository;
+import com.example.demo.repositories.BidsRepository;
+import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.PayMethodRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.interfaces.ImageStorageService;
@@ -52,6 +58,10 @@ public class DefaultAccountServiceTests extends EasyMockSupport {
 	@Mock
 	PayMethodRepository payMethodRepoMock;
 	@Mock
+	ItemsRepository itemsRepoMock;
+	@Mock
+	BidsRepository bidsRepoMock;
+	@Mock
 	JavaMailSender mailSenderMock;
 	
 	String subject="Subject";
@@ -60,7 +70,7 @@ public class DefaultAccountServiceTests extends EasyMockSupport {
 	
 	
 	@TestSubject
-	DefaultAccountService accountService=new DefaultAccountService(imageService,hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,payMethodRepoMock,mailSenderMock,subject,content,link);
+	DefaultAccountService accountService=new DefaultAccountService(imageService,hashUtilMock,jwtUtilMock,usersRepoMock,addressRepoMock,payMethodRepoMock,itemsRepoMock,bidsRepoMock,mailSenderMock,subject,content,link);
 	
 	//login tests
 	@Test
@@ -406,5 +416,112 @@ public class DefaultAccountServiceTests extends EasyMockSupport {
 		UserModel token=accountService.refreshToken(user);
 		assertEquals(fakeJWT,token.getJwt());
 		verifyAll();
+	}
+	
+	@Test(expected = UnallowedOperationException.class)
+	public void testDeleteAccountExistingActiveItemsShouldThrowException() throws AuctionAppException {
+		User user=new User();
+		user.setId(13);
+		expect(itemsRepoMock.countActiveItemsForUser(user)).andReturn(1);
+		expect(itemsRepoMock.countUnpaidItems(user)).andReturn(1);
+		replayAll();
+		
+		accountService.deleteAccount(13, false, user);
+		
+		verifyAll();
+	}
+
+	
+	@Test(expected = UnallowedOperationException.class)
+	public void testDeleteAccountOtherAccountShouldThrowException() throws AuctionAppException {
+		User user=new User();
+		user.setId(13);
+		replayAll();
+		
+		accountService.deleteAccount(27, false, user);
+		
+		verifyAll();
+	}
+	
+	@Test
+	public void testDeleteAccountDeactivateHappyFlow() throws AuctionAppException {
+		User user=new User();
+		user.setId(13);
+		Capture<User> userCapture=Capture.newInstance(CaptureType.ALL);
+		expect(itemsRepoMock.countActiveItemsForUser(user)).andReturn(0);
+		expect(itemsRepoMock.countUnpaidItems(user)).andReturn(0);
+		bidsRepoMock.deleteActiveByBidder(eq(user), anyObject());
+		expectLastCall().once();
+		bidsRepoMock.flush();
+		expectLastCall().once();
+		expect(usersRepoMock.save(capture(userCapture))).andAnswer(()->userCapture.getValue());
+		replayAll();
+		
+		UserModel model=accountService.deleteAccount(13, false, user);
+		
+		assertEquals(13, userCapture.getValue().getId());
+		assertEquals(true, userCapture.getValue().isDeactivated());
+		
+		assertEquals(userCapture.getValue().getId(), model.getId());
+		
+		verifyAll();	
+	}
+	
+	@Test
+	public void testDeleteAccountDeleteHappyFlow() throws AuctionAppException {
+		User user=new User();
+		user.setId(13);
+		
+		User deleteUser=new User();
+		deleteUser.setId(0);
+		
+		List<Item> soldItems=new ArrayList<>();
+		List<Item> wonItems=new ArrayList<>();
+		
+		Item s1=new Item();
+		Item s2=new Item();
+		soldItems.add(s1);
+		soldItems.add(s2);
+		Item w1=new Item();
+		Item w2=new Item();
+		wonItems.add(w1);
+		wonItems.add(w2);
+		
+		Capture<User> userCapture=Capture.newInstance(CaptureType.ALL);
+		Capture<List<Item>> soldItemsCapture=Capture.newInstance(CaptureType.ALL);
+		Capture<List<Item>> wonItemsCapture=Capture.newInstance(CaptureType.ALL);
+		
+		expect(itemsRepoMock.countActiveItemsForUser(user)).andReturn(0).once();
+		expect(itemsRepoMock.countUnpaidItems(user)).andReturn(0).once();
+		bidsRepoMock.deleteActiveByBidder(eq(user), anyObject());
+		expectLastCall().once();
+		bidsRepoMock.flush();
+		expectLastCall().once();
+		
+		expect(usersRepoMock.findById(0)).andReturn(Optional.of(deleteUser)).once();
+		expect(itemsRepoMock.findByPaidTrueAndSellerEquals(user)).andReturn(soldItems).once();
+		expect(itemsRepoMock.findByWinnerEquals(user)).andReturn(wonItems).once();
+		
+		expect(itemsRepoMock.saveAll(capture(soldItemsCapture))).andReturn(soldItems).once();
+		expect(itemsRepoMock.saveAll(capture(wonItemsCapture))).andReturn(wonItems).once();
+		
+		usersRepoMock.delete(capture(userCapture));
+		expectLastCall().once();
+		replayAll();
+		
+		UserModel model=accountService.deleteAccount(13, true, user);
+		
+		assertEquals(2, soldItemsCapture.getValue().size());
+		assertEquals(2, wonItemsCapture.getValue().size());
+		assertEquals(0, soldItemsCapture.getValue().get(0).getSeller().getId());
+		assertEquals(0, soldItemsCapture.getValue().get(1).getSeller().getId());
+		assertEquals(0, wonItemsCapture.getValue().get(0).getWinner().getId());
+		assertEquals(0, wonItemsCapture.getValue().get(1).getWinner().getId());
+		
+		assertEquals(13, userCapture.getValue().getId());
+		
+		assertEquals(userCapture.getValue().getId(), model.getId());
+		
+		verifyAll();	
 	}
 }

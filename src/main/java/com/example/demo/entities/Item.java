@@ -43,15 +43,25 @@ public class Item implements Serializable {
 	
 	@Column(name="sold")
 	private Boolean sold;
-
+	
+	@Column(name="paid")
+	private Boolean paid;
+	
 	//bi-directional many-to-one association to Bid
 	@OneToMany(mappedBy="item")
 	private List<Bid> bids;
-
+	
+	@OneToMany(mappedBy="item")
+	private List<Order> orders;
+	
 	//bi-directional many-to-one association to User
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="seller")
 	private User seller;
+	
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="winner")
+	private User winner;
 	
 	@ManyToOne
 	@JoinColumn(name="subcategory")
@@ -173,6 +183,22 @@ public class Item implements Serializable {
 	public void setAddress(Address address) {
 		this.address = address;
 	}
+	
+	public Boolean getPaid() {
+		return paid;
+	}
+
+	public void setPaid(Boolean paid) {
+		this.paid = paid;
+	}
+
+	public User getWinner() {
+		return winner;
+	}
+
+	public void setWinner(User winner) {
+		this.winner = winner;
+	}
 
 	public ItemModel toModel() {
 		ItemModel model=new ItemModel();
@@ -185,8 +211,13 @@ public class Item implements Serializable {
 		model.setSold(this.getSold());
 		model.setSeller(this.seller.toModel());
 		model.setSubcategory(this.getSubcategory().toModel());
+		model.setPaid(this.getPaid());
+		
 		if(this.address!=null) {
-			model.setAddress(this.address.toModel());
+			model.setAddress(this.getAddress().toModel());
+		}
+		if(this.winner!=null) {
+			model.setWinner(this.getWinner().toModel());
 		}
 		if(this.bids!=null)
 			model.setBids(this.getBids().stream().map(x->x.toModel()).collect(Collectors.toList()));
@@ -201,7 +232,7 @@ public class Item implements Serializable {
 		this.setStarttime(model.getStarttime());
 		this.setEndtime(model.getEndtime());
 		this.setSold(model.getSold());
-		
+		this.setPaid(model.getPaid());
 		if(model.getSubcategory()!=null) {
 			Subcategory subcategory=new Subcategory();
 			subcategory.setId(model.getSubcategory().getId());
