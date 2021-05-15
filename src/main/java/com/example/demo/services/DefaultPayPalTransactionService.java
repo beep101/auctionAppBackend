@@ -90,6 +90,7 @@ public class DefaultPayPalTransactionService {
 			onboardingRequestBody=scanner.useDelimiter("\\Z").next();
 			scanner.close();
 		} catch (FileNotFoundException e) {
+			System.out.println("Problem with loading onboarding trquest template file");
 			throw new BadInitializatinException();
 		}
 	}
