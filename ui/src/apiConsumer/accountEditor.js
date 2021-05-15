@@ -83,7 +83,7 @@ export function switchPushNotificationsAllowed(token,handler){
 }
 
 export function deactivateAccount(token,id,permanent,handler){
-    del(`account?id=${id}&permanent=${permanent}`,{headers:{'Authorization' : 'Bearer '+token}}).then(
+    del(`account/${id}?permanent=${permanent}`,{headers:{'Authorization' : 'Bearer '+token}}).then(
         (response)=>{
             handler(true,response.data);
         },

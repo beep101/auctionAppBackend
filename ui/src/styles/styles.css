@@ -2143,3 +2143,7 @@ hr.solidVerticalLine{
     justify-content: space-evenly;
 }
 
+.loadingDotsContainer{
+    align-self: center;
+    margin-left: 12vw;
+}

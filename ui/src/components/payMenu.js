@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import ReactDOM from "react-dom";
 import { getClientTokens } from '../apiConsumer/payPalIntegrationConsumer';
 import AuthContext from '../context';
+import PulseLoader from "react-spinners/PulseLoader";
+import { css } from "@emotion/core";
 
 export default function PayMenu(props){
     const context=useContext(AuthContext);
@@ -13,12 +15,8 @@ export default function PayMenu(props){
     useEffect(()=>{
         getClientTokens(context.jwt,(success,data)=>{
             if(success){
-                const merchantId=props.item.seller.merchantId;
                 const script = document.createElement("script");
                 script.src=`https://www.paypal.com/sdk/js?&client-id=${data.client_id}&merchant-id=${data.client_merchant_id}`
-                //script.src = `https://www.paypal.com/sdk/js?components=hosted-fields&client-id=${data.client_id}&merchant-id=${merchantId}&currency=USD&intent=capture`;
-                //script.dataset.partnerAttributionId=data.bncode;
-                //script.dataset.dataClientToken=data.client_token;
                 script.async = false;
                 document.body.appendChild(script);
                 script.onload = () => { 
@@ -34,13 +32,13 @@ export default function PayMenu(props){
         PayButton.current = window.paypal.Buttons.driver("react", { React, ReactDOM });
     }
     const createOrder=(data,actions)=>{
-        return fetch('/api/createOrder',{
+        return fetch(`/api/items/${props.item.id}/order`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${context.jwt}`
             },
-            body: JSON.stringify(props.item)
+            body: '{}'
         }).then(function(res){
             return res.json()
         }).then(function(data){
@@ -63,14 +61,15 @@ export default function PayMenu(props){
             }
         });
     }
-
+    
     return(
-        !ready?<div>{msg}</div>:
-        <div >
+        !ready?
+        <div className="loadingDotsContainer">
+            <PulseLoader color="#8367D8" css={css} size={10}/>
+        </div>:
             <PayButton.current
-                createOrder={(data, actions) => createOrder(data, actions)}
-                onApprove={(data, actions) => onApprove(data, actions)}
-            />
-        </div>
+            createOrder={(data, actions) => createOrder(data, actions)}
+            onApprove={(data, actions) => onApprove(data, actions)}
+        />
     )
 }

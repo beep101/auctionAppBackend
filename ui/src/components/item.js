@@ -63,10 +63,16 @@ class Item extends React.Component{
                 this.isWish(data);
                 if(data.bids.length&&data.bids[0].bidder.id==this.context.user.jti)
                     this.setBanner('You are the highest bidder','itemMsg successItemMsg');
-                console.log(this.context);
-                console.log(data)
                 this.setState({['isWinner']:this.context.user.jti===`${data.winner.id}`});
+                if(this.context.user.jti===`${data.winner.id}`)
+                    this.setBanner(
+                        `You won the item, price you are paying is 
+                        $${this.state.bids.length===0?
+                        this.state.item.startingprice:this.state.bids[0].amount}`,
+                    'itemMsg successItemMsg');
                 this.setState({['isPaid']:data.paid});
+                if(data.paid)
+                    this.setBanner('You successfully bought this item','itemMsg successItemMsg');
             }else{
                 this.setState({['msg']:'Cannot load item',['msgType']:'itemMsg warningItemMsg'});
             }
@@ -171,6 +177,7 @@ class Item extends React.Component{
 
     setPaid=()=>{
         this.setState({['isPaid']:true});
+        this.setBanner('You sucessfuly bought this item','itemMsg successItemMsg');
     }
 
     render(){
@@ -238,11 +245,10 @@ class Item extends React.Component{
                         :
                         !this.state.isPaid?
                         <div className="itemDataContainer">
-                            <div >Ypu won the item, price you are paying is ${this.state.bids.length===0?this.state.item.startingprice:this.state.bids[0].amount}</div>
                             <PayMenu item={this.state.item} setPaid={this.setPaid}/>
                         </div>
                         :
-                        <div>You sucessfully bought this item</div>
+                        <div></div>
                         }
 
                         <div>

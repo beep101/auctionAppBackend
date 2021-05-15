@@ -65,7 +65,7 @@ function BiddedItem(props){
     const context=useContext(AuthContext);
 
     useEffect(()=>{
-        setTimeLeft(timeDiff())
+        setTimeLeft(timeDiff()[0]==="-"?"Ended":timeDiff())
     },[props.item.endtime])
  
     useEffect(()=>{

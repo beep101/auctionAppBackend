@@ -1,14 +1,17 @@
 package com.example.demo.models.paypal;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class WebhookOrderModel {
-	private String event_type;
+	@JsonProperty("event_type")
+	private String eventType;
 	private PaymentEventResponseModel resource;
 	
-	public String getEvent_type() {
-		return event_type;
+	public String getEventType() {
+		return eventType;
 	}
-	public void setEvent_type(String event_type) {
-		this.event_type = event_type;
+	public void setEventType(String eventType) {
+		this.eventType = eventType;
 	}
 	public PaymentEventResponseModel getResource() {
 		return resource;

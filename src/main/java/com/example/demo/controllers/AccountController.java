@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -113,8 +114,8 @@ public class AccountController {
 	
 	@Transactional
 	@ApiOperation(value = "Deletes account with specified id", notes = "Only authenticated users")
-	@DeleteMapping("api/account")
-	public UserModel deleteAccount(@RequestParam int id,@RequestParam boolean permanent,@AuthUser User principal) throws AuctionAppException{
+	@DeleteMapping("api/account/{id}")
+	public UserModel deleteAccount(@PathVariable int id,@RequestParam boolean permanent,@AuthUser User principal) throws AuctionAppException{
 		return accountService.deleteAccount(id,permanent,principal);
 	}
 	

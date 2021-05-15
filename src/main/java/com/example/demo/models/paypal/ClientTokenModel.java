@@ -1,33 +1,37 @@
 package com.example.demo.models.paypal;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClientTokenModel {
-	private String client_token;
-	private String client_id;
-	private String client_merchant_id;
+	@JsonProperty("client_token")
+	private String clientToken;
+	@JsonProperty("client_id")
+	private String clientId;
+	@JsonProperty("client_merchant_id")
+	private String clientMerchantId;
 	private String bncode;
-	private int expires_in;
+	@JsonProperty("expires_in")
+	private int expiresIn;
 	
-	public String getClient_token() {
-		return client_token;
+	public String getClientToken() {
+		return clientToken;
 	}
-	public void setClient_token(String client_token) {
-		this.client_token = client_token;
+	public void setClientToken(String clientToken) {
+		this.clientToken = clientToken;
 	}
-	
-	public int getExpires_in() {
-		return expires_in;
+	public String getClientId() {
+		return clientId;
 	}
-	public void setExpires_in(int expires_in) {
-		this.expires_in = expires_in;
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
 	}
-	public String getClient_id() {
-		return client_id;
+	public String getClientMerchantId() {
+		return clientMerchantId;
 	}
-	public void setClient_id(String client_id) {
-		this.client_id = client_id;
+	public void setClientMerchantId(String clientMerchantId) {
+		this.clientMerchantId = clientMerchantId;
 	}
 	public String getBncode() {
 		return bncode;
@@ -35,10 +39,10 @@ public class ClientTokenModel {
 	public void setBncode(String bncode) {
 		this.bncode = bncode;
 	}
-	public String getClient_merchant_id() {
-		return client_merchant_id;
+	public int getExpiresIn() {
+		return expiresIn;
 	}
-	public void setClient_merchant_id(String client_merchant_id) {
-		this.client_merchant_id = client_merchant_id;
+	public void setExpiresIn(int expiresIn) {
+		this.expiresIn = expiresIn;
 	}
 }

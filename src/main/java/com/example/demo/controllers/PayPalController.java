@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.AuthUser;
-import com.example.demo.entities.Item;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
+import com.example.demo.exceptions.BadInitializatinException;
 import com.example.demo.exceptions.ExternalServiceError;
 import com.example.demo.models.paypal.ClientTokenModel;
 import com.example.demo.models.paypal.OnboardingUrlModel;
@@ -28,6 +28,8 @@ import com.example.demo.repositories.ItemsRepository;
 import com.example.demo.repositories.OrdersRepository;
 import com.example.demo.repositories.UsersRepository;
 import com.example.demo.services.DefaultPayPalTransactionService;
+import com.example.demo.utils.CountryCodeUtil;
+import com.example.demo.utils.DefaultCountryCodeUtil;
 import com.example.demo.utils.DefaultHttpClientAdapter;
 import com.example.demo.utils.HttpClientAdapter;
 
@@ -58,11 +60,12 @@ public class PayPalController {
 	private DefaultPayPalTransactionService payPalService;
 	
 	@PostConstruct
-	public void init() {
+	public void init() throws BadInitializatinException {
 		HttpClientAdapter httpClient=new DefaultHttpClientAdapter();
+		CountryCodeUtil ccUtil=new DefaultCountryCodeUtil();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
-		payPalService=new DefaultPayPalTransactionService(payPalId, payPalKey,bncode,merchantId,baseUrl,ordersRepo,usersRepo,itemsRepo,httpClient);
-		int delay=payPalService.fetchKey();
+		payPalService=new DefaultPayPalTransactionService(payPalId, payPalKey,bncode,merchantId,baseUrl,ordersRepo,usersRepo,itemsRepo,ccUtil,httpClient);
+		int delay=payPalService.refreshAccessKey();
 
 		Runnable task=()->{
 			refreshKey(executor,payPalService);
@@ -71,29 +74,29 @@ public class PayPalController {
 		executor.schedule(task, delay, TimeUnit.SECONDS);
 	}
 	private void refreshKey(ScheduledExecutorService executor,DefaultPayPalTransactionService payPalService) {
-		int delay=payPalService.fetchKey();
+		int delay=payPalService.refreshAccessKey();
 		executor.schedule(()->{refreshKey(executor,payPalService);}, delay, TimeUnit.SECONDS);
 	}
 
 	@ApiOperation(value = "Fetches PayPal onboarding url for user", notes = "Only authenticated users")
-	@GetMapping("/api/getOnboardingUrl")
+	@GetMapping("/api/onboardingUrl")
 	public OnboardingUrlModel getOnboardingUrl(@AuthUser User principal) throws ExternalServiceError {
 		return payPalService.getOnboardingUrl(principal);
 	}
 
 	@ApiOperation(value = "Fetches token for users to interact with PayPal", notes = "Only authenticated users")
-	@GetMapping("/api/getClientToken")
+	@GetMapping("/api/clientToken")
 	public ClientTokenModel getClientToken(@AuthUser User principal) throws ExternalServiceError {
 		return payPalService.getClientToken();
 	}
 
 	@ApiOperation(value = "Creates order for item", notes = "Only authenticated users")
-	@PostMapping("/api/createOrder")
-	public OrderModel createOrder(@RequestBody Item item,@AuthUser User principal) throws AuctionAppException {
-		OrderModel existing=payPalService.getOrder(item, principal);
+	@PostMapping("/api/items/{itemId}/order")
+	public OrderModel createOrder(@PathVariable int itemId,@AuthUser User principal) throws AuctionAppException {
+		OrderModel existing=payPalService.getOrder(itemId, principal);
 		if(existing!=null)
 			return existing;
-		return payPalService.createOrder(item,principal);
+		return payPalService.createOrder(itemId,principal);
 	}
 
 	@ApiOperation(value = "Notifies about approved payment", notes = "Only authenticated users")

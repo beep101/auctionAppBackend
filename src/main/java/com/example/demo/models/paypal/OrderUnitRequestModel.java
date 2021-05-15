@@ -2,22 +2,25 @@ package com.example.demo.models.paypal;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class OrderUnitRequestModel {
 
 	public class Amount {
-		private String currency_code="USD";
+		@JsonProperty("currency_code")
+		private String currencyCode="USD";
 		private String value;
 		
 		Amount(BigDecimal amount){
 			this.value=amount.toPlainString();
 		}
 
-		public String getCurrency_code() {
-			return currency_code;
+		public String getCurrencyCode() {
+			return currencyCode;
 		}
 
-		public void setCurrency_code(String currency_code) {
-			this.currency_code = currency_code;
+		public void setCurrencyCode(String currencyCode) {
+			this.currencyCode = currencyCode;
 		}
 
 		public String getValue() {
@@ -45,34 +48,35 @@ public class OrderUnitRequestModel {
 		
 	}
 	public class PaymentInstruction{
-		private String disbursement_mode="INSTANT";
+		@JsonProperty("disbursement_mode")
+		private String disbursementMode="INSTANT";
 
-		public String getDisbursement_mode() {
-			return disbursement_mode;
+		public String getDisbursementMode() {
+			return disbursementMode;
 		}
 
-		public void setDisbursement_mode(String disbursement_mode) {
-			this.disbursement_mode = disbursement_mode;
+		public void setDisbursementMode(String disbursementMode) {
+			this.disbursementMode = disbursementMode;
 		}
 	}
 	
-	private int reference_id;
+	private int referenceId;
 	private OrderUnitRequestModel.Amount amount;
 	private OrderUnitRequestModel.Payee payee;
-	private OrderUnitRequestModel.PaymentInstruction payment_instruction;
+	private OrderUnitRequestModel.PaymentInstruction paymentInstruction;
 	
 	public OrderUnitRequestModel(int itemId,BigDecimal price,String merchantId) {
-		this.reference_id=itemId;
+		this.referenceId=itemId;
 		this.amount=new OrderUnitRequestModel.Amount(price);
 		this.payee=new OrderUnitRequestModel.Payee(merchantId);
-		this.payment_instruction=new OrderUnitRequestModel.PaymentInstruction();
+		this.paymentInstruction=new OrderUnitRequestModel.PaymentInstruction();
 	}
 	
-	public int getReference_id() {
-		return reference_id;
+	public int getReferenceId() {
+		return referenceId;
 	}
-	public void setReference_id(int reference_id) {
-		this.reference_id = reference_id;
+	public void setReferenceId(int referenceId) {
+		this.referenceId = referenceId;
 	}
 	public OrderUnitRequestModel.Amount getAmount() {
 		return amount;
@@ -86,10 +90,10 @@ public class OrderUnitRequestModel {
 	public void setPayee(OrderUnitRequestModel.Payee payee) {
 		this.payee = payee;
 	}
-	public OrderUnitRequestModel.PaymentInstruction getPayment_instruction() {
-		return payment_instruction;
+	public OrderUnitRequestModel.PaymentInstruction getPaymentInstruction() {
+		return paymentInstruction;
 	}
-	public void setPayment_instruction(OrderUnitRequestModel.PaymentInstruction payment_instruction) {
-		this.payment_instruction = payment_instruction;
+	public void setPaymentInstruction(OrderUnitRequestModel.PaymentInstruction paymentInstruction) {
+		this.paymentInstruction = paymentInstruction;
 	}
 }

@@ -51,6 +51,7 @@ public class DefaultAccountService implements AccountService{
 	private IJwtUtil jwtUtil;
 	private JavaMailSender mailSender;
 	
+	public static final int DELETED_ACCOUNT_PLACEHOLDER_ID=0;
 	public static final int ONE_DAY_DELAY_MILIS = 24*60*60*1000;
 	
 	private String mailSubject;
@@ -335,7 +336,7 @@ public class DefaultAccountService implements AccountService{
 		bidsRepo.deleteActiveByBidder(principal,new Timestamp(System.currentTimeMillis()));
 		bidsRepo.flush();
 		if(permanent) {
-			User deletedUser=usersRepo.findById(0).get();
+			User deletedUser=usersRepo.findById(DELETED_ACCOUNT_PLACEHOLDER_ID).get();
 			List<Item> soldItems=itemsRepo.findByPaidTrueAndSellerEquals(principal);
 			List<Item> wonItems=itemsRepo.findByWinnerEquals(principal);
 			soldItems.stream().forEach(x->x.setSeller(deletedUser));

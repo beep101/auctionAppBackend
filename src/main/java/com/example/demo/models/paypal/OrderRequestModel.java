@@ -4,12 +4,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class OrderRequestModel {
 	private String intent="CAPTURE";
-	private List<OrderUnitRequestModel> purchase_units=new ArrayList<>();
+	@JsonProperty("purchase_units")
+	private List<OrderUnitRequestModel> purchaseUnits=new ArrayList<>();
+	private OrderPayerRequestModel payer;
 	
 	public OrderRequestModel(int itemId,BigDecimal price,String merchantId) {
-		purchase_units.add(new OrderUnitRequestModel(itemId,price,merchantId));
+		purchaseUnits.add(new OrderUnitRequestModel(itemId,price,merchantId));
 	}
 	
 	public String getIntent() {
@@ -18,12 +22,19 @@ public class OrderRequestModel {
 	public void setIntent(String intent) {
 		this.intent = intent;
 	}
-	public List<OrderUnitRequestModel> getPurchase_units() {
-		return purchase_units;
+	public List<OrderUnitRequestModel> getPurchaseUnits() {
+		return purchaseUnits;
 	}
-	public void setPurchase_units(List<OrderUnitRequestModel> purchase_units) {
-		this.purchase_units = purchase_units;
+	public void setPurchaseUnits(List<OrderUnitRequestModel> purchaseUnits) {
+		this.purchaseUnits = purchaseUnits;
 	}
-	
-	
+
+	public OrderPayerRequestModel getPayer() {
+		return payer;
+	}
+
+	public void setPayer(OrderPayerRequestModel payer) {
+		this.payer = payer;
+	}
+		
 }

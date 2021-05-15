@@ -60,7 +60,7 @@ public class ExceptionHandleControllerAdvice {
 
     @ExceptionHandler(InsertFailedException.class)
     public ResponseEntity<Object> handleInvalidTokenException(InsertFailedException ex, WebRequest request){
-    	return buildResponse(ex, HttpStatus.I_AM_A_TEAPOT);
+    	return buildResponse(ex, HttpStatus.FAILED_DEPENDENCY);
     }
     
     @ExceptionHandler(UnauthenticatedException.class)
@@ -74,6 +74,6 @@ public class ExceptionHandleControllerAdvice {
     }
     @ExceptionHandler(ExternalServiceError.class)
     public ResponseEntity<Object> handleExternalServiceError(ExternalServiceError ex,WebRequest request){
-    	return buildResponse(ex, HttpStatus.I_AM_A_TEAPOT);
+    	return buildResponse(ex, HttpStatus.FAILED_DEPENDENCY);
     }
 }

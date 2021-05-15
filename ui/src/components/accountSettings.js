@@ -51,6 +51,9 @@ function LogoutButton(){
 }
 
 function DeactivateButton(){
+    const SOFT=false;
+    const PERMANENT=true;
+
     const context=useContext(AuthContext);
 
     const [modalActive,setModalActive]=useState(false);
@@ -79,8 +82,8 @@ function DeactivateButton(){
                     <p>In any case all active bids will be discarded</p>
                 </div>
                 <div className="modalButtons">
-                    <span className="bidButton" onClick={()=>deactivate(false)}>Deactivate</span>
-                    <span className="bidButton" onClick={()=>deactivate(true)}>Delete</span>
+                    <span className="bidButton" onClick={()=>deactivate(SOFT)}>Deactivate</span>
+                    <span className="bidButton" onClick={()=>deactivate(PERMANENT)}>Delete</span>
                     <span className="bidButton" onClick={()=>setModalActive(false)}>Close</span>
                 </div>
             </ReactModal>

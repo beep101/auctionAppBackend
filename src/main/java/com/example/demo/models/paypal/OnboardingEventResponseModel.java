@@ -1,11 +1,15 @@
 package com.example.demo.models.paypal;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OnboardingEventResponseModel {
+	@JsonProperty("partner_client_id")
 	private String partner_client_id;
+	@JsonProperty("merchant_id")
 	private String merchant_id;
+	@JsonProperty("tracking_id")
 	private String tracking_id;
 	
 	public String getPartner_client_id() {
@@ -26,5 +30,4 @@ public class OnboardingEventResponseModel {
 	public void setTracking_id(String tracking_id) {
 		this.tracking_id = tracking_id;
 	}
-	
 }
