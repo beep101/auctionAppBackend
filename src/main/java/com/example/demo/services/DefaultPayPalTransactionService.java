@@ -68,7 +68,7 @@ public class DefaultPayPalTransactionService {
 	private String key;
 	private String onboardingRequestBody;
 	
-	public DefaultPayPalTransactionService(String id, String secret, String bncode, String merchantId, String baseUrl,OrdersRepository ordersRepo, UsersRepository usersRepo,ItemsRepository itemsRepo, CountryCodeUtil ccUtil,HttpClientAdapter httpClient) throws BadInitializatinException {
+	public DefaultPayPalTransactionService(String id, String secret, String bncode, String merchantId, String baseUrl,OrdersRepository ordersRepo, UsersRepository usersRepo,ItemsRepository itemsRepo, CountryCodeUtil ccUtil,HttpClientAdapter httpClient) throws BadInitializatinException, FileNotFoundException {
 		this.id=id;
 		this.secret=secret;
 		this.bncode=bncode;
@@ -89,8 +89,7 @@ public class DefaultPayPalTransactionService {
 			onboardingRequestBody=scanner.useDelimiter("\\Z").next();
 			scanner.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			throw new BadInitializatinException();
+			throw e;
 		}
 	}
 

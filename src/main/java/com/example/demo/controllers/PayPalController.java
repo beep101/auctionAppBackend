@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -62,7 +63,7 @@ public class PayPalController {
 	private DefaultPayPalTransactionService payPalService;
 	
 	@PostConstruct
-	public void init() throws BadInitializatinException {
+	public void init() throws BadInitializatinException, IOException {
 		HttpClientAdapter httpClient=new DefaultHttpClientAdapter();
 		Logger logger=LoggerFactory.getLogger(PayPalController.class);
 		
