@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.util.ResourceUtils;
-
 import com.example.demo.exceptions.BadInitializatinException;
 import com.example.demo.models.CountryCodeData;
 import com.fasterxml.jackson.databind.MappingIterator;
@@ -14,7 +12,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
 public class DefaultCountryCodeUtil implements CountryCodeUtil{
-	public static final String COUNTRY_CODES_FILE_LOCATION="classpath:country_codes.csv";
+	public static final String COUNTRY_CODES_FILE_LOCATION="country_codes.csv";
 	
 	List<CountryCodeData> countryCodes;
 	
@@ -22,7 +20,7 @@ public class DefaultCountryCodeUtil implements CountryCodeUtil{
         try {
 	        CsvSchema schema = CsvSchema.emptySchema().withHeader();
 	        CsvMapper mapper = new CsvMapper();
-	        File file = ResourceUtils.getFile(COUNTRY_CODES_FILE_LOCATION);
+	        File file =new File(getClass().getClassLoader().getResource(COUNTRY_CODES_FILE_LOCATION).getFile());
 	        MappingIterator<CountryCodeData> readValues = mapper.reader(CountryCodeData.class).with(schema).readValues(file);
 			countryCodes=readValues.readAll();
 		} catch ( IOException e) {
