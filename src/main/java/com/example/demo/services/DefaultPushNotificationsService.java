@@ -188,6 +188,8 @@ public class DefaultPushNotificationsService implements PushNotificationsService
 			throw new InvalidDataException();
 		if(opt.get().getUser().getId()!=principal.getId())
 			throw new UnallowedOperationException();
+		opt.get().setUser(null);
+		pushSubsRepo.save(opt.get());
 		pushSubsRepo.delete(opt.get());
 		return opt.get().toModel();
 	}

@@ -101,7 +101,9 @@ public class DefaultPushNotificationsServiceTests extends EasyMockSupport {
 		ps.setP256dh("p256dh");
 		ps.setUrl("url");
 		
+		Capture<PushSub> psCapture=EasyMock.newCapture(CaptureType.ALL);
 		expect(pushSubsRepo.findOneByUrl(anyString())).andReturn(Optional.of(ps));
+		expect(pushSubsRepo.save(capture(psCapture))).andAnswer(()->psCapture.getValue());
 		pushSubsRepo.delete(ps);
 		expectLastCall();
 		replayAll();
