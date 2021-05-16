@@ -1,9 +1,6 @@
 package com.example.demo.services;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -12,19 +9,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
-import org.springframework.util.ResourceUtils;
 
 import com.example.demo.entities.Address;
 import com.example.demo.entities.Item;
 import com.example.demo.entities.Order;
 import com.example.demo.entities.User;
 import com.example.demo.exceptions.AuctionAppException;
-import com.example.demo.exceptions.BadInitializatinException;
 import com.example.demo.exceptions.ExternalServiceError;
 import com.example.demo.exceptions.InvalidDataException;
 import com.example.demo.exceptions.UnallowedOperationException;
@@ -75,7 +68,7 @@ public class DefaultPayPalTransactionService {
 	private String key;
 	private String onboardingRequestBody;
 	
-	public DefaultPayPalTransactionService(String id, String secret, String bncode, String merchantId, String baseUrl,OrdersRepository ordersRepo, UsersRepository usersRepo,ItemsRepository itemsRepo, CountryCodeUtil ccUtil,HttpClientAdapter httpClient) throws BadInitializatinException, IOException {
+	public DefaultPayPalTransactionService(String id, String secret, String bncode, String merchantId, String baseUrl,OrdersRepository ordersRepo, UsersRepository usersRepo,ItemsRepository itemsRepo, CountryCodeUtil ccUtil,HttpClientAdapter httpClient){
 		this.id=id;
 		this.secret=secret;
 		this.bncode=bncode;

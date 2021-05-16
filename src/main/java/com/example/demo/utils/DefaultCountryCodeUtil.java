@@ -1,15 +1,9 @@
 package com.example.demo.utils;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.util.ResourceUtils;
 
 import com.example.demo.exceptions.BadInitializatinException;
 import com.example.demo.models.CountryCodeData;
@@ -22,18 +16,20 @@ public class DefaultCountryCodeUtil implements CountryCodeUtil{
 	
 	List<CountryCodeData> countryCodes;
 	
-	public DefaultCountryCodeUtil() throws BadInitializatinException, IOException {
-        try {
+	public DefaultCountryCodeUtil() throws BadInitializatinException {
+		try {
 	        CsvSchema schema = CsvSchema.emptySchema().withHeader();
 	        CsvMapper mapper = new CsvMapper();
 	        
 		    InputStream inputStream = getClass().getResourceAsStream(COUNTRY_CODES_FILE_LOCATION);			
-	        MappingIterator<CountryCodeData> readValues = mapper.reader(CountryCodeData.class).with(schema).readValues(inputStream);
-	        
-			countryCodes=readValues.readAll();
-		} catch ( IOException e) {
-			throw e;
+	        MappingIterator<CountryCodeData> readValues;
+
+				readValues = mapper.reader(CountryCodeData.class).with(schema).readValues(inputStream);
+				countryCodes=readValues.readAll();
+		} catch (IOException e) {
+			throw new BadInitializatinException();
 		}
+
 	}
 	
 	@Override

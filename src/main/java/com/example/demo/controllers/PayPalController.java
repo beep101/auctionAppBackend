@@ -63,14 +63,11 @@ public class PayPalController {
 	private DefaultPayPalTransactionService payPalService;
 	
 	@PostConstruct
-	public void init() throws BadInitializatinException, IOException {
+	public void init() throws BadInitializatinException {
 		HttpClientAdapter httpClient=new DefaultHttpClientAdapter();
-		Logger logger=LoggerFactory.getLogger(PayPalController.class);
 		
 		CountryCodeUtil ccUtil=new DefaultCountryCodeUtil();
-		logger.info("COUTRY CODES INIT");
 		payPalService=new DefaultPayPalTransactionService(payPalId, payPalKey,bncode,merchantId,baseUrl,ordersRepo,usersRepo,itemsRepo,ccUtil,httpClient);
-		logger.info("ONBOARDING INIT");
 		
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 		int delay=payPalService.refreshAccessKey();
