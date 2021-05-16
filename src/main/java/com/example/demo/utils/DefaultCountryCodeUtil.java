@@ -14,7 +14,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
 public class DefaultCountryCodeUtil implements CountryCodeUtil{
-	public static final String COUNTRY_CODES_FILE_LOCATION="country_codes.csv";
+	public static final String COUNTRY_CODES_FILE_LOCATION="classpath:country_codes.csv";
 	
 	List<CountryCodeData> countryCodes;
 	

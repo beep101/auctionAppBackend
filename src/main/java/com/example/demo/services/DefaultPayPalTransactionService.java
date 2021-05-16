@@ -43,7 +43,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DefaultPayPalTransactionService {
-	public static final String ONBOARDING_REQUEST_BODY_FILE_LOCATION="onboarding_request_body.json";
+	public static final String ONBOARDING_REQUEST_BODY_FILE_LOCATION="classpath:onboarding_request_body.json";
 	
 	private static final String TOKEN_PATH="/v1/oauth2/token";
 	private static final String ONBOARDING_REQ_PATH="/v2/customer/partner-referrals";
