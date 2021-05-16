@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 
 import com.example.demo.entities.Address;
@@ -68,6 +70,8 @@ public class DefaultPayPalTransactionService {
 	private String key;
 	private String onboardingRequestBody;
 	
+	Logger logger;
+	
 	public DefaultPayPalTransactionService(String id, String secret, String bncode, String merchantId, String baseUrl,OrdersRepository ordersRepo, UsersRepository usersRepo,ItemsRepository itemsRepo, CountryCodeUtil ccUtil,HttpClientAdapter httpClient){
 		this.id=id;
 		this.secret=secret;
@@ -86,6 +90,8 @@ public class DefaultPayPalTransactionService {
 	    InputStream inputStream = getClass().getResourceAsStream(ONBOARDING_REQUEST_BODY_FILE_LOCATION);
 		BufferedReader reader=new BufferedReader(new InputStreamReader(inputStream));
 		onboardingRequestBody=reader.lines().collect(Collectors.joining(System.lineSeparator()));
+		
+		logger=LoggerFactory.getLogger(DefaultPayPalTransactionService.class);
 	}
 
 	public int refreshAccessKey() {
@@ -123,6 +129,9 @@ public class DefaultPayPalTransactionService {
 		headers.put("Authorization", "Bearer "+this.key);
 		headers.put("Content-Type", "application/json");
 		byte[] reqBody=String.format(onboardingRequestBody, principal.getId()).getBytes();
+		System.out.println(String.format(onboardingRequestBody, principal.getId()));
+		logger.info(onboardingRequestBody);
+		logger.info(String.format(onboardingRequestBody, principal.getId()));
 		
 		HttpResponseModel response;
 		try {
@@ -172,6 +181,7 @@ public class DefaultPayPalTransactionService {
 	}
 	
 	public void onboardingEvent(WebhookOnboardingModel data) {
+		System.out.println(data.getEventType());
 		switch(data.getEventType()) {
 			case "MERCHANT.ONBOARDING.COMPLETED":
 				onboardUser(data);
@@ -187,6 +197,7 @@ public class DefaultPayPalTransactionService {
 		try {
 			userId=Integer.parseInt(data.getResource().getTracking_id());
 		}catch(NumberFormatException e) {
+			System.out.println("NumberFormatException");
 			return;
 		}
 		Optional<User> userOpt=usersRepo.findById(userId);
@@ -194,6 +205,7 @@ public class DefaultPayPalTransactionService {
 			User user=userOpt.get();
 			if(!user.getMerchantId().isBlank())
 				return;
+			System.out.println(data.getResource().getMerchant_id());
 			user.setMerchantId(data.getResource().getMerchant_id());
 			usersRepo.save(user);
 		}
