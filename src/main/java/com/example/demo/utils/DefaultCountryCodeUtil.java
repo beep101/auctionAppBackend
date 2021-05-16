@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ResourceUtils;
 
 import com.example.demo.exceptions.BadInitializatinException;
 import com.example.demo.models.CountryCodeData;
@@ -22,7 +23,7 @@ public class DefaultCountryCodeUtil implements CountryCodeUtil{
         try {
 	        CsvSchema schema = CsvSchema.emptySchema().withHeader();
 	        CsvMapper mapper = new CsvMapper();
-	        File file =new ClassPathResource(COUNTRY_CODES_FILE_LOCATION).getFile();
+	        File file =ResourceUtils.getFile(COUNTRY_CODES_FILE_LOCATION);
 	        MappingIterator<CountryCodeData> readValues = mapper.reader(CountryCodeData.class).with(schema).readValues(file);
 			countryCodes=readValues.readAll();
 		} catch ( IOException e) {

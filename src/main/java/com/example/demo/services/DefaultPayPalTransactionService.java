@@ -13,6 +13,7 @@ import java.util.Scanner;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
+import org.springframework.util.ResourceUtils;
 
 import com.example.demo.entities.Address;
 import com.example.demo.entities.Item;
@@ -86,7 +87,7 @@ public class DefaultPayPalTransactionService {
 	    this.ordersRepo=ordersRepo;
 	    
 	    try {
-			File onboardingRequestBodyFile=new ClassPathResource(ONBOARDING_REQUEST_BODY_FILE_LOCATION).getFile();
+			File onboardingRequestBodyFile=ResourceUtils.getFile(ONBOARDING_REQUEST_BODY_FILE_LOCATION);
 			Scanner scanner=new Scanner(onboardingRequestBodyFile);
 			onboardingRequestBody=scanner.useDelimiter("\\Z").next();
 			scanner.close();
