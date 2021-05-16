@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Base64;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 
 import com.example.demo.entities.Address;
@@ -68,7 +70,7 @@ public class DefaultPayPalTransactionService {
 	private String key;
 	private String onboardingRequestBody;
 	
-	public DefaultPayPalTransactionService(String id, String secret, String bncode, String merchantId, String baseUrl,OrdersRepository ordersRepo, UsersRepository usersRepo,ItemsRepository itemsRepo, CountryCodeUtil ccUtil,HttpClientAdapter httpClient) throws BadInitializatinException, FileNotFoundException {
+	public DefaultPayPalTransactionService(String id, String secret, String bncode, String merchantId, String baseUrl,OrdersRepository ordersRepo, UsersRepository usersRepo,ItemsRepository itemsRepo, CountryCodeUtil ccUtil,HttpClientAdapter httpClient) throws BadInitializatinException, IOException {
 		this.id=id;
 		this.secret=secret;
 		this.bncode=bncode;
@@ -84,11 +86,11 @@ public class DefaultPayPalTransactionService {
 	    this.ordersRepo=ordersRepo;
 	    
 	    try {
-			File onboardingRequestBodyFile=new File(getClass().getClassLoader().getResource(ONBOARDING_REQUEST_BODY_FILE_LOCATION).getFile());
+			File onboardingRequestBodyFile=new ClassPathResource(ONBOARDING_REQUEST_BODY_FILE_LOCATION).getFile();
 			Scanner scanner=new Scanner(onboardingRequestBodyFile);
 			onboardingRequestBody=scanner.useDelimiter("\\Z").next();
 			scanner.close();
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			throw e;
 		}
 	}
