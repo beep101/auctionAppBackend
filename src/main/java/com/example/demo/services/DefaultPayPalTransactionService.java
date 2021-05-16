@@ -288,6 +288,8 @@ public class DefaultPayPalTransactionService {
 		HttpResponseModel response;
 		try {
 			response = httpClient.sendHttpRequest(HttpMethod.POST,baseUrl+ORDER_PATH, headers, objectMapper.writeValueAsString(orderReqData).getBytes());
+			System.out.println(objectMapper.writeValueAsString(orderReqData));
+			System.out.println(response.getBody());
 		} catch (JsonProcessingException | AuctionAppException e1) {
 			throw new ExternalServiceError();
 		}

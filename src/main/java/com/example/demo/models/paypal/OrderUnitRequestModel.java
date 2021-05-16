@@ -32,6 +32,7 @@ public class OrderUnitRequestModel {
 		}
 	}
 	public class Payee {
+		@JsonProperty("merchant_id")
 		private String merchantId;
 		
 		Payee(String merchantId){
