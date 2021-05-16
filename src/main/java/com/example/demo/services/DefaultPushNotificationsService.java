@@ -139,8 +139,11 @@ public class DefaultPushNotificationsService implements PushNotificationsService
 			} catch (JsonProcessingException e) {
 				return;
 			}
-			if(!sendRequest(pushSub,msgEncryptionUtil.encrypt(data, pushSub.getAuth(),pushSub.getP256dh()))) 
+			if(!sendRequest(pushSub,msgEncryptionUtil.encrypt(data, pushSub.getAuth(),pushSub.getP256dh()))) {
+				pushSub.setUser(null);
+				pushSubsRepo.save(pushSub);
 				pushSubsRepo.delete(pushSub);
+			}
 		}
 	}
 

@@ -283,6 +283,8 @@ public class DefaultPushNotificationsServiceTests extends EasyMockSupport {
 		expect(notificationsRepo.save(anyObject())).andReturn(ntf).anyTimes();
 		expect(msgEncryptionUtil.encrypt(capture(dataCapture),cmpEq( "auth"), cmpEq("p256dh"))).andReturn(byteArr).anyTimes();
 		expect(httpClient.sendHttpRequest(cmpEq(HttpMethod.PUT),cmpEq("https://notifications.service/path"), capture(headersCapture), aryEq(byteArr))).andReturn(new HttpResponseModel(404, "")).anyTimes();
+		Capture<PushSub> psCapture=EasyMock.newCapture(CaptureType.ALL);
+		expect(pushSubsRepo.save(capture(psCapture))).andAnswer(()->psCapture.getValue()).anyTimes();
 		pushSubsRepo.delete(anyObject());
 		expectLastCall().once();
 		replayAll();
@@ -321,6 +323,8 @@ public class DefaultPushNotificationsServiceTests extends EasyMockSupport {
 		expect(notificationsRepo.save(anyObject())).andReturn(ntf).anyTimes();
 		expect(msgEncryptionUtil.encrypt(capture(dataCapture),cmpEq( "auth"), cmpEq("p256dh"))).andReturn(byteArr).anyTimes();
 		expect(httpClient.sendHttpRequest(cmpEq(HttpMethod.PUT),cmpEq("url"), capture(headersCapture), aryEq(byteArr))).andReturn(new HttpResponseModel(200, "")).anyTimes();
+		Capture<PushSub> psCapture=EasyMock.newCapture(CaptureType.ALL);
+		expect(pushSubsRepo.save(capture(psCapture))).andAnswer(()->psCapture.getValue()).anyTimes();
 		pushSubsRepo.delete(anyObject());
 		expectLastCall().once();
 		replayAll();
