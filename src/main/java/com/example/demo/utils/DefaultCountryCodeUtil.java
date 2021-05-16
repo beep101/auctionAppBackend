@@ -24,7 +24,7 @@ public class DefaultCountryCodeUtil implements CountryCodeUtil{
 	        MappingIterator<CountryCodeData> readValues = mapper.reader(CountryCodeData.class).with(schema).readValues(file);
 			countryCodes=readValues.readAll();
 		} catch ( IOException e) {
-			System.out.println("Problem with loading countries file");
+			e.printStackTrace();
 			throw new BadInitializatinException();
 		}
 	}

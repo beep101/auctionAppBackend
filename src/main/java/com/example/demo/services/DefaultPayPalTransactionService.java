@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.util.ResourceUtils;
 
 import com.example.demo.entities.Address;
 import com.example.demo.entities.Item;
@@ -90,7 +89,7 @@ public class DefaultPayPalTransactionService {
 			onboardingRequestBody=scanner.useDelimiter("\\Z").next();
 			scanner.close();
 		} catch (FileNotFoundException e) {
-			System.out.println("Problem with loading onboarding trquest template file");
+			e.printStackTrace();
 			throw new BadInitializatinException();
 		}
 	}

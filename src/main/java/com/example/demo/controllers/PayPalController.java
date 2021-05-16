@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,9 +64,14 @@ public class PayPalController {
 	@PostConstruct
 	public void init() throws BadInitializatinException {
 		HttpClientAdapter httpClient=new DefaultHttpClientAdapter();
+		Logger logger=LoggerFactory.getLogger(PayPalController.class);
+		
 		CountryCodeUtil ccUtil=new DefaultCountryCodeUtil();
-		ScheduledExecutorService executor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+		logger.info("COUTRY CODES INIT");
 		payPalService=new DefaultPayPalTransactionService(payPalId, payPalKey,bncode,merchantId,baseUrl,ordersRepo,usersRepo,itemsRepo,ccUtil,httpClient);
+		logger.info("ONBOARDING INIT");
+		
+		ScheduledExecutorService executor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 		int delay=payPalService.refreshAccessKey();
 
 		Runnable task=()->{
