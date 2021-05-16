@@ -16,7 +16,7 @@ export default function PayMenu(props){
         getClientTokens(context.jwt,(success,data)=>{
             if(success){
                 const script = document.createElement("script");
-                script.src=`https://www.paypal.com/sdk/js?&client-id=${data.client_id}&merchant-id=${data.client_merchant_id}`
+                script.src=`https://www.paypal.com/sdk/js?&client-id=${data.client_id}&merchant-id=${props.item.seller.merchantId}`
                 script.async = false;
                 document.body.appendChild(script);
                 script.onload = () => { 
