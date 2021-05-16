@@ -1,7 +1,10 @@
 package com.example.demo.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +18,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
 public class DefaultCountryCodeUtil implements CountryCodeUtil{
-	public static final String COUNTRY_CODES_FILE_LOCATION="classpath:country_codes.csv";
+	public static final String COUNTRY_CODES_FILE_LOCATION="/country_codes.csv";
 	
 	List<CountryCodeData> countryCodes;
 	
@@ -23,8 +26,10 @@ public class DefaultCountryCodeUtil implements CountryCodeUtil{
         try {
 	        CsvSchema schema = CsvSchema.emptySchema().withHeader();
 	        CsvMapper mapper = new CsvMapper();
-	        File file =ResourceUtils.getFile(COUNTRY_CODES_FILE_LOCATION);
-	        MappingIterator<CountryCodeData> readValues = mapper.reader(CountryCodeData.class).with(schema).readValues(file);
+	        
+		    InputStream inputStream = getClass().getResourceAsStream(COUNTRY_CODES_FILE_LOCATION);			
+	        MappingIterator<CountryCodeData> readValues = mapper.reader(CountryCodeData.class).with(schema).readValues(inputStream);
+	        
 			countryCodes=readValues.readAll();
 		} catch ( IOException e) {
 			throw e;

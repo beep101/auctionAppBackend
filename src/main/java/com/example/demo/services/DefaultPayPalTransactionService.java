@@ -1,8 +1,11 @@
 package com.example.demo.services;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.Base64;
 import java.util.HashMap;
@@ -10,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
@@ -44,7 +48,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DefaultPayPalTransactionService {
-	public static final String ONBOARDING_REQUEST_BODY_FILE_LOCATION="classpath:onboarding_request_body.json";
+	public static final String ONBOARDING_REQUEST_BODY_FILE_LOCATION="/onboarding_request_body.json";
 	
 	private static final String TOKEN_PATH="/v1/oauth2/token";
 	private static final String ONBOARDING_REQ_PATH="/v2/customer/partner-referrals";
@@ -86,14 +90,9 @@ public class DefaultPayPalTransactionService {
 	    this.itemsRepo=itemsRepo;
 	    this.ordersRepo=ordersRepo;
 	    
-	    try {
-			File onboardingRequestBodyFile=ResourceUtils.getFile(ONBOARDING_REQUEST_BODY_FILE_LOCATION);
-			Scanner scanner=new Scanner(onboardingRequestBodyFile);
-			onboardingRequestBody=scanner.useDelimiter("\\Z").next();
-			scanner.close();
-		} catch (IOException e) {
-			throw e;
-		}
+	    InputStream inputStream = getClass().getResourceAsStream(ONBOARDING_REQUEST_BODY_FILE_LOCATION);
+		BufferedReader reader=new BufferedReader(new InputStreamReader(inputStream));
+		onboardingRequestBody=reader.lines().collect(Collectors.joining(System.lineSeparator()));
 	}
 
 	public int refreshAccessKey() {
